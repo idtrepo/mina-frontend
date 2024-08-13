@@ -65,10 +65,10 @@ export default defineStore('autenticacion', () => {
         access.value = null;
         refresh.value = null;
         usuario.value = null;
-        caducidadSesion = null;
+        caducidadSesion.value = null;
     }
 
-    const verificarSesion = () => {
+    const verificarSesion = async () => {
         access.value = ls.getItem('access');
         refresh.value = ls.getItem('refresh');
 
@@ -77,9 +77,11 @@ export default defineStore('autenticacion', () => {
         }
 
         try {
-            actualizarSesion();
+            const res = await actualizarSesion({ token: refresh });
+            return res;
         } catch (err) {
             cerrarSesion();
+            throw err;
         }
     }
 
@@ -89,6 +91,7 @@ export default defineStore('autenticacion', () => {
         usuario,
         caducidadSesion,
         autenticado,
+        guardarSesion,
         iniciarSesion,
         cerrarSesion,
         verificarSesion
