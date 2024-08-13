@@ -1,0 +1,1 @@
+export const VISTA_LOGIN = 'autenticacion-login';
