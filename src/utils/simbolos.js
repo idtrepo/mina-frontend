@@ -1,3 +1,9 @@
-export const SIMBOLO_SALIDA = ['fa-solid', 'fa-door-open'];
+export const SIMBOLO_AREAS = ['fa-solid', 'fa-house'];
+export const SIMBOLO_CLIENTES = ['fa-solid', 'fa-city'];
+export const SIMBOLO_DATA = ['fa-solid', 'fa-chart-simple'];
 export const SIMBOLO_MODULOS = ['fa-solid', 'fa-box'];
+export const SIMBOLO_PERFILES = ['fa-solid', 'fa-person'];
+export const SIMBOLO_SENSORES = ['fa-solid', 'fa-satellite-dish'];
+export const SIMBOLO_SUCURSALES = ['fa-solid', 'fa-industry'];
 export const SIMBOLO_USUARIOS = ['fa-solid', 'fa-user'];
+export const SIMBOLO_SALIDA = ['fa-solid', 'fa-door-open'];
