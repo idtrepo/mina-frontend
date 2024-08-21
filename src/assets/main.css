@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.n-input.n-input--disabled .n-input__input-el, .n-input.n-input--disabled .n-input__textarea-el {
+    cursor: not-allowed;
+    color: rgb(15 23 42);
+    text-decoration-color: var(--n-text-color-disabled);
+}
+
+.n-base-selection.n-base-selection--disabled .n-base-selection-label .n-base-selection-input {
+    cursor: not-allowed;
+    color: rgb(15 23 42);
+}
