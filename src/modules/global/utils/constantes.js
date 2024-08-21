@@ -1,0 +1,1 @@
+export const TIEMPO_MENSAJE = 5000;

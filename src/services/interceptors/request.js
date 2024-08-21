@@ -1,6 +1,6 @@
 import axios from "axios";
 import { storeToRefs } from 'pinia'
-import useAuthStore from "@/stores/useAuthStore";
+import useAuthStore from "@/modules/auth/stores/useAuthStore";
 import { BASE_URL } from "../../../config/settings";
 
 const URL_REFRESH = 'autenticacion/refresh';
@@ -18,7 +18,7 @@ export const interceptorRequest = async (request) => {
             const res = await axios.post(`${BASE_URL}${URL_REFRESH}`, {
                 refresh: refresh.value
             });
-            const { mensaje, data } = res.data;
+            const { data } = res.data;
             authStore.guardarSesion({ data });
         } catch (err) {
             console.error(err);
