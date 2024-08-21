@@ -92,16 +92,11 @@ const validarPassword = computed(() => {
 const crearUsuario = async() => {
     const { data, error } = await evaluarUsuario(toValue(dataUsuario));
 
-    if(error){
-        notificacion.nError({ mensaje: MENSAJE_ERROR.VALIDACION });
-        return;
-    }
+    if(error)
+        return notificacion.nError({ mensaje: MENSAJE_ERROR.VALIDACION });
 
-    console.log(validarPassword.value);
-
-    if(!validarPassword.value){
+    if(!validarPassword.value)
         return notificacion.nError({ mensaje: MENSAJE_ERROR.PASSWORD })
-    }
 
     try{
         const { mensaje } = await usuariosStore.crearUsuario({ data });
@@ -124,8 +119,8 @@ const reiniciarDataUsuario = () => {
 
 //Config
 const config = ref({
-    funcionCrear: crearUsuario,
-    tituloForm: 'Nuevo usuario'
+    formFuncCrear: crearUsuario,
+    formTitulo: 'Nuevo usuario'
 })
 
 //Hooks

@@ -14,6 +14,7 @@ import { storeToRefs } from 'pinia'
 import { SIMBOLO } from '@/modules/global/utils/simbolos';
 import useUsuariosStore from '@/modules/usuarios/stores/useUsuariosStore';
 import useNotificacion from '@/modules/global/composables/useNotificacion';
+import { VISTA } from '@/modules/global/utils/vistas';
 
 //Componentes
 const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
@@ -28,7 +29,8 @@ const { usuarios } = storeToRefs(usuariosStore);
 const mapUsuarios = computed(() => usuarios.value.map(usuario => ({
     id: usuario.id,
     titulo: usuario.nombre,
-    icono: SIMBOLO.USUARIOS
+    icono: SIMBOLO.USUARIOS,
+    vista: VISTA.USUARIOS_DATA
 })));
 
 //Hooks

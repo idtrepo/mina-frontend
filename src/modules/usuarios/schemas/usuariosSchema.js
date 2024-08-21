@@ -2,7 +2,7 @@ import z from 'zod'
 
 const UsuarioSchema = z.object({
     correo: z.string().email(),
-    password: z.string(),
+    password: z.string().nullish(),
     nombre: z.string(),
     apellido: z.string(),
     idPerfil: z.number().gt(0),

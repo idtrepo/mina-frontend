@@ -7,5 +7,6 @@ export const VISTA = {
     PERFILES: 'perfiles-listado',
     SENSORES: 'sensores-listado',
     SUCURSALES: 'sucursales-listado',
-    USUARIOS: 'usuarios-listado'
+    USUARIOS: 'usuarios-listado',
+    USUARIOS_DATA: 'usuarios-data'
 }

@@ -9,5 +9,6 @@ export const USUARIOS_PLACEHOLDER = {
     CORREO: 'Introduce el correo del usuario',
     PASSWORD: 'Introduce la contraseña del usuario',
     PASSWORD_VERIFICACION: 'Confirma la contraseña del usuario',
-    PERFIL: 'Seleccione el perfil del usuario'
+    PERFIL: 'Seleccione el perfil del usuario',
+    CLIENTE: 'Seleccione el cliente asociado al usuario'
 }

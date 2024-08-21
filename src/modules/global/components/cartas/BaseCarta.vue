@@ -39,7 +39,10 @@ const dataTerceario = computed(() => data.value?.terceario ?? '');
 const dataVista = computed(() => data.value?.vista ?? '');
 
 const verDatosModulo = () => {
-    if(!dataId.value) return;
+    // if(!dataId.value) return;
+
+    console.log('IR A LA VISTA')
+    console.log(dataId.value);
 
     return router.push({ 
         name: dataVista.value,
