@@ -8,8 +8,8 @@ const moverAVista = (vista) => {
 }
 
 const cerrarSesion = () => {
-    console.log('CERRANDO LA SESION MALDITA SEA');
     const authStore = useAuthStore();
+
     authStore.cerrarSesion();
     router.push({ name: VISTA.LOGIN });
 }
