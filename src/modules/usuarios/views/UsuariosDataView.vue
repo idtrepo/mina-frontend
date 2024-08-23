@@ -1,25 +1,6 @@
 <template>
-    <section>
-        <header class="mb-5 flex justify-between items-center">
-            <h2 class="uppercase text-xl font-bold">informacion del usuario</h2>
-            <section>
-                <template v-if="editar">
-                    <NButton @click="cancelarEdicion" type="warning">
-                        Cancelar
-                    </NButton>
-                    <NButton @click="editarUsuario" type="info" class="ml-1">
-                        Guardar
-                    </NButton>
-                </template>
-                <template v-else>
-                    <NButton @click="habilitarEdicion" type="warning">
-                        Editar
-                    </NButton>
-                </template>
-            </section>
-        </header>
-        <NDivider/>
-        <section class="grid grid-cols-4 gap-5 h-full">
+    <BaseDataView :config="config">
+        <template #contenido="{ editar }">
             <article>
                 <p class="uppercase mb-1">nombre</p>
                 <NInput
@@ -80,17 +61,17 @@
                         :disabled="!editar"/>
                 </article>
             </template>
-        </section>
-    </section>
+        </template>
+    </BaseDataView>
 </template>
 
 <script setup>
-import { ref, computed, toValue } from 'vue'
+import { ref, computed, toValue, defineAsyncComponent, provide } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import useUsuariosStore from '../stores/useUsuariosStore';
-import { NButton, NInput, NSelect, NSwitch, NDivider } from 'naive-ui'
+import { NInput, NSelect, NSwitch } from 'naive-ui'
 import { USUARIOS_PLACEHOLDER } from '@/modules/global/utils/placeholder';
 import usePerfilesStore from '@/modules/perfiles/stores/usePerfilesStore';
 import useClientesStore from '@/modules/clientes/stores/useClientesStore';
@@ -108,8 +89,10 @@ const clientesStore = useClientesStore();
 const { perfiles } = storeToRefs(perfilesStore);
 const { clientes } = storeToRefs(clientesStore)
 
+//Componentes
+const BaseDataView = defineAsyncComponent(() => import('@/modules/global/views/BaseDataView.vue'));
+
 //Info usuario
-const copiaUsuario = ref(null);
 const usuario = ref({
     id: null,
     correo: null,
@@ -150,22 +133,14 @@ const opcionesClientes = computed(() => clientes.value.map(({ id, nombre }) => (
 
 //Editar usuario
 const verificarPassword = ref(null);
-const editar = ref(false);
 const validarPassword = computed(() => {
     if(!usuario.value.password) return true;
     return usuario.value.password === verificarPassword.value;
 });
 
-const habilitarEdicion = () => {
-    editar.value = true;
-    copiaUsuario.value = { ...usuario.value };
-}
-
 const cancelarEdicion = () => {
-    editar.value = false;
-    usuario.value = { ...copiaUsuario.value };
     usuario.value.password = null;
-    copiaUsuario.value = null;
+    verificarPassword.value = null;
 }
 
 const editarUsuario = async() => {
@@ -184,7 +159,6 @@ const editarUsuario = async() => {
         const { mensaje } = await usuariosStore.editarUsuario({ id, data: eliminarNulos(data) });
         const resUsuario = await usuariosStore.obtenerUsuario({ id });
 
-        editar.value = false;
         notificacion.nExito({ mensaje });
         asignarDataUsuario(resUsuario);
     }catch({ response: { data: { error:mensaje } } }){
@@ -201,7 +175,7 @@ onMounted(() => {
             console.log(res);
             asignarDataUsuario(res)
         })
-        .catch(err => console.log(err));
+        .catch(console.log);
 
     perfilesStore.obtenerPerfiles()
         .then(console.log)
@@ -210,5 +184,14 @@ onMounted(() => {
     clientesStore.obtenerClientes()
         .then(console.log)
         .catch(console.log);
+});
+
+//Config vista
+const config = ref({
+    tituloVista: 'Datos del usuario',
+    editarElemento: editarUsuario,
+    cancelarEdicion,
 })
+
+provide('elemento', { elemento:usuario })
 </script>
