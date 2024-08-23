@@ -14,6 +14,7 @@ import { storeToRefs } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import useModulosStore from '@/modules/modulos/stores/useModulosStore';
 import { SIMBOLO } from '@/modules/global/utils/simbolos'
+import { VISTA } from '@/modules/global/utils/vistas';
 
 //Componentes
 const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
@@ -29,7 +30,8 @@ const mapModulos = computed(() => modulos.value.map(({ id, mac, cliente, area })
     titulo: mac,
     secundario: cliente?.nombre ?? '',
     terceario: area?.nombre ?? '',
-    icono: SIMBOLO.MODULOS
+    icono: SIMBOLO.MODULOS,
+    vista: VISTA.MODULOS_DATA
 })));
 
 //Hooks
