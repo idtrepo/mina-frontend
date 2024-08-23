@@ -5,6 +5,10 @@ import areasService from '@/modules/areas/services/areasService';
 export default defineStore('areas', () => {
     const areas = ref([]);
     const hayAreas = computed(() => areas.value.length > 0);
+    const opcionesAreas = computed(() => areas.value.map(({ id, nombre }) => ({
+        label: nombre,
+        value: id
+    })));
 
     const asignarDataAreas = ({ data }) => {
         areas.value = data;
@@ -54,6 +58,7 @@ export default defineStore('areas', () => {
     return {
         areas,
         hayAreas,
+        opcionesAreas,
         obtenerArea,
         obtenerAreas,
         crearArea,
