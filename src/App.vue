@@ -49,7 +49,11 @@ const { autenticado } = storeToRefs(authStore);
 
 //Hooks
 
-onMounted(() => {
-  authStore.verificarSesion();
+onMounted(async() => {
+  try{
+    await authStore.verificarSesion();
+  }catch(err){
+    router.push({ name: VISTA.LOGIN });
+  }
 });
 </script>
