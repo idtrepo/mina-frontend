@@ -5,6 +5,10 @@ import sucursalesService from '@/modules/sucursales/services/sucursalesService';
 export default defineStore('sucursales', () => {
     const sucursales = ref([]);
     const haySucursales = computed(() => sucursales.value.length > 0);
+    const opcionesSucursales = computed(() => sucursales.value.map(({ id, nombre }) => ({
+        label: nombre,
+        value: id
+    })));
 
     const asignarDataSucursales = ({ data }) => {
         sucursales.value = data;
@@ -54,6 +58,7 @@ export default defineStore('sucursales', () => {
     return {
         sucursales,
         haySucursales,
+        opcionesSucursales,
         obtenerSucursales,
         obtenerSucursal,
         crearSucursal,
