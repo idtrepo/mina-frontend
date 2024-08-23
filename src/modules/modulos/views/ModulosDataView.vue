@@ -1,108 +1,153 @@
 <template>
-    <section>
-        <header class="mb-6">
-            <header class="flex items-center justify-between mb-5">
-                <h2 class="text-2xl">Informacion del modulo: <span class="uppercase">{{ modulo.mac }}</span></h2>
-                <section>
-                    <NButton class="mr-3" secondary type="warning">Editar</NButton>
-                    <NButton secondary type="error">Eliminar</NButton>
-                </section>
-            </header>
-            <footer class="grid grid-cols-4 gap-5">
-                <article>
-                    <p class="uppercase">mac</p>
-                    <NInput v-model:value="modulo.mac"/>
-                </article>
-                <article>
-                    <p class="uppercase">cliente</p>
-                    <NSelect
-                        v-model:value="modulo.idCliente"/>
-                </article>
-                <article>
-                    <p class="uppercase">sucursal</p>
-                    <NSelect
-                        v-model:value="modulo.idSucursal"/>
-                </article>
-                <article>
-                    <p class="uppercase">area</p>
-                    <NSelect
-                        v-model:value="modulo.idArea"/>
-                </article>
-            </footer>
-        </header>
-        <section>
-             <LineChart v-bind:="lineChartProps"/>
-        </section>
-    </section>
+    <BaseDataView :config="config">
+        <template #contenido="{ editar }">
+            <article>
+                <p class="uppercase mb-1">mac</p>
+                <NInput 
+                    v-model:value="modulo.mac"
+                    :disabled="!editar"/>
+            </article>
+            <article>
+                <p class="uppercase mb-1">cliente</p>
+                <NSelect
+                    :options="opcionesClientes"
+                    v-model:value="modulo.idCliente"
+                    :disabled="!editar"/>
+            </article>
+            <article>
+                <p class="uppercase mb-1">sucursal</p>
+                <NSelect
+                    :options="opcionesSucursales"
+                    v-model:value="modulo.idSucursal"
+                    :disabled="!editar"/>
+            </article>
+            <article>
+                <p class="uppercase mb-1">area</p>
+                <NSelect
+                    :options="opcionesAreas"
+                    v-model:value="modulo.idArea"
+                    :disabled="!editar"/>
+            </article>
+        </template>
+        <template #graficos>
+            <LineChart :chart-data="testData"/>
+        </template>
+    </BaseDataView>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
+import { ref, computed, provide } from 'vue'
+import { defineAsyncComponent } from 'vue' 
 import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { DoughnutChart, useDoughnutChart, LineChart, useLineChart } from 'vue-chart-3'
 import { Chart, registerables } from 'chart.js'
 import useModulosStore from '@/modules/modulos/stores/useModulosStore'
+import useClientesStore from '@/modules/clientes/stores/useClientesStore'
+import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore'
+import useAreasStore from '@/modules/areas/stores/useAreasStore'
 import { NInput, NButton, NSelect } from 'naive-ui'
 
 
 //Dependencias
 const route = useRoute();
 const modulosStore = useModulosStore();
+const clientesStore = useClientesStore();
+const sucursalesStore = useSucursalesStore();
+const areasStore = useAreasStore();
+const { opcionesClientes } = storeToRefs(clientesStore);
+const { opcionesSucursales } = storeToRefs(sucursalesStore);
+const { opcionesAreas } = storeToRefs(areasStore);
+
+
+//Componentes
+const BaseDataView = defineAsyncComponent(() => import('@/modules/global/views/BaseDataView.vue'));
 
 //Info modulo
 const modulo = ref({
+    id: null,
     mac: null,
     idCliente: null,
     idSucursal: null,
     idArea: null,
+    sensores: []
 });
-
-const obtenerModulo = async() => {
-    const { id } = route.params;
-
-    try{
-        const res = await modulosStore.obtenerModulo({ id });
-        asignarDataModulo(res);
-
-        console.log(res);
-    }catch({ response: { data: { error:mensaje } } }){
-        console.error(mensaje);
+const listadoData = computed(() => modulo.value.sensores.map(({ data, clave }) => {
+    return {
+        label: clave,
+        data: data.map(({ valor }) => valor)
     }
-}
+}))
+const etiquetasFechas = computed(() => {
+    if(!modulo.value.sensores.length) return [];
+    return modulo.value.sensores[0].data.map(({ creado }) => (new Date(creado)).toLocaleString()); 
+})
 
 const asignarDataModulo = ({ data }) => {
+    const { id, mac, cliente, sucursal, area, sensores } = data;
     modulo.value = {
-        mac: data.mac,
-        mina: data.mina,
-        area: data.area,
+        id,
+        mac,
+        idArea: area.id,
+        idCliente: cliente.id,
+        idSucursal: sucursal.id,
+        sensores: sensores?.map(({ clave, data:dataSensor }) => ({
+            clave,
+            data:dataSensor?.reverse() ?? dataSensor
+        })) ?? sensores,
     }
+
+    console.log(modulo.value.sensores);
 }
+
+//Obtener data periodicamente
+const TIEMPO_REFRESH_DATA = 10_000;
+const refDataInterval = ref(null);
 
 //Hooks
 onMounted(() => {
-    obtenerModulo();
+    const { params } = route;
+
+    refDataInterval.value = setInterval(() => {
+        modulosStore.obtenerModulo({ id: params.id })
+        .then(res => {
+            console.log('DATOS NUEVOS');
+            asignarDataModulo(res);
+        })
+        .catch(console.log);
+    }, TIEMPO_REFRESH_DATA);
+
+    modulosStore.obtenerModulo({ id: params.id })
+        .then(res => {
+            console.log(res);
+            asignarDataModulo(res);
+        })
+        .catch(console.log);
+
+    clientesStore.obtenerClientes()
+        .then(console.log)
+        .catch(console.log);
+
+    sucursalesStore.obtenerSucursales()
+        .then(console.log)
+        .catch(console.log)
+
+    areasStore.obtenerAreas()
+        .then(console.log)
+        .catch(console.log)
 });
+
+onUnmounted(() => {
+    clearInterval(refDataInterval.value);
+})
 
 Chart.register(...registerables);
 
-const dataValues = ref([30, 40, 60, 70, 5]);
-const dataLabels = ref(["Enero", "Febrero", "Marzo", "Abril", "Mayo"]);
 const toggleLegend = ref(true);
 const testData = computed(() => ({
-    labels: dataLabels.value,
-    datasets: [
-    {
-        data: dataValues.value,
-        backgroundColor: [
-        "#77CEFF",
-        "#0079AF",
-        "#123E6B",
-        "#97B0C4",
-        "#A5C8ED",
-        ],
-    },
-    ]
+    labels: etiquetasFechas.value,
+    datasets: listadoData.value
 }))
 const options = computed(() => ({
       scales: {
@@ -131,4 +176,13 @@ const options = computed(() => ({
       chartData: testData,
       options,
     });
+
+//Config vista
+const config = ref({
+    tituloVista: 'datos del modulo',
+    editarElemento: null,
+    cancelarEdicion: null,
+});
+
+provide('elemento', { elemento:modulo });
 </script>
