@@ -30,7 +30,7 @@
             </article>
         </template>
         <template #graficos>
-            <LineChart :chart-data="testData"/>
+            <LineChart :chart-data="testData" :options="opciones"/>
         </template>
     </BaseDataView>
 </template>
@@ -41,13 +41,13 @@ import { ref, computed, provide } from 'vue'
 import { defineAsyncComponent } from 'vue' 
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { DoughnutChart, useDoughnutChart, LineChart, useLineChart } from 'vue-chart-3'
+import { LineChart } from 'vue-chart-3'
 import { Chart, registerables } from 'chart.js'
 import useModulosStore from '@/modules/modulos/stores/useModulosStore'
 import useClientesStore from '@/modules/clientes/stores/useClientesStore'
 import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore'
 import useAreasStore from '@/modules/areas/stores/useAreasStore'
-import { NInput, NButton, NSelect } from 'naive-ui'
+import { NInput, NSelect } from 'naive-ui'
 
 
 //Dependencias
@@ -142,40 +142,24 @@ onUnmounted(() => {
     clearInterval(refDataInterval.value);
 })
 
+//Representacion de datos
 Chart.register(...registerables);
 
-const toggleLegend = ref(true);
+const opciones = ref({
+    responsive: true,
+    aspectRatio: 1,
+    scales: {
+        y: {
+            min: 0,
+            max: 100
+        }
+    }
+})
+
 const testData = computed(() => ({
     labels: etiquetasFechas.value,
     datasets: listadoData.value
 }))
-const options = computed(() => ({
-      scales: {
-        myScale: {
-          type: "logarithmic",
-          position: toggleLegend.value ? "left" : "right",
-        },
-      },
-      plugins: {
-        legend: {
-          position: toggleLegend.value ? "top" : "bottom",
-        },
-        title: {
-          display: true,
-          text: "Niveles de desgaste",
-        },
-      },
-    }));
-
-    const { lineChartProps } = useLineChart({
-        chartData: testData,
-        options
-    })
-
-    const { doughnutChartProps, doughnutChartRef } = useDoughnutChart({
-      chartData: testData,
-      options,
-    });
 
 //Config vista
 const config = ref({
