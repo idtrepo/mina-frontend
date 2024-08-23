@@ -62,7 +62,6 @@ export default defineStore('autenticacion', () => {
     }
 
     const cerrarSesion = () => {
-        console.log('> CERRANDO LA SESION');
         access.value = null;
         refresh.value = null;
         usuario.value = null;
@@ -70,11 +69,14 @@ export default defineStore('autenticacion', () => {
         ls.clear();
     }
 
-    const verificarSesion = () => {
+    const verificarSesion = async () => {
         const accessToken = ls.getItem('access');
         const refreshToken = ls.getItem('refresh');
 
-        if (!accessToken || !refreshToken) return cerrarSesion();
+        if (!accessToken || !refreshToken) {
+            cerrarSesion();
+            throw { error: 'Tokens eliminados' };
+        }
 
         guardarSesion({
             data: {
@@ -83,14 +85,13 @@ export default defineStore('autenticacion', () => {
             }
         });
 
-        // try {
-        //     const res = await actualizarSesion({ token: refresh });
-        //     return res;
-        // } catch (err) {
-        //     console.log('LA SESION EXPIRO')
-        //     cerrarSesion();
-        //     throw err;
-        // }
+        try {
+            const res = await actualizarSesion({ token: refresh });
+            return res;
+        } catch (err) {
+            cerrarSesion();
+            throw err;
+        }
     }
 
     return {
