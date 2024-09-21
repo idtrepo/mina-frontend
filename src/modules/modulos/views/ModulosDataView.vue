@@ -37,7 +37,7 @@
 
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
-import { ref, computed, provide } from 'vue'
+import { ref, computed, provide, toValue } from 'vue'
 import { defineAsyncComponent } from 'vue' 
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -48,9 +48,11 @@ import useClientesStore from '@/modules/clientes/stores/useClientesStore'
 import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore'
 import useAreasStore from '@/modules/areas/stores/useAreasStore'
 import { NInput, NSelect } from 'naive-ui'
-
+import { eliminarNulos } from '@/modules/global/utils/data'
+import useNotificacion from '@/modules/global/composables/useNotificacion'
 
 //Dependencias
+const notificacion = useNotificacion();
 const route = useRoute();
 const modulosStore = useModulosStore();
 const clientesStore = useClientesStore();
@@ -99,6 +101,23 @@ const asignarDataModulo = ({ data }) => {
     }
 
     console.log(modulo.value.sensores);
+}
+
+const editarModulo = async() => {
+    const { id, sensores, ...dataModulo } = modulo.value;
+
+    try{
+        const { mensaje } = await modulosStore.editarModulo({ 
+            id, 
+            data: eliminarNulos(dataModulo) 
+        });
+        const resModulo = await modulosStore.obtenerModulo({ id });
+
+        notificacion.nExito({ mensaje });
+        asignarDataModulo(resModulo);
+    }catch({ response: { data: { error:mensaje } } }){
+        notificacion.nError({ mensaje });
+    }
 }
 
 //Obtener data periodicamente
@@ -164,7 +183,7 @@ const testData = computed(() => ({
 //Config vista
 const config = ref({
     tituloVista: 'datos del modulo',
-    editarElemento: null,
+    editarElemento: editarModulo,
     cancelarEdicion: null,
 });
 

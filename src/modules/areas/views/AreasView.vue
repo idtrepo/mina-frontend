@@ -1,5 +1,8 @@
 <template>
     <BaseView :config="config">
+        <template #modal-form>
+            <AreasForm/>
+        </template>
     </BaseView>
 </template>
 
@@ -14,7 +17,8 @@ import useNotificacion from '@/modules/global/composables/useNotificacion';
 
 
 //Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
+const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
+const AreasForm = defineAsyncComponent(() => import('../components/forms/AreasForm.vue'));
 
 
 //Dependencias

@@ -1,5 +1,9 @@
 <template>
-    <BaseView :config="config"></BaseView>
+    <BaseView :config="config">
+        <template #modal-form>
+            <SucursalesForm/>
+        </template>
+    </BaseView>
 </template>
 
 <script setup>
@@ -13,6 +17,7 @@ import useNotificacion from '@/modules/global/composables/useNotificacion';
 
 //Componentes
 const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
+const SucursalesForm = defineAsyncComponent(() => import('../components/forms/SucursalesForm.vue'))
 
 
 //Dependencias

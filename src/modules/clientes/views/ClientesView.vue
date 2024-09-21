@@ -1,5 +1,9 @@
 <template>
-    <BaseView :config="config"></BaseView>
+    <BaseView :config="config">
+        <template #modal-form>
+            <ClientesForm/>
+        </template>
+    </BaseView>
 </template>
 
 <script setup>
@@ -12,7 +16,8 @@ import { SIMBOLO } from '@/modules/global/utils/simbolos';
 import useNotificacion from '@/modules/global/composables/useNotificacion';
 
 //Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
+const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
+const ClientesForm = defineAsyncComponent(() => import('../components/forms/ClientesForm.vue'))
 
 //Dependencias
 const notificacion = useNotificacion();

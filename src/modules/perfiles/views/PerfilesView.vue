@@ -1,5 +1,8 @@
 <template>
     <BaseView :config="config">
+        <template #modal-form>
+            <PerfilesForm/>
+        </template>
     </BaseView>
 </template>
 
@@ -13,7 +16,8 @@ import { SIMBOLO } from '@/modules/global/utils/simbolos';
 import useNotificacion from '@/modules/global/composables/useNotificacion';
 
 //Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
+const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
+const PerfilesForm = defineAsyncComponent(() => import('../components/forms/PerfilesForm.vue'));
 
 
 //Dependencias

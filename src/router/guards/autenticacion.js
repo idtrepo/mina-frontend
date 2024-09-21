@@ -11,12 +11,7 @@ export const autenticacionGuard = (to, from, next) => {
     if (!autenticado.value && to.name !== VISTA.LOGIN) {
         next({ name: VISTA.LOGIN });
     } else {
-        if (to.name === VISTA.LOGIN) {
-            next({ name: VISTA.MODULOS });
-        } else {
-            tituloStore.establecerTitulo(to.meta?.titulo ?? '');
-            next();
-
-        }
+        tituloStore.establecerTitulo(to.meta?.titulo ?? '');
+        next();
     }
 }
