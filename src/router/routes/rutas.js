@@ -1,54 +1,37 @@
-import router from ".."
-import useAuthStore from "@/modules/auth/stores/useAuthStore";
-import { SIMBOLO } from "@/modules/global/utils/simbolos"
-import { VISTA } from "@/modules/global/utils/vistas";
+import { ICONOS } from "@/modules/global/utils/iconos"
+import { VISTAS } from "@/modules/global/utils/vistas";
 
-const moverAVista = (vista) => {
-    return router.push({ name: vista });
-}
 
-const cerrarSesion = () => {
-    const authStore = useAuthStore();
-
-    authStore.cerrarSesion();
-    router.push({ name: VISTA.LOGIN });
-}
 
 export const rutas = [
     {
-        nombre: 'areas',
-        icono: SIMBOLO.AREAS,
-        metodo: () => moverAVista(VISTA.AREAS)
+        titulo: 'areas',
+        icono: ICONOS.AREAS,
+        ruta: VISTAS.AREAS
     },
     {
-        nombre: 'clientes',
-        icono: SIMBOLO.CLIENTES,
-        metodo: () => moverAVista(VISTA.CLIENTES)
+        titulo: 'clientes',
+        icono: ICONOS.CLIENTES,
+        ruta: VISTAS.CLIENTES
     },
     {
-        nombre: 'modulos',
-        icono: SIMBOLO.MODULOS,
-        metodo: () => moverAVista(VISTA.MODULOS)
+        titulo: 'modulos',
+        icono: ICONOS.MODULOS,
+        ruta: VISTAS.MODULOS
     },
     {
-        nombre: 'perfiles',
-        icono: SIMBOLO.PERFILES,
-        metodo: () => moverAVista(VISTA.PERFILES)
+        titulo: 'perfiles',
+        icono: ICONOS.PERFILES,
+        ruta: VISTAS.PERFILES
     },
     {
-        nombre: 'sucursales',
-        icono: SIMBOLO.SUCURSALES,
-        metodo: () => moverAVista(VISTA.SUCURSALES)
+        titulo: 'sucursales',
+        icono: ICONOS.SUCURSALES,
+        ruta: VISTAS.SUCURSALES
     },
     {
-        nombre: 'usuarios',
-        icono: SIMBOLO.USUARIOS,
-        metodo: () => moverAVista(VISTA.USUARIOS)
+        titulo: 'usuarios',
+        icono: ICONOS.USUARIOS,
+        ruta: VISTAS.USUARIOS
     }
 ]
-
-export const rutaSalida = {
-    nombre: 'salir',
-    icono: SIMBOLO.SALIDA,
-    metodo: () => cerrarSesion()
-}

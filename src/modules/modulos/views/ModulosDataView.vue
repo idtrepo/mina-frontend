@@ -1,191 +1,59 @@
 <template>
-    <BaseDataView :config="config">
-        <template #contenido="{ editar }">
-            <article>
-                <p class="uppercase mb-1">mac</p>
-                <NInput 
-                    v-model:value="modulo.mac"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">cliente</p>
-                <NSelect
-                    :options="opcionesClientes"
-                    v-model:value="modulo.idCliente"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">sucursal</p>
-                <NSelect
-                    :options="opcionesSucursales"
-                    v-model:value="modulo.idSucursal"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">area</p>
-                <NSelect
-                    :options="opcionesAreas"
-                    v-model:value="modulo.idArea"
-                    :disabled="!editar"/>
-            </article>
-        </template>
-        <template #graficos>
-            <LineChart :chart-data="testData" :options="opciones"/>
-        </template>
-    </BaseDataView>
+    <div>
+        <header class="pt-8 flex justify-between gap-3 items-center">
+            <button 
+                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200" 
+                @click="() => seleccionarVista(NOMBRE_VISTA.INFO)">
+                modulo
+            </button>
+            <button 
+                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200" 
+                @click="() => seleccionarVista(NOMBRE_VISTA.SENSORES)">
+                sensores
+            </button>
+            <button 
+                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200"
+                @click="() => seleccionarVista(NOMBRE_VISTA.ANALISIS)">
+                analisis
+            </button>
+        </header>
+        <section>
+            <component :is="vista"/>
+        </section>
+    </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
-import { ref, computed, provide, toValue } from 'vue'
-import { defineAsyncComponent } from 'vue' 
-import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { LineChart } from 'vue-chart-3'
-import { Chart, registerables } from 'chart.js'
-import useModulosStore from '@/modules/modulos/stores/useModulosStore'
-import useClientesStore from '@/modules/clientes/stores/useClientesStore'
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore'
-import useAreasStore from '@/modules/areas/stores/useAreasStore'
-import { NInput, NSelect } from 'naive-ui'
-import { eliminarNulos } from '@/modules/global/utils/data'
-import useNotificacion from '@/modules/global/composables/useNotificacion'
+import { ref, computed } from 'vue'
+import { defineAsyncComponent } from 'vue'
 
-//Dependencias
-const notificacion = useNotificacion();
-const route = useRoute();
-const modulosStore = useModulosStore();
-const clientesStore = useClientesStore();
-const sucursalesStore = useSucursalesStore();
-const areasStore = useAreasStore();
-const { opcionesClientes } = storeToRefs(clientesStore);
-const { opcionesSucursales } = storeToRefs(sucursalesStore);
-const { opcionesAreas } = storeToRefs(areasStore);
+// componentes
+const ModulosDataInfo = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataInfoView.vue'));
+const ModulosDataSensores = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataSensoresView.vue'));
+const ModulosDataAnalisis = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataAnalisisView.vue'));
 
-
-//Componentes
-const BaseDataView = defineAsyncComponent(() => import('@/modules/global/views/BaseDataView.vue'));
-
-//Info modulo
-const modulo = ref({
-    id: null,
-    mac: null,
-    idCliente: null,
-    idSucursal: null,
-    idArea: null,
-    sensores: []
-});
-const listadoData = computed(() => modulo.value.sensores.map(({ data, clave }) => {
-    return {
-        label: clave,
-        data: data.map(({ valor }) => valor)
-    }
-}))
-const etiquetasFechas = computed(() => {
-    if(!modulo.value.sensores.length) return [];
-    return modulo.value.sensores[0].data.map(({ creado }) => (new Date(creado)).toLocaleString()); 
-})
-
-const asignarDataModulo = ({ data }) => {
-    const { id, mac, cliente, sucursal, area, sensores } = data;
-    modulo.value = {
-        id,
-        mac,
-        idArea: area.id,
-        idCliente: cliente.id,
-        idSucursal: sucursal.id,
-        sensores: sensores?.map(({ clave, data:dataSensor }) => ({
-            clave,
-            data:dataSensor?.reverse() ?? dataSensor
-        })) ?? sensores,
-    }
-
-    console.log(modulo.value.sensores);
+// elegir vista
+const NOMBRE_VISTA = {
+    INFO: 'ModulosDataInfo',
+    SENSORES: 'ModulosDataSensores',
+    ANALISIS: 'ModulosDataAnalisis',
 }
 
-const editarModulo = async() => {
-    const { id, sensores, ...dataModulo } = modulo.value;
+const vistaSeleccionada = ref(NOMBRE_VISTA.INFO);
+const vista = computed(() => {
+    if(vistaSeleccionada.value === NOMBRE_VISTA.INFO)
+        return ModulosDataInfo;
 
-    try{
-        const { mensaje } = await modulosStore.editarModulo({ 
-            id, 
-            data: eliminarNulos(dataModulo) 
-        });
-        const resModulo = await modulosStore.obtenerModulo({ id });
+    if(vistaSeleccionada.value === NOMBRE_VISTA.SENSORES)
+        return ModulosDataSensores;
 
-        notificacion.nExito({ mensaje });
-        asignarDataModulo(resModulo);
-    }catch({ response: { data: { error:mensaje } } }){
-        notificacion.nError({ mensaje });
-    }
+    if(vistaSeleccionada.value === NOMBRE_VISTA.ANALISIS)
+        return ModulosDataAnalisis;
+
+    return ModulosDataInfo;
+})
+
+const seleccionarVista = (nombreVista) => {
+    vistaSeleccionada.value = nombreVista;
 }
-
-//Obtener data periodicamente
-const TIEMPO_REFRESH_DATA = 10_000;
-const refDataInterval = ref(null);
-
-//Hooks
-onMounted(() => {
-    const { params } = route;
-
-    refDataInterval.value = setInterval(() => {
-        modulosStore.obtenerModulo({ id: params.id })
-        .then(res => {
-            console.log('DATOS NUEVOS');
-            asignarDataModulo(res);
-        })
-        .catch(console.log);
-    }, TIEMPO_REFRESH_DATA);
-
-    modulosStore.obtenerModulo({ id: params.id })
-        .then(res => {
-            console.log(res);
-            asignarDataModulo(res);
-        })
-        .catch(console.log);
-
-    clientesStore.obtenerClientes()
-        .then(console.log)
-        .catch(console.log);
-
-    sucursalesStore.obtenerSucursales()
-        .then(console.log)
-        .catch(console.log)
-
-    areasStore.obtenerAreas()
-        .then(console.log)
-        .catch(console.log)
-});
-
-onUnmounted(() => {
-    clearInterval(refDataInterval.value);
-})
-
-//Representacion de datos
-Chart.register(...registerables);
-
-const opciones = ref({
-    responsive: true,
-    aspectRatio: 1,
-    scales: {
-        y: {
-            min: 0,
-            max: 100
-        }
-    }
-})
-
-const testData = computed(() => ({
-    labels: etiquetasFechas.value,
-    datasets: listadoData.value
-}))
-
-//Config vista
-const config = ref({
-    tituloVista: 'datos del modulo',
-    editarElemento: editarModulo,
-    cancelarEdicion: null,
-});
-
-provide('elemento', { elemento:modulo });
 </script>

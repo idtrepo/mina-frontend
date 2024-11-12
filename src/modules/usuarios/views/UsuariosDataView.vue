@@ -1,98 +1,128 @@
 <template>
-    <BaseDataView :config="config">
+    <VDataView
+        :elemento="usuario"
+        :editar-elemento="usuariosStore.editarUsuario"
+        :obtener-elemento="usuariosStore.obtenerUsuario"
+        @reiniciar-elemento="reinciarDataUsuario">
         <template #contenido="{ editar }">
-            <article>
-                <p class="uppercase mb-1">nombre</p>
-                <NInput
-                    v-model:value="usuario.nombre"
-                    :placeholder="USUARIOS_PLACEHOLDER.NOMBRE"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">apellido</p>
-                <NInput
-                    v-model:value="usuario.apellido"
-                    :placeholder="USUARIOS_PLACEHOLDER.APELLIDO"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">correo</p>
-                <NInput
-                    v-model:value="usuario.correo"
-                    :placeholder="USUARIOS_PLACEHOLDER.CORREO"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">perfil</p>
-                <NSelect
-                    v-model:value="usuario.idPerfil"
-                    :options="opcionesPerfiles"
-                    clearable
-                    :placeholder="USUARIOS_PLACEHOLDER.PERFIL"
-                    :disabled="!editar"/>
-            </article>
-            <article>
-                <p class="uppercase mb-1">cliente</p>
-                <NSelect 
-                    v-model:value="usuario.idCliente"
-                    :options="opcionesClientes"
-                    :disabled="!editar"
-                    :placeholder="USUARIOS_PLACEHOLDER.CLIENTE"/>
-            </article>
-            <template v-if="editar">
-                <article>
-                    <p class="uppercase mb-1">password</p>
-                    <NInput
-                        v-model:value="usuario.password"
-                        :placeholder="USUARIOS_PLACEHOLDER.PASSWORD"
-                        :disabled="!editar"/>
-                </article>
-                <article>
-                    <p class="uppercase mb-1">verificar password</p>
-                    <NInput
-                        v-model:value="verificarPassword"
-                        :placeholder="USUARIOS_PLACEHOLDER.PASSWORD_VERIFICACION"
-                        :disabled="!editar"/>
-                </article>
-                <article>
-                    <p class="uppercase mb-1">estatus</p>
-                    <NSwitch 
-                        v-model:value="usuario.estatus"
-                        :disabled="!editar"/>
-                </article>
-            </template>
-        </template>
-    </BaseDataView>
+            <section>
+                <section>
+                    <header class="mb-3">
+                        <h3 class="uppercase font-bold">Datos principales</h3>
+                    </header>
+                    <section class="grid grid-cols-2 lg:grid-cols-4 gap-x-5">
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">nombre</p>
+                            <NInput
+                                v-model:value="usuario.nombre"
+                                :disabled="!editar"/>
+                        </article>
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">apellido</p>
+                            <NInput
+                                v-model:value="usuario.apellido"
+                                :disabled="!editar"/>
+                        </article>
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">correo</p>
+                            <NInput
+                                v-model:value="usuario.correo"
+                                :disabled="!editar"/>
+                        </article>
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">perfil</p>
+                            <NSelect
+                                v-model:value="usuario.idPerfil"
+                                :options="perfilesOpciones"
+                                :disabled="!editar"/>
+                        </article>
+                    </section>
+                </section>
+
+                <section v-if="esAdministrador || esSupervisor || esOperador">
+                    <header class="mb-3">
+                        <h3 class="uppercase font-bold">Datos especificos del puesto</h3>
+                    </header>
+                    <section class="grid grid-cols-2 lg:grid-cols-4 gap-x-5">
+                        <article v-if="esOperador || esSupervisor || esAdministrador" class="mb-4">
+                            <p class="uppercase mb-1">clientes</p>
+                            <NSelect
+                                v-model:value="usuario.idCliente"
+                                :options="clientesOpciones"
+                                :disabled="!editar"/>
+                        </article>
+                        <article v-if="esOperador || esSupervisor" class="mb-4">
+                            <p class="uppercase mb-1">sucursales</p>
+                            <NSelect
+                                v-model:value="usuario.idSucursal"
+                                :options="sucursalesOpciones"
+                                :disabled="!editar"/>
+                        </article>
+                        <article v-if="esOperador" class="mb-4">
+                            <p class="uppercase mb-1">areas</p>
+                            <NSelect
+                                v-model:value="usuario.idArea"
+                                :options="areasOpciones"
+                                :disabled="!editar"/>
+                        </article>
+                    </section>
+                </section>
+
+                <section>
+                    <header class="flex items-center gap-x-5 mb-3">
+                        <h3 class="uppercase font-bold">Cambiar password</h3>
+                        <NSwitch :disabled="!editar" :round="false" v-model:value="editarPassword"/>
+                    </header>
+                    <section v-if="editarPassword"class="grid grid-cols-2 gap-x-5">
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">password</p>
+                            <NInput
+                                v-model:value="usuario.password"
+                                :disabled="!editar"/>
+                        </article>
+                        <article class="mb-4">
+                            <p class="uppercase mb-1">verificar password</p>
+                            <NInput
+                                v-model:value="verificarPassword"
+                                :disabled="!editar"/>
+                        </article>
+                    </section>
+                </section>
+            </section>
+        </template>    
+    </VDataView>
 </template>
 
 <script setup>
-import { ref, computed, toValue, defineAsyncComponent, provide } from 'vue'
+import { ref, computed } from 'vue'
+import { defineAsyncComponent } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import useUsuariosStore from '../stores/useUsuariosStore';
 import { NInput, NSelect, NSwitch } from 'naive-ui'
-import { USUARIOS_PLACEHOLDER } from '@/modules/global/utils/placeholder';
-import usePerfilesStore from '@/modules/perfiles/stores/usePerfilesStore';
-import useClientesStore from '@/modules/clientes/stores/useClientesStore';
-import { evaluarUsuarioParcial } from '../schemas/usuariosSchema';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
-import { MENSAJE_ERROR } from '@/modules/global/utils/mensajes';
-import { eliminarNulos } from '@/modules/global/utils/data';
+import useUsuariosStore from '../stores/useUsuariosStore'
+import usePerfilesStore from '@/modules/perfiles/stores/usePerfilesStore'
+import useClientesStore from '@/modules/clientes/stores/useClientesStore'
+import useAreasStore from '@/modules/areas/stores/useAreasStore'
+import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
+import { PERFILES } from '../utils/perfiles'
 
-//Dependencias
-const notificacion = useNotificacion();
+// dependencias
 const route = useRoute();
 const usuariosStore = useUsuariosStore();
 const perfilesStore = usePerfilesStore();
 const clientesStore = useClientesStore();
-const { perfiles } = storeToRefs(perfilesStore);
-const { clientes } = storeToRefs(clientesStore)
+const areasStore = useAreasStore();
+const sucursalesStore = useSucursalesStore();
+const { perfilesOpciones } = storeToRefs(perfilesStore);
+const { clientesOpciones } = storeToRefs(clientesStore);
+const { areasOpciones } = storeToRefs(areasStore);
+const { sucursalesOpciones } = storeToRefs(sucursalesStore);
 
-//Componentes
-const BaseDataView = defineAsyncComponent(() => import('@/modules/global/views/BaseDataView.vue'));
+// componentes
+const VDataView = defineAsyncComponent(() => import('@/modules/global/views/VDataView.vue')); 
 
-//Info usuario
+//usuario
 const usuario = ref({
     id: null,
     correo: null,
@@ -101,97 +131,52 @@ const usuario = ref({
     apellido: null,
     idPerfil: null,
     idCliente: null,
-    estatus: null
+    idSucursal: null,
+    idArea: null,
 });
-const hayInfoUsuario = computed(() => (!!usuario.value.correo
-    && !!usuario.value.nombre
-    && !!usuario.value.apellido
-));
+const editarPassword = ref(false);
+const verificarPassword = ref(null);
+const esSuperUsuario = computed(() => usuario.value.idPerfil === PERFILES.SUPERUSUARIO);
+const esAdministrador = computed(() => usuario.value.idPerfil === PERFILES.ADMINISTRADOR);
+const esSupervisor = computed(() => usuario.value.idPerfil === PERFILES.SUPERVISOR);
+const esOperador = computed(() => usuario.value.idPerfil === PERFILES.OPERADOR);
+
+const reinciarDataUsuario = (data) => {
+    usuario.value = { ...data };
+}
 
 const asignarDataUsuario = ({ data }) => {
-    const { id, correo, nombre, apellido, perfil, cliente, estatus } = data;
-
+    console.log('ASIGNAR DATA USUARIO');
+    console.log(data);
+    
+    const { id, correo, nombre, apellido, area, cliente, sucursal, perfil } = data;
+    
     usuario.value.id = id;
+    usuario.value.correo = correo;
     usuario.value.nombre = nombre;
     usuario.value.apellido = apellido;
-    usuario.value.correo = correo;
-    usuario.value.estatus = estatus;
-    usuario.value.idPerfil = perfil?.id ?? null;
-    usuario.value.idCliente = cliente?.id ?? null;
+    usuario.value.idArea = area?.id;
+    usuario.value.idCliente = cliente?.id;
+    usuario.value.idSucursal = sucursal?.id;
+    usuario.value.idPerfil = perfil?.id;
 }
 
-//Opciones seleccion
-const opcionesPerfiles = computed(() => perfiles.value.map(({ id, nombre }) => ({
-    label: nombre,
-    value: id
-})));
-
-const opcionesClientes = computed(() => clientes.value.map(({ id, nombre }) => ({
-    label: nombre,
-    value: id
-})))
-
-//Editar usuario
-const verificarPassword = ref(null);
-const validarPassword = computed(() => {
-    if(!usuario.value.password) return true;
-    return usuario.value.password === verificarPassword.value;
-});
-
-const cancelarEdicion = () => {
-    usuario.value.password = null;
-    verificarPassword.value = null;
-}
-
-const editarUsuario = async() => {
-    const { id } = usuario.value;
-
-    const { error, data } = await evaluarUsuarioParcial(toValue(usuario)); 
-
-    if(error){
-        return notificacion.nAviso({ mensaje: MENSAJE_ERROR.VALIDACION });
-    }
-
-    if(!validarPassword.value)
-        return notificacion.nAviso({ mensaje: MENSAJE_ERROR.PASSWORD });
-
-    try{
-        const { mensaje } = await usuariosStore.editarUsuario({ id, data: eliminarNulos(data) });
-        const resUsuario = await usuariosStore.obtenerUsuario({ id });
-
-        notificacion.nExito({ mensaje });
-        asignarDataUsuario(resUsuario);
-    }catch({ response: { data: { error:mensaje } } }){
-        notificacion.nError({ mensaje });
-    }
-}
-
-//Hooks
+// lifcycle
 onMounted(() => {
-    const { params } = route;
+    const { id } = route.params;
 
-    usuariosStore.obtenerUsuario({ id: params.id })
-        .then(res => {
-            console.log(res);
-            asignarDataUsuario(res)
+    Promise.allSettled([
+        usuariosStore.obtenerUsuario({ id }),
+        areasStore.obtenerAreas(),
+        clientesStore.obtenerClientes(),
+        sucursalesStore.obtenerSucursales(),
+        perfilesStore.obtenerPerfiles(),
+    ])
+        .then((res) => {
+            const [dataUsuario] = res;
+
+            asignarDataUsuario(dataUsuario.value);
         })
         .catch(console.log);
-
-    perfilesStore.obtenerPerfiles()
-        .then(console.log)
-        .catch(console.log);
-
-    clientesStore.obtenerClientes()
-        .then(console.log)
-        .catch(console.log);
 });
-
-//Config vista
-const config = ref({
-    tituloVista: 'Datos del usuario',
-    editarElemento: editarUsuario,
-    cancelarEdicion,
-})
-
-provide('elemento', { elemento:usuario })
 </script>

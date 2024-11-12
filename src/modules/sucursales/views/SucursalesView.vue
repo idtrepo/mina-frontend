@@ -1,50 +1,51 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="sucursalesListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <SucursalesBuscador/>
+        </template>
+        <template #formulario>
             <SucursalesForm/>
         </template>
-    </BaseView>
+    </VListadoView>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import { onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
-import { SIMBOLO } from '@/modules/global/utils/simbolos';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
+import useSucursalesStore from '../stores/useSucursalesStore';
+import useClientesStore from '@/modules/clientes/stores/useClientesStore';
 
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
-const SucursalesForm = defineAsyncComponent(() => import('../components/forms/SucursalesForm.vue'))
-
-
-//Dependencias
-const notificacion = useNotificacion();
+// dependencias
+const clientesStore = useClientesStore();
 const sucursalesStore = useSucursalesStore();
-const { sucursales } = storeToRefs(sucursalesStore);
+const { sucursalesListado, numResultados, filtros, filtroActivo } = storeToRefs(sucursalesStore);
 
-//Listado de modulos
-const mapSucursales = computed(() => sucursales.value.map(sucursal => ({
-    id: sucursal.id,
-    titulo: sucursal.nombre,
-    icono: SIMBOLO.SUCURSALES
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const SucursalesForm = defineAsyncComponent(() => import('@/modules/sucursales/components/SucursalesForm.vue'));
+const SucursalesBuscador = defineAsyncComponent(() => import('@/modules/sucursales/components/SucursalesBuscador.vue'));
 
-//Hooks
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: sucursalesStore.obtenerSucursales,
+    reiniciarBusqueda: sucursalesStore.reinciarFiltros,
+});
+
 onMounted(() => {
-    sucursalesStore.obtenerSucursales()
+    Promise.allSettled([
+        sucursalesStore.obtenerSucursales(),
+        clientesStore.obtenerClientes(),
+    ])
         .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notificacion.nError({ mensaje: data.error });
-        });
-})
+        .catch(console.log);
+});
 
-//Config vista
-const config = computed(() => ({
-    data: mapSucursales.value
-}))
+onUnmounted(() => {
+    sucursalesStore.reinciarFiltros();
+})
 </script>

@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia'
 import useAuthStore from "@/modules/auth/stores/useAuthStore";
 import { BASE_URL } from "../../../config/settings";
 
-const URL_REFRESH = 'autenticacion/refresh';
+const URL_REFRESH = 'autenticacion/actualizar';
 
 export const interceptorRequest = async (request) => {
     const authStore = useAuthStore();

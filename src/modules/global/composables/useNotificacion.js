@@ -27,7 +27,7 @@ export default () => {
         })
     }
 
-    const nAdvertencia = ({ titulo = TITULO_ADVERTENCIA, mensaje }) => {
+    const nAdvertencia = ({ titulo = TITULO_ADVERTENCIA, mensaje } = {}) => {
         return notification.warning({
             keepAliveOnHover: true,
             duration: TIEMPO_MENSAJE,
@@ -36,7 +36,7 @@ export default () => {
         })
     }
 
-    const nAviso = ({ titulo = TITULO_AVISO, mensaje }) => {
+    const nAviso = ({ titulo = TITULO_AVISO, mensaje } = {}) => {
         return notification.info({
             keepAliveOnHover: true,
             duration: TIEMPO_MENSAJE,

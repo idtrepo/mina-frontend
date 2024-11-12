@@ -1,9 +1,9 @@
 import servicio from '@/services'
-const recurso = 'data/';
+const recurso = 'data';
 
 export default {
-    obtenerElementos: ({ } = {}) => {
-        return servicio.get(recurso);
+    obtenerElementos: ({ params }) => {
+        return servicio.get(recurso, { params });
     },
     obtenerElemento: ({ id }) => {
         return servicio.get(`${recurso}${id}`);

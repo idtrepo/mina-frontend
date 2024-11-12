@@ -1,52 +1,57 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="modulosListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <ModulosBuscador/>
+        </template>
+        <template #formulario>
             <ModulosForm/>
         </template>
-    </BaseView>
-
+    </VListadoView>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { computed } from 'vue'
-import { storeToRefs } from 'pinia'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import useModulosStore from '@/modules/modulos/stores/useModulosStore';
-import { SIMBOLO } from '@/modules/global/utils/simbolos'
-import { VISTA } from '@/modules/global/utils/vistas';
+import useModulosStore from '../stores/useModulosStore';
+import useClientesStore from '@/modules/clientes/stores/useClientesStore';
+import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
+import useAreasStore from '@/modules/areas/stores/useAreasStore';
 
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
-const ModulosForm = defineAsyncComponent(() => import('../components/forms/ModulosForm.vue'))
-
-//Dependencias
+// dependencias
+const clientesStore = useClientesStore();
+const sucursalesStore = useSucursalesStore();
+const areasStore = useAreasStore();
 const modulosStore = useModulosStore();
-const { modulos } = storeToRefs(modulosStore);
+const { modulosListado, numResultados, filtros, filtroActivo } = storeToRefs(modulosStore);
 
-//Listado de modulos
-const mapModulos = computed(() => modulos.value.map(({ id, mac, cliente, area }) => ({
-    id,
-    titulo: mac,
-    secundario: cliente?.nombre ?? '',
-    terceario: area?.nombre ?? '',
-    icono: SIMBOLO.MODULOS,
-    vista: VISTA.MODULOS_DATA
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const ModulosForm = defineAsyncComponent(() => import('@/modules/modulos/components/ModulosForm.vue'));
+const ModulosBuscador = defineAsyncComponent(() => import('@/modules/modulos/components/ModulosBuscador.vue'));
 
-//Hooks
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: modulosStore.obtenerModulos,
+    reiniciarBusqueda: modulosStore.reinciarFiltros,
+});
+
 onMounted(() => {
-    modulosStore.obtenerModulos()
+    Promise.allSettled([
+        modulosStore.obtenerModulos(),
+        clientesStore.obtenerClientes(),
+        sucursalesStore.obtenerSucursales(),
+        areasStore.obtenerAreas()
+    ])
         .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notificacion.nError({ mensaje: data.error });
-        });
-})
+        .catch(console.log);
+});
 
-//Config vista
-const config = computed(() => ({
-    data: mapModulos.value
-}))
+onUnmounted(() => {
+    modulosStore.reinciarFiltros();
+})
 </script>

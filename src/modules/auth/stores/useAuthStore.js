@@ -2,6 +2,7 @@ import { ref, computed, toValue } from 'vue'
 import { defineStore } from 'pinia'
 import { jwtDecode } from 'jwt-decode';
 import authService from '@/modules/auth/services/authService';
+import { PERFILES } from '../utils/perfiles';
 
 const ls = localStorage;
 
@@ -11,31 +12,42 @@ export default defineStore('autenticacion', () => {
     const usuario = ref(null);
     const caducidadSesion = ref(null);
     const autenticado = computed(() => !!access.value);
+    const usuarioNombre = computed(() => usuario.value?.nombre?.split(' ')?.[0] ?? '');
+    const usuarioApellido = computed(() => usuario.value?.apellido?.split(' ')?.[0] ?? '');
+    const usuarioPerfil = computed(() => usuario.value?.perfil?.nombre ?? '');
+    const usuarioNombreCompleto = computed(() => `${ usuarioNombre.value } ${ usuarioApellido.value }`);
+    const usuarioCliente = computed(() => usuario.value?.cliente?.id);
+    const usuarioSucursal = computed(() => usuario.value?.sucursal?.id);
+    const esSuperUsuario = computed(() => usuarioPerfil.value === PERFILES.SUPER_USUARIO);
+    const esAdministrador = computed(() => usuarioPerfil.value === PERFILES.ADMINISTRADOR);
+    const esSupervisor = computed(() => usuarioPerfil.value === PERFILES.SUPERVISOR);
 
     const guardarSesionStorage = ({ access: accessToken, refresh: refreshToken = null } = {}) => {
         ls.setItem('access', accessToken);
 
-        if (refreshToken) ls.setItem('refresh', refreshToken);
+        if (refreshToken) 
+            ls.setItem('refresh', refreshToken);
     }
 
     const guardarSesionEstado = ({ access: accessToken, refresh: refreshToken = null } = {}) => {
         const { usuario: dataUsuario, exp } = jwtDecode(accessToken);
 
+        access.value = accessToken;
         usuario.value = dataUsuario;
         caducidadSesion.value = exp * 1000;
-        access.value = accessToken;
 
-        if (refreshToken) refresh.value = refreshToken;
+        if (refreshToken) 
+            refresh.value = refreshToken;
     }
 
     const guardarSesion = ({ data }) => {
-        guardarSesionStorage(data);
         guardarSesionEstado(data);
+        guardarSesionStorage(data);
     }
 
     const iniciarSesion = async ({ credenciales }) => {
         try {
-            const res = await authService.iniciarSesion(toValue(credenciales));
+            const res = await authService.iniciarSesion({ data: toValue(credenciales) });
             const json = res.data;
 
             guardarSesion(json);
@@ -49,7 +61,7 @@ export default defineStore('autenticacion', () => {
     const actualizarSesion = async ({ token }) => {
         try {
             const res = await authService.actualizarSesion({
-                refresh: toValue(token)
+                data: { refresh: toValue(token) }
             });
             const json = res.data;
 
@@ -98,8 +110,17 @@ export default defineStore('autenticacion', () => {
         access,
         refresh,
         usuario,
+        usuarioPerfil,
+        usuarioNombre,
+        usuarioApellido,
+        usuarioNombreCompleto,
         caducidadSesion,
         autenticado,
+        usuarioCliente, 
+        usuarioSucursal,
+        esSuperUsuario,
+        esAdministrador,
+        esSupervisor,
         guardarSesion,
         iniciarSesion,
         cerrarSesion,

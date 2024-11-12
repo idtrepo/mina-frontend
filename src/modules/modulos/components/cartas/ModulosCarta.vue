@@ -18,7 +18,7 @@
 <script setup>
 import { toRefs, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { VISTA } from '@/modules/global/utils/vistas';
+import { VISTAS } from '@/modules/global/utils/vistas';
 
 //dependencias
 const router = useRouter();
@@ -40,7 +40,7 @@ const verDatosModulo = () => {
     if(!moduloId.value) return;
 
     return router.push({ 
-        name: VISTA.MODULOS_DATA,
+        name: VISTAS.MODULOS_DATA,
         params: { id: moduloId.value } 
     })
 }

@@ -6,7 +6,7 @@ import modulosRouter from '@/modules/modulos/router';
 import perfilesRouter from '@/modules/perfiles/router';
 import sucursalesRouter from '@/modules/sucursales/router';
 import usuariosRouter from '@/modules/usuarios/router';
-import { autenticacionGuard } from './guards/autenticacion';
+import { autenticacionGuard } from './guards/authGuard';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

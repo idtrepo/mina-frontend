@@ -1,9 +1,12 @@
+import { ICONOS } from '@/modules/global/utils/iconos' 
+
 export default {
     path: '/modulos',
     name: 'modulos',
     component: () => import('@/modules/modulos/layouts/ModulosLayout.vue'),
     meta: {
-        titulo: 'modulos'
+        titulo: 'modulos',
+        icono: ICONOS.MODULOS
     },
     children: [
         {

@@ -1,20 +1,22 @@
 export const MENSAJE_ERROR = {
-    LECTURA: 'Los datos solicitado no han podido obtenerse',
-    CREACION: 'El registro no pudo crearse',
-    EDICION: 'El registro no pudo editarse',
-    ELIMINACION: 'El registro no pudo editarse',
-    VALIDACION: 'Faltan datos por ingresar o hay datos incorrectos',
-    PASSWORD: 'El password ingresado no coincide',
-    CREDENCIALES: 'Las credenciales ingresadas son incorrectas',
-    SESION: 'La sesion ha expirado'
+    LISTADO: 'No se pudo obtener la informacion solicitada',
+    LISTADO_UNO: 'No se pudo obtener el registro solicitado',
+    CREACION: 'No se pudo crear el registro o este ya existe',
+    VALIDACION_DATOS: 'Los datos ingresados son incorrectos o invalidos',
+    EDICION: 'No se pudo editar el registro',
+    CREDENCIALES: 'Credenciales invalidas o inexistentes',
+    SESION: 'Sesion expirada',
+    PERFIL: 'No cuenta con los permisos necesarios'
 }
 
 export const MENSAJE_EXITO = {
-    LECTURA: 'Se han obtenido los registros de forma exitosa',
-    CREACION: 'Se ha creado el registro de forma exitosa',
-    EDICION: 'Se ha editado el registro de forma exitosa',
-    ELIMINACION: 'Se ha eliminado el refistro de forma exitosa'
+    LISTADO: 'Listado de registros traido con exito',
+    LISTADO_UNO: 'Registro solicitado traido con exito',
+    CREACION: 'El registro se ha creado exitosamente',
+    EDICION: 'El registro se ha editado exitosamente',
+    SESION: 'Sesion iniciada correctamente'
 }
+
 
 export const MENSAJE_INTERFAZ = {
     NO_INFO: 'Sin informacion disponible'

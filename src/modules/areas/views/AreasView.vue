@@ -1,51 +1,51 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="areasListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <AreasBuscador/>
+        </template>
+        <template #formulario>
             <AreasForm/>
         </template>
-    </BaseView>
+    </VListadoView>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { computed } from 'vue'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import { storeToRefs } from 'pinia'
-import useAreasStore from '@/modules/areas/stores/useAreasStore';
-import { SIMBOLO } from '@/modules/global/utils/simbolos';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
+import useAreasStore from '../stores/useAreasStore';
+import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
 
-
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
-const AreasForm = defineAsyncComponent(() => import('../components/forms/AreasForm.vue'));
-
-
-//Dependencias
-const notificacion = useNotificacion();
+// dependencias
+const sucursalesStore = useSucursalesStore();
 const areasStore = useAreasStore();
-const { areas } = storeToRefs(areasStore);
+const { areasListado, numResultados, filtros, filtroActivo } = storeToRefs(areasStore);
 
-//Listado de modulos
-const mapAreas = computed(() => areas.value.map(area => ({
-    id: area.id,
-    titulo: area.nombre,
-    icono: SIMBOLO.AREAS
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const AreasForm = defineAsyncComponent(() => import('@/modules/areas/components/AreasForm.vue'));
+const AreasBuscador = defineAsyncComponent(() => import('@/modules/areas/components/AreasBuscador.vue'));
 
-//Hooks
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: areasStore.obtenerAreas,
+    reiniciarBusqueda: areasStore.reinciarFiltros,
+});
+
 onMounted(() => {
-    areasStore.obtenerAreas()
+    Promise.allSettled([
+        areasStore.obtenerAreas(),
+        sucursalesStore.obtenerSucursales(),
+    ])
         .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notificacion.nError({ mensaje: data.error });
-        });
-})
+        .catch(console.log);
+});
 
-//Config vista
-const config = computed(() => ({
-    data: mapAreas.value
-}))
+onUnmounted(() => {
+    areasStore.reinciarFiltros();
+})
 </script>

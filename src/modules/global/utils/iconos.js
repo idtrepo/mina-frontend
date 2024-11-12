@@ -1,4 +1,4 @@
-export const SIMBOLO = {
+export const ICONOS = {
     AREAS: ['fa-solid', 'fa-house'],
     CLIENTES: ['fa-solid', 'fa-city'],
     DATA: ['fa-solid', 'fa-chart-simple'],
@@ -7,5 +7,11 @@ export const SIMBOLO = {
     SENSORES: ['fa-solid', 'fa-satellite-dish'],
     SUCURSALES: ['fa-solid', 'fa-industry'],
     USUARIOS: ['fa-solid', 'fa-user'],
-    SALIDA: ['fa-solid', 'fa-door-open']
+    SALIDA: ['fa-solid', 'fa-door-open'],
+    EQUIS: ['fa-solid', 'fa-ban'],
+    BUSCAR: ['fa-solid', 'fa-magnifying-glass'],
+    NUEVO: ['fa-solid', 'fa-plus'],
+    EDITAR: ['fa-solid', 'fa-pen-to-square'],
+    GUARDAR: ['fa-solid', 'fa-floppy-disk'],
+    ELIMINAR: ['fa-solid', 'fa-trash'],
 }

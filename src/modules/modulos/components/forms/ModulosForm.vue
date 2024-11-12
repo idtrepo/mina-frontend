@@ -114,7 +114,6 @@ const crearModulo = async() => {
         reiniciarDataModulo();
         await modulosStore.obtenerModulos();
     }catch({ response: { data: { error:mensaje } } }){
-        console.log(mensaje);
         notificacion.nError({ mensaje });
     }
 }

@@ -1,49 +1,46 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="clientesListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <ClientesBuscador/>
+        </template>
+        <template #formulario>
             <ClientesForm/>
         </template>
-    </BaseView>
+    </VListadoView>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { computed } from 'vue'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import { storeToRefs } from 'pinia'
-import useClientesStore from '@/modules/clientes/stores/useClientesStore';
-import { SIMBOLO } from '@/modules/global/utils/simbolos';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
+import useClientesStore from '../stores/useClientesStore';
 
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
-const ClientesForm = defineAsyncComponent(() => import('../components/forms/ClientesForm.vue'))
-
-//Dependencias
-const notificacion = useNotificacion();
+// dependencias
 const clientesStore = useClientesStore();
-const { clientes } = storeToRefs(clientesStore);
+const { clientesListado, numResultados, filtroActivo, filtros } = storeToRefs(clientesStore);
 
-//Listado de modulos
-const mapClientes = computed(() => clientes.value.map(cliente => ({
-    id: cliente.id,
-    titulo: cliente.nombre,
-    icono: SIMBOLO.CLIENTES
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const ClientesForm = defineAsyncComponent(() => import('@/modules/clientes/components/ClientesForm.vue'));
+const ClientesBuscador = defineAsyncComponent(() => import('@/modules/clientes/components/ClientesBuscador.vue'));
 
-//Hooks
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: clientesStore.obtenerClientes,
+    reiniciarBusqueda: clientesStore.reinciarFiltros,
+});
+
 onMounted(() => {
     clientesStore.obtenerClientes()
         .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notificacion.nError({ mensaje: data.error });
-        });
-})
+        .catch(console.log);
+});
 
-//Config vista
-const config = computed(() => ({
-    data: mapClientes.value
-}))
+onUnmounted(() => {
+    clientesStore.reinciarFiltros();
+})
 </script>

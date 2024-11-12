@@ -1,50 +1,46 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="perfilesListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <PerfilesBuscador/>
+        </template>
+        <template #formulario>
             <PerfilesForm/>
         </template>
-    </BaseView>
+    </VListadoView>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import { onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
-import usePerfilesStore from '@/modules/perfiles/stores/usePerfilesStore';
-import { SIMBOLO } from '@/modules/global/utils/simbolos';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
+import usePerfilesStore from '../stores/usePerfilesStore';
 
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'));
-const PerfilesForm = defineAsyncComponent(() => import('../components/forms/PerfilesForm.vue'));
-
-
-//Dependencias
-const notificacion = useNotificacion();
+// dependencias
 const perfilesStore = usePerfilesStore();
-const { perfiles } = storeToRefs(perfilesStore);
+const { perfilesListado, numResultados, filtros, filtroActivo } = storeToRefs(perfilesStore);
 
-//Listado de modulos
-const mapPerfiles = computed(() => perfiles.value.map(perfil => ({
-    id: perfil.id,
-    titulo: perfil.nombre,
-    icono: SIMBOLO.PERFILES
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const PerfilesForm = defineAsyncComponent(() => import('@/modules/perfiles/components/PerfilesForm.vue'));
+const PerfilesBuscador = defineAsyncComponent(() => import('@/modules/perfiles/components/PerfilesBuscador.vue'));
 
-//Hooks
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: perfilesStore.obtenerPerfiles,
+    reiniciarBusqueda: perfilesStore.reinciarFiltros,
+});
+
 onMounted(() => {
     perfilesStore.obtenerPerfiles()
         .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notificacion.nError({ mensaje: data.error });
-        });
-})
+        .catch(console.log);
+});
 
-//Config vista
-const config = computed(() => ({
-    data: mapPerfiles.value
-}))
+onUnmounted(() => {
+    perfilesStore.reinciarFiltros();
+})
 </script>

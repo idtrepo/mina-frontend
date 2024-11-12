@@ -1,62 +1,76 @@
-import { ref, computed, toValue } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import dataService from '@/modules/modulos/services/dataService';
+import useRequest from '@/modules/global/composables/request/useRequest';
+import dataService from '../services/dataService';
+import { formatearFecha } from '@/modules/global/utils/fecha';
 
 export default defineStore('data', () => {
-    const datos = ref([]);
-    const hayDatos = computed(() => datos.value.length > 0);
+    const request = useRequest(dataService);
 
-    const asignarDataDatos = ({ data }) => {
-        datos.value = data;
+    const filtros = ref({
+        pagina: 1,
+        estatus: true,
+        fecha: null,
+        modulo: null,
+        listado: false,
+    });
+    const filtroActivo = computed(() => (
+        !filtros.value.estatus
+        || !!filtros.value.fecha
+    ));
+    const data = ref([]);
+    const numResultados = ref(0);
+
+    const asignarData = ({ data:datos, resultados }) => {
+        console.log('RESULTADOS: ', resultados);
+        console.log('DATA');
+        console.log(datos);
+
+        data.value = datos;
+        numResultados.value = resultados;
     }
 
-    const obtenerDatos = async () => {
-        try {
-            const res = await dataService.obtenerElementos();
-            const json = res.data;
-            asignarDataDatos(json);
-            return json;
-        } catch (err) {
-            throw err;
+    const reiniciarFiltros = () => {
+        for(let clave in filtros.value){
+            filtros.value[clave] = null;
         }
-    };
 
-    const obtenerDato = async ({ id }) => {
-        try {
-            const res = await dataService.obtenerElemento({ id });
-            const json = res.data;
-            return json;
-        } catch (err) {
+        filtros.value.pagina = 1;
+        filtros.value.estatus = true;
+        filtros.value.listado = false;
+    }
+
+    const mapFiltros = () => {
+        const mFiltros = {};
+
+        mFiltros['pagina'] = filtros.value.pagina;
+        mFiltros['estatus'] = filtros.value.estatus ? '1' : '0';
+        mFiltros['listado'] = filtros.value.listado ? '1' : '0';
+        mFiltros['fecha'] = filtros.value.fecha && formatearFecha(filtros.value.fecha);
+        mFiltros['modulo'] = filtros.value.modulo;
+
+        return mFiltros;
+    }
+
+    const obtenerData = async() => {
+        try{
+            const filtros = mapFiltros();
+            const res = await request.obtenerElementos({ params: filtros });
+
+            asignarData(res);
+
+            return res;
+        }catch(err){
             throw err;
         }
     }
-
-    const crearDato = async ({ data }) => {
-        try {
-            const res = await dataService.crearElemento({ data: toValue(data) });
-            const json = res.data;
-            return json;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    const editarDato = async ({ id, data }) => {
-        try {
-            const res = await dataService.editarElemento({ id, data });
-            const json = res.data;
-            return json;
-        } catch (err) {
-            throw err;
-        }
-    }
-
+    
     return {
-        datos,
-        hayDatos,
-        obtenerDatos,
-        obtenerDato,
-        crearDato,
-        editarDato,
+        filtros,
+        filtroActivo,
+        data,
+        numResultados,
+        obtenerData,
+        reiniciarFiltros,
     }
 });

@@ -1,51 +1,57 @@
 <template>
-    <BaseView :config="config">
-        <template #modal-form>
+    <VListadoView
+        :elementos="usuariosListado"
+        :resultados="numResultados">
+        <template #buscador>
+            <UsuariosBuscador/>
+        </template>
+        <template #formulario>
             <UsuariosForm/>
         </template>
-    </BaseView>
+    </VListadoView>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { onMounted } from 'vue'
+import { onMounted, provide, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import { storeToRefs } from 'pinia'
-import { SIMBOLO } from '@/modules/global/utils/simbolos';
-import useUsuariosStore from '@/modules/usuarios/stores/useUsuariosStore';
-import useNotificacion from '@/modules/global/composables/useNotificacion';
-import { VISTA } from '@/modules/global/utils/vistas';
+import useUsuariosStore from '../stores/useUsuariosStore';
+import useClientesStore from '@/modules/clientes/stores/useClientesStore';
+import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
+import useAreasStore from '@/modules/areas/stores/useAreasStore';
 
-//Componentes
-const BaseView = defineAsyncComponent(() => import('@/modules/global/views/BaseView.vue'))
-const UsuariosForm = defineAsyncComponent(() => import('@/modules/usuarios/components/forms/UsuariosForm.vue'))
-
-//Dependencias
-const notifiacion = useNotificacion();
+// dependencias
+const clientesStore = useClientesStore();
+const sucursalesStore = useSucursalesStore();
+const areasStore = useAreasStore();
 const usuariosStore = useUsuariosStore();
-const { usuarios } = storeToRefs(usuariosStore);
+const { usuariosListado, numResultados, filtros, filtroActivo } = storeToRefs(usuariosStore);
 
-//Listado de usuarios
-const mapUsuarios = computed(() => usuarios.value.map(usuario => ({
-    id: usuario.id,
-    titulo: usuario.nombre,
-    icono: SIMBOLO.USUARIOS,
-    vista: VISTA.USUARIOS_DATA
-})));
+// componentes
+const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const UsuariosForm = defineAsyncComponent(() => import('@/modules/usuarios/components/forms/UsuariosForm.vue'));
+const UsuariosBuscador = defineAsyncComponent(() => import('@/modules/usuarios/components/forms/UsuariosBuscador.vue'));
 
-//Hooks
-onMounted(() => {
-    usuariosStore.obtenerUsuarios()
-        .then(console.log)
-        .catch(({ response }) => {
-            const { data } = response;
-            console.log(response);
-            notifiacion.nError({ mensaje: data.error });
-        });
+// hooks
+provide('filtros', {
+    filtros,
+    filtroActivo,
+    obtenerElementos: usuariosStore.obtenerUsuarios,
+    reiniciarBusqueda: usuariosStore.reinciarFiltros,
 });
 
-//Config vista
-const config = computed(() => ({
-    data: mapUsuarios.value
-}))
+onMounted(() => {
+    Promise.allSettled([
+        usuariosStore.obtenerUsuarios(),
+        clientesStore.obtenerClientes(),
+        sucursalesStore.obtenerSucursales(),
+        areasStore.obtenerAreas(),
+    ])
+        .then(console.log)
+        .catch(console.log);
+});
+
+onUnmounted(() => {
+    usuariosStore.reinciarFiltros();
+})
 </script>

@@ -1,4 +1,4 @@
-import { SIMBOLO } from '@/modules/global/utils/simbolos'
+import { ICONOS } from '@/modules/global/utils/iconos'
 import { TITULO } from '@/modules/global/utils/titulo'
 
 export default {
@@ -7,7 +7,7 @@ export default {
     component: () => import('@/modules/usuarios/layouts/UsuariosLayout.vue'),
     meta: {
         titulo: TITULO.USUARIOS,
-        simbolo: SIMBOLO.USUARIOS
+        icono: ICONOS.USUARIOS
     },
     children: [
         {
