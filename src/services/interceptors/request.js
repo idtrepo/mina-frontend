@@ -7,25 +7,25 @@ const URL_REFRESH = 'autenticacion/actualizar';
 
 export const interceptorRequest = async (request) => {
     const authStore = useAuthStore();
-    const { autenticado, access, refresh, caducidadSesion } = storeToRefs(authStore);
+    const { autenticado, tokenAccess, tokenRefresh, tokenCaducidad } = storeToRefs(authStore);
 
     if (!autenticado.value) return request;
 
     const tiempoActual = (new Date()).getTime();
 
-    if (tiempoActual > caducidadSesion.value) {
+    if (tiempoActual > tokenCaducidad.value) {
         try {
             const res = await axios.post(`${BASE_URL}${URL_REFRESH}`, {
-                refresh: refresh.value
+                refresh: tokenRefresh.value
             });
             const { data } = res.data;
-            authStore.guardarSesion({ data });
+            authStore.asignarTokenData({ access: data.access });
         } catch (err) {
             console.error(err);
         }
     }
 
-    request.headers['Authorization'] = `Bearer ${access.value}`;
+    request.headers['Authorization'] = `Bearer ${tokenAccess.value}`;
 
     return request
 }
