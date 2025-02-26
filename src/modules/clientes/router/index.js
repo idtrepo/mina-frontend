@@ -1,4 +1,5 @@
 import { ICONOS } from '@/modules/global/utils/iconos'
+import { PERFILES } from '@/modules/global/utils/perfiles'
 
 export default {
     path: '/clientes',
@@ -7,6 +8,7 @@ export default {
     meta: {
         titulo: 'clientes',
         icono: ICONOS.CLIENTES,
+        perfil: [PERFILES.SUPER_USUARIO]
     },
     children: [
         {

@@ -1,4 +1,5 @@
 import { ICONOS } from '@/modules/global/utils/iconos'
+import { PERFILES } from '@/modules/global/utils/perfiles'
 
 export default {
     path: '/perfiles',
@@ -6,7 +7,8 @@ export default {
     component: () => import('@/modules/perfiles/layouts/PerfilesLayout.vue'),
     meta: {
         icono: ICONOS.PERFILES,
-        titulo: 'perfiles'
+        titulo: 'perfiles',
+        perfil: [PERFILES.SUPER_USUARIO]
     },
     children: [
         {
