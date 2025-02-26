@@ -1,129 +1,111 @@
-import { ref, computed, toValue } from 'vue'
-import { defineStore } from 'pinia'
-import { jwtDecode } from 'jwt-decode';
-import authService from '@/modules/auth/services/authService';
-import { PERFILES } from '../utils/perfiles';
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
+import { decodificarTokenJWT } from "@/utils/funciones/decodificarJWT";
+import {
+  obtenerLS,
+  guardarLS,
+  borrarTodoLS,
+} from "@/utils/funciones/localStorage";
+import authService from "../services/authService";
+import useUsuarioStore from "./useUsuarioStore";
 
-const ls = localStorage;
+export default defineStore("auth-store", () => {
+  // dependencias
+  const usuarioStore = useUsuarioStore();
 
-export default defineStore('autenticacion', () => {
-    const access = ref(null);
-    const refresh = ref(null);
-    const usuario = ref(null);
-    const caducidadSesion = ref(null);
-    const autenticado = computed(() => !!access.value);
-    const usuarioNombre = computed(() => usuario.value?.nombre?.split(' ')?.[0] ?? '');
-    const usuarioApellido = computed(() => usuario.value?.apellido?.split(' ')?.[0] ?? '');
-    const usuarioPerfil = computed(() => usuario.value?.perfil?.nombre ?? '');
-    const usuarioNombreCompleto = computed(() => `${ usuarioNombre.value } ${ usuarioApellido.value }`);
-    const usuarioCliente = computed(() => usuario.value?.cliente?.id);
-    const usuarioSucursal = computed(() => usuario.value?.sucursal?.id);
-    const esSuperUsuario = computed(() => usuarioPerfil.value === PERFILES.SUPER_USUARIO);
-    const esAdministrador = computed(() => usuarioPerfil.value === PERFILES.ADMINISTRADOR);
-    const esSupervisor = computed(() => usuarioPerfil.value === PERFILES.SUPERVISOR);
+  //Tokens
+  const tokenAccess = ref(null);
+  const tokenRefresh = ref(null);
+  const tokenCaducidad = ref(null);
+  const autenticado = computed(
+    () => !!tokenAccess.value && !!tokenRefresh.value
+  );
 
-    const guardarSesionStorage = ({ access: accessToken, refresh: refreshToken = null } = {}) => {
-        ls.setItem('access', accessToken);
+  const cerrarSesion = () => {
+    borrarTodoLS();
+    tokenAccess.value = null;
+    tokenRefresh.value = null;
+    tokenCaducidad.value = null;
+  };
 
-        if (refreshToken) 
-            ls.setItem('refresh', refreshToken);
+  const asignarTokenAccess = (dataAccess) => {
+    guardarLS("access", dataAccess);
+    tokenAccess.value = dataAccess;
+  };
+
+  const asignarTokenRefresh = (dataRefresh) => {
+    guardarLS("refresh", dataRefresh);
+    tokenRefresh.value = dataRefresh;
+  };
+
+  const asignarTokenCaducidad = (dataCaducidad) => {
+    tokenCaducidad.value = dataCaducidad * 1000;
+  };
+
+  const asignarTokenData = ({ access, refresh = null }) => {
+    const { usuario: dataUsuario, exp: dataCaducidad } =
+      decodificarTokenJWT(access);
+
+    asignarTokenAccess(access);
+    asignarTokenCaducidad(dataCaducidad);
+    usuarioStore.asignarDatosUsuario(dataUsuario);
+
+    if (refresh) {
+      asignarTokenRefresh(refresh);
     }
+  };
 
-    const guardarSesionEstado = ({ access: accessToken, refresh: refreshToken = null } = {}) => {
-        const { usuario: dataUsuario, exp } = jwtDecode(accessToken);
+  //   verificar sesion
+  const verificarTokensAlmacenados = () => {
+    tokenAccess.value = obtenerLS("access");
+    tokenRefresh.value = obtenerLS("refresh");
 
-        access.value = accessToken;
-        usuario.value = dataUsuario;
-        caducidadSesion.value = exp * 1000;
+    return !!tokenAccess.value && !!tokenRefresh.value;
+  };
 
-        if (refreshToken) 
-            refresh.value = refreshToken;
+  const verificarTokensVigencia = async () => {
+    try {
+      const res = await authService.actualizarSesion({
+        data: { refresh: tokenRefresh.value },
+      });
+      console.log(res)
+      const { data: tokenData } = res.data;
+      const { access } = tokenData;
+
+      return access;
+    } catch (err) {
+        console.log(err)
+      return false;
     }
+  };
 
-    const guardarSesion = ({ data }) => {
-        guardarSesionEstado(data);
-        guardarSesionStorage(data);
+  const verificarSesion = async () => {
+    let tokensAlamacenados, tokensVigentes;
+
+    tokensAlamacenados = verificarTokensAlmacenados();
+
+    if (!tokensAlamacenados) return false;
+
+    tokensVigentes = await verificarTokensVigencia();
+    
+    if (!tokensVigentes) {
+      borrarTodoLS();
+      cerrarSesion();
+      return false;
     }
+    
+    console.log(tokensVigentes)
+    asignarTokenData({ access: tokensVigentes });
+    return true;
+  };
 
-    const iniciarSesion = async ({ credenciales }) => {
-        try {
-            const res = await authService.iniciarSesion({ data: toValue(credenciales) });
-            const json = res.data;
-
-            guardarSesion(json);
-
-            return json;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    const actualizarSesion = async ({ token }) => {
-        try {
-            const res = await authService.actualizarSesion({
-                data: { refresh: toValue(token) }
-            });
-            const json = res.data;
-
-            guardarSesion(json);
-
-            return json;
-        } catch (err) {
-            throw err;
-        }
-    }
-
-    const cerrarSesion = () => {
-        access.value = null;
-        refresh.value = null;
-        usuario.value = null;
-        caducidadSesion.value = null;
-        ls.clear();
-    }
-
-    const verificarSesion = async () => {
-        const accessToken = ls.getItem('access');
-        const refreshToken = ls.getItem('refresh');
-
-        if (!accessToken || !refreshToken) {
-            cerrarSesion();
-            throw { error: 'Tokens eliminados' };
-        }
-
-        guardarSesion({
-            data: {
-                access: accessToken,
-                refresh: refreshToken
-            }
-        });
-
-        try {
-            const res = await actualizarSesion({ token: refresh });
-            return res;
-        } catch (err) {
-            cerrarSesion();
-            throw err;
-        }
-    }
-
-    return {
-        access,
-        refresh,
-        usuario,
-        usuarioPerfil,
-        usuarioNombre,
-        usuarioApellido,
-        usuarioNombreCompleto,
-        caducidadSesion,
-        autenticado,
-        usuarioCliente, 
-        usuarioSucursal,
-        esSuperUsuario,
-        esAdministrador,
-        esSupervisor,
-        guardarSesion,
-        iniciarSesion,
-        cerrarSesion,
-        verificarSesion
-    }
-})
+  return {
+    tokenAccess,
+    autenticado,
+    tokenRefresh,
+    tokenCaducidad,
+    verificarSesion,
+    asignarTokenData,
+    cerrarSesion,
+  };
+});

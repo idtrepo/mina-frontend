@@ -7,6 +7,7 @@ export default {
         return servicio.post(`${recurso}login`, data);
     },
     actualizarSesion: ({ data }) => {
+        console.log(data)
         return servicio.post(`${recurso}actualizar`, data);
     }
 }
