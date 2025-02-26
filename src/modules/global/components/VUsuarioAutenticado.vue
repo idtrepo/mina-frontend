@@ -12,10 +12,10 @@
 
 <script setup>
 import { storeToRefs } from 'pinia';
-import useAuthStore from '@/modules/auth/stores/useAuthStore';
+import useUsuarioStore from '@/modules/auth/stores/useUsuarioStore';
 import { ICONOS } from '../utils/iconos';
 
 // dependencias
-const authStore = useAuthStore();
-const { usuarioNombreCompleto, usuarioPerfil } = storeToRefs(authStore);
+const usuarioStore = useUsuarioStore();
+const { usuarioNombreCompleto, usuarioPerfil } = storeToRefs(usuarioStore);
 </script>
