@@ -32,13 +32,16 @@ import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { NInput, NSelect } from 'naive-ui'
 import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
-import useClientesStore from '@/modules/clientes/stores/useClientesStore'
+import useClientesStore from '@/modules/clientes/stores/useClientesStore';
+import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
 
 // dependencias
 const route = useRoute();
 const clientesStore = useClientesStore();
+const usuarioStore = useUsuarioStore();
 const sucursalesStore = useSucursalesStore();
 const { clientesOpciones } = storeToRefs(clientesStore);
+const {usuarioPerfil} = storeToRefs(usuarioStore)
 
 // componentes
 const VDataView = defineAsyncComponent(() => import('@/modules/global/views/VDataView.vue')); 
@@ -64,10 +67,15 @@ const asignarDataSucursal = ({ data }) => {
 // lifcycle
 onMounted(() => {
     const { id } = route.params;
-
+    const obtenerClientes = async () => {
+        if(usuarioPerfil.value === "superusuario"){
+            await clientesStore.obtenerClientes()
+            console.log("clientesobtenidos")
+        }
+    }
+    obtenerClientes();
     Promise.allSettled([
         sucursalesStore.obtenerSucursal({ id }),
-        clientesStore.obtenerClientes(),
     ])
         .then((res) => {
             const [dataSucursal] = res;

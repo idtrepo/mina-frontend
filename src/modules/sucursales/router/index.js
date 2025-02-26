@@ -1,4 +1,5 @@
-import { ICONOS } from '@/modules/global/utils/iconos'
+import { ICONOS } from '@/modules/global/utils/iconos';
+import { PERFILES } from '@/modules/global/utils/perfiles'
 
 export default {
     path: '/sucursales',
@@ -6,7 +7,8 @@ export default {
     component: () => import('@/modules/sucursales/layouts/SucursalesLayout.vue'),
     meta: {
         titulo: 'sucursales',
-        icono: ICONOS.SUCURSALES
+        icono: ICONOS.SUCURSALES,
+        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR]
     },
     children: [
         {
@@ -17,7 +19,18 @@ export default {
         {
             path: ':id',
             name: 'sucursales-data',
+            meta:{
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR,PERFILES.SUPERVISOR]
+            },
             component: () => import('@/modules/sucursales/views/SucursalesDataView.vue')
         },
+        {
+            path: ':id',
+            name: 'sucursales-info',
+            meta:{
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+            },
+            component: () => import("@/modules/sucursales/views/SucursalesInfoView.vue")
+        }
     ]
 }

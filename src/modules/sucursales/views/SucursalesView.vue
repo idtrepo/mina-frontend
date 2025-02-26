@@ -17,11 +17,15 @@ import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
 import useSucursalesStore from '../stores/useSucursalesStore';
 import useClientesStore from '@/modules/clientes/stores/useClientesStore';
+import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
+
 
 // dependencias
+const usuarioStore = useUsuarioStore();
 const clientesStore = useClientesStore();
 const sucursalesStore = useSucursalesStore();
 const { sucursalesListado, numResultados, filtros, filtroActivo } = storeToRefs(sucursalesStore);
+const {usuarioPerfil} = storeToRefs(usuarioStore)
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
@@ -37,12 +41,19 @@ provide('filtros', {
 });
 
 onMounted(() => {
+    console.log(usuarioPerfil.value === "superusuario")
     Promise.allSettled([
         sucursalesStore.obtenerSucursales(),
-        clientesStore.obtenerClientes(),
     ])
         .then(console.log)
         .catch(console.log);
+        const obtenerClientes = async () => {
+        if(usuarioPerfil.value === "superusuario"){
+            await clientesStore.obtenerClientes()
+            console.log("clientesobtenidos")
+        }
+    }
+    obtenerClientes();
 });
 
 onUnmounted(() => {

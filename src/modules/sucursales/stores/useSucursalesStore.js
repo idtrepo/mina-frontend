@@ -5,9 +5,13 @@ import useRequest from '@/modules/global/composables/request/useRequest';
 import { ICONOS } from '@/modules/global/utils/iconos';
 import { formatearFecha } from '@/modules/global/utils/fecha';
 import { VISTAS } from '@/modules/global/utils/vistas';
+import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
+import {storeToRefs} from "pinia"
 
 export default defineStore('sucursales', () => {
     const request = useRequest(sucursalesService);
+    const usuarioStore = useUsuarioStore();
+    const {usuarioPerfil} = storeToRefs(usuarioStore);
 
     const filtros = ref({
         pagina: 1,
@@ -22,7 +26,7 @@ export default defineStore('sucursales', () => {
         id,
         icono: ICONOS.SUCURSALES,
         primario: nombre,
-        vista: VISTAS.SUCURSALES_DATA
+        vista: (usuarioPerfil.value == "superusuario") ? VISTAS.SUCURSALES_DATA : "sucursales-info"
     })));
     const sucursalesOpciones = computed(() => sucursales.value.map(({ id, nombre }) => ({
         label: nombre,
