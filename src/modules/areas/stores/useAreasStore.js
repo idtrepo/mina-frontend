@@ -18,10 +18,11 @@ export default defineStore('areas', () => {
     });
     const areas = ref([]);
     const numResultados = ref(0);
-    const areasListado = computed(() => areas.value.map(({ id, nombre }) => ({
+    const areasListado = computed(() => areas.value.map(({ id, nombre,sucursal }) => ({
         id,
         icono: ICONOS.AREAS,
         primario: nombre,
+        secundario: sucursal.nombre,
         vista: VISTAS.AREAS_DATA
     })));
     const areasOpciones = computed(() => areas.value.map(({ id, nombre }) => ({
