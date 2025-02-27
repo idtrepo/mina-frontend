@@ -14,7 +14,8 @@ export default defineStore('modulos', () => {
         estatus: true,
         fecha: null,
         mac: null,
-        cliente: null
+        cliente: null,
+        area:null
     });
     const modulos = ref([]);
     const numResultados = ref(0);
@@ -34,6 +35,7 @@ export default defineStore('modulos', () => {
         || !!filtros.value.fecha
         || !!filtros.value.mac
         || !!filtros.value.cliente
+        || !!filtros.value.area
     ));
 
     const asignarData = ({ data, resultados }) => {
@@ -44,6 +46,7 @@ export default defineStore('modulos', () => {
     const mapFiltros = () => {
         const mFiltros = {};
 
+        mFiltros['area'] = filtros.value.area;
         mFiltros['pagina'] = filtros.value.pagina;
         mFiltros['estatus'] = filtros.value.estatus ? '1' : '0';
         mFiltros['fecha'] = filtros.value.fecha && formatearFecha(filtros.value.fecha);

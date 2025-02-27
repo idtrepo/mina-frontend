@@ -8,7 +8,7 @@ export default {
     meta: {
         titulo: 'modulos',
         icono: ICONOS.MODULOS,
-        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR, PERFILES.OPERADOR]
     },
     children: [
         {
@@ -20,6 +20,11 @@ export default {
             path: ':id',
             name: 'modulos-data',
             component: () => import('@/modules/modulos/views/ModulosDataView.vue')
+        },
+        {
+            path: ':id',
+            name: 'modulos-listado2',
+            component: () => import('@/modules/modulos/views/ModulosView.vue')
         },
     ]
 }
