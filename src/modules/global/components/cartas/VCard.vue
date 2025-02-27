@@ -32,7 +32,7 @@ const elementoPrimario = computed(() => props.elemento?.primario ?? '');
 const elementoSecundario = computed(() => props.elemento?.secundario ?? '');
 
 const irAVista = () => {
-    if(!elementoId.value) router.push({ name: elementoVista.value });
+    if(!elementoId.value && elementoVista) router.push({ name: elementoVista.value });
     if(!elementoVista.value || !elementoId.value) return;
 
     router.push({ name: elementoVista.value, params: { id: elementoId.value } });

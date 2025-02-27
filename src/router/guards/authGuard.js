@@ -27,7 +27,11 @@ export const autenticacionGuard = async (to, from, next) => {
           name: "sucursales-info",
           params: { id: usuarioSucursal.value },
         });
-    }
+      if(usuarioPerfil.value === PERFILES.OPERADOR)
+        return next({
+        name: "modulos-listado",
+    });
+      }
 
     tituloStore.establecerTitulo({ tituloRuta: titulo, iconoRuta: icono });
     next();
