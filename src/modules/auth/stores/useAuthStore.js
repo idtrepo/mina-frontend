@@ -68,7 +68,6 @@ export default defineStore("auth-store", () => {
       const res = await authService.actualizarSesion({
         data: { refresh: tokenRefresh.value },
       });
-      console.log(res)
       const { data: tokenData } = res.data;
       const { access } = tokenData;
 
@@ -94,7 +93,6 @@ export default defineStore("auth-store", () => {
       return false;
     }
     
-    console.log(tokensVigentes)
     asignarTokenData({ access: tokensVigentes });
     return true;
   };
