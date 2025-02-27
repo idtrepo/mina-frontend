@@ -5,9 +5,14 @@ import useRequest from '@/modules/global/composables/request/useRequest';
 import { ICONOS } from '@/modules/global/utils/iconos';
 import { formatearFecha } from '@/modules/global/utils/fecha';
 import { VISTAS } from '@/modules/global/utils/vistas';
+import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
+import {storeToRefs} from "pinia"
 
 export default defineStore('areas', () => {
     const request = useRequest(areasService);
+    //dependencias
+    const usuarioStore = useUsuarioStore();
+    const {usuarioPerfil} = storeToRefs(usuarioStore);
 
     const filtros = ref({
         pagina: 1,
@@ -23,7 +28,7 @@ export default defineStore('areas', () => {
         icono: ICONOS.AREAS,
         primario: nombre,
         secundario: sucursal.nombre,
-        vista: VISTAS.AREAS_DATA
+        vista: (usuarioPerfil=='administrador') ? VISTAS.AREAS_DATA : 'areas-info'
     })));
     const areasOpciones = computed(() => areas.value.map(({ id, nombre }) => ({
         label: nombre,

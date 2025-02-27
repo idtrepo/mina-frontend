@@ -24,5 +24,13 @@ export default {
             name: 'areas-data',
             component: () => import('@/modules/areas/views/AreasDataView.vue')
         },
+        {
+            path: 'modulos/:id',
+            name: 'areas-info',
+            meta:{
+                perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+            },
+            component: () => import('@/modules/areas/views/AreasInfoView.vue')
+        },
     ]
 }

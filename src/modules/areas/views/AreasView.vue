@@ -22,6 +22,7 @@ import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
 const sucursalesStore = useSucursalesStore();
 const areasStore = useAreasStore();
 const { areasListado, numResultados, filtros, filtroActivo } = storeToRefs(areasStore);
+console.log(areasListado.value)
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
