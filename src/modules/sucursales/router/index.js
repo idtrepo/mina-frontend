@@ -8,7 +8,7 @@ export default {
     meta: {
         titulo: 'sucursales',
         icono: ICONOS.SUCURSALES,
-        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR]
+        perfil: [PERFILES.SUPER_USUARIO,PERFILES.ADMINISTRADOR]
     },
     children: [
         {

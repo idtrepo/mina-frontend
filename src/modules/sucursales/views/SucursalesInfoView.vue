@@ -8,7 +8,7 @@
     </article>
     <div class="flex justify-start gap-5 mt-5">
         <VCard :elemento ="areasElemento" class="w-1/5"></VCard>
-        <VCard :elemento= "usuariosElemento" class="w-1/5"> </VCard>
+        <VCard v-if="usuarioPerfil!='operador'" :elemento= "usuariosElemento" class="w-1/5"> </VCard>
     </div>
     </div>
 </template>
@@ -19,14 +19,17 @@ import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import useUsuariosStore from "@/modules/usuarios/stores/useUsuariosStore";
 import useAreasStore from "@/modules/areas/stores/useAreasStore";
+import useTituloStore from '@/modules/global/stores/useTituloStore';
+import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
 import {storeToRefs} from "pinia";
 import { ICONOS } from '@/modules/global/utils/iconos';
-import useTituloStore from '@/modules/global/stores/useTituloStore';
 
 const tituloStore = useTituloStore();
 const { titulo, icono } = storeToRefs(tituloStore);
 const usuariosStore = useUsuariosStore();
 const areasStore = useAreasStore();
+const usuarioStore = useUsuarioStore();
+const {usuarioPerfil} = storeToRefs(usuarioStore)
 const {filtros:filtrosUsuarios, usuarios} = storeToRefs(usuariosStore);
 const {filtros:filtrosAreas} = storeToRefs(areasStore);
 
