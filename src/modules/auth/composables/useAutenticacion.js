@@ -14,7 +14,7 @@ export default () => {
   const usuarioStore = useUsuarioStore();
   const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
 
-  //   cambio de vista
+  //   cambio de vista segun el perfil
   const irAVista = () => {
     if (usuarioPerfil.value === PERFILES.SUPER_USUARIO)
       return router.push({ name: VISTAS.USUARIOS });
@@ -27,6 +27,10 @@ export default () => {
         name: "sucursales-info",
         params: { id: usuarioSucursal.value }
       });
+    if(usuarioPerfil.value === PERFILES.OPERADOR)
+      return router.push({
+        name: "modulos-listado"
+      })
   };
 
   //   inicio de sesion
