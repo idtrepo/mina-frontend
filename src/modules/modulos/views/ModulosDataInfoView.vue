@@ -37,7 +37,7 @@
         </template>
         <template #extra>
             <div class="p-3 bg-slate-200 rounded-md">
-                <LineChart :="lineChartProps"/>
+                <LineChart :="lineChartProps" class="h-80"/>
             </div>
         </template>    
     </VDataView>
@@ -172,7 +172,6 @@ const obtenerDatosSensoresModulo = async(id) => {
     try{
         const res = await modulosStore.obtenerDataModulo({ id });
         asignarDataModuloSensores(res);
-        console.log(res);
     }catch(err){
         console.error(err);
     }
