@@ -1,18 +1,41 @@
-import servicio from '@/services'
+import service from "@/services";
 
-const recurso = 'perfiles/';
+export class PerfilesService {
+  static recurso = "perfiles";
 
-export default {
-    obtenerElementos: ({ params }) => {
-        return servicio.get(recurso, { params });
-    },
-    obtenerElemento: ({ id }) => {
-        return servicio.get(`${recurso}${id}`);
-    },
-    crearElemento: ({ data }) => {
-        return servicio.post(recurso, data);
-    },
-    editarElemento: ({ id, data }) => {
-        return servicio.patch(`${recurso}${id}`, data);
+  static obtenerElementos = async ({ params = null } = {}) => {
+    try {
+      const res = await service.get(PerfilesService.recurso, { params });
+      return res.data;
+    } catch (err) {
+      throw err;
     }
+  };
+
+  static crearElemento = async ({ data }) => {
+    try {
+      const res = await service.post(PerfilesService.recurso, data);
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  static obtenerElemento = async ({ id }) => {
+    try {
+      const res = await service.get(`${PerfilesService.recurso}/${id}`);
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  static editarElemento = async ({ id, data }) => {
+    try {
+      const res = await service.patch(`${PerfilesService.recurso}/${id}`, data);
+      return res.data;
+    } catch (err) {
+      throw err;
+    }
+  };
 }
