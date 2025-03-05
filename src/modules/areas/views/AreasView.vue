@@ -1,7 +1,10 @@
 <template>
     <VListadoView
         :elementos="areasListado"
-        :resultados="numResultados">
+        :resultados="numElementos"
+        :obtener-listado = "obtenerAreas"
+        :reiniciar-data = "reiniciarDataCreacion"
+        >
         <template #buscador>
             <AreasBuscador/>
         </template>
@@ -13,33 +16,23 @@
 
 <script setup>
 import { onMounted, provide, onUnmounted } from 'vue'
-import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import useAreasStore from '../stores/useAreasStore';
+import useAreas from '../composables/useAreas';
 import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
 
 // dependencias
 const sucursalesStore = useSucursalesStore();
-const areasStore = useAreasStore();
-const { areasListado, numResultados, filtros, filtroActivo } = storeToRefs(areasStore);
-console.log(areasListado.value)
+const { areasListado, numElementos, obtenerAreas, reiniciarDataCreacion,reiniciarDataAreas  } = useAreas();
 
 // componentes
-const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
 const AreasForm = defineAsyncComponent(() => import('@/modules/areas/components/AreasForm.vue'));
 const AreasBuscador = defineAsyncComponent(() => import('@/modules/areas/components/AreasBuscador.vue'));
 
-// hooks
-provide('filtros', {
-    filtros,
-    filtroActivo,
-    obtenerElementos: areasStore.obtenerAreas,
-    reiniciarBusqueda: areasStore.reinciarFiltros,
-});
 
 onMounted(() => {
     Promise.allSettled([
-        areasStore.obtenerAreas(),
+        obtenerAreas(),
         sucursalesStore.obtenerSucursales(),
     ])
         .then(console.log)
@@ -47,6 +40,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    areasStore.reinciarFiltros();
+    reiniciarDataAreas()
 })
 </script>
