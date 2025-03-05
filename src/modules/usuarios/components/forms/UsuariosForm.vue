@@ -79,11 +79,11 @@ import useRequest from '@/modules/global/composables/request/useRequest';
 import useNotificacion from '@/modules/global/composables/useNotificacion';
 import { MENSAJE_EXITO, MENSAJE_ERROR } from '@/modules/global/utils/mensajes';
 import useUsuariosStore from '../../stores/useUsuariosStore';
-import usePerfilesStore from '@/modules/perfiles/stores/usePerfilesStore';
+import usePerfiles from '@/modules/perfiles/composables/usePerfiles';
 import { PERFILES } from '../../utils/perfiles'
 import useClientesStore from '@/modules/clientes/stores/useClientesStore'
 import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore'
-import useAreasStore from '@/modules/areas/stores/useAreasStore'
+import useAreasStore from '@/modules/areas/stores/useAreasStore';
 
 // dependencias
 const clientesStore = useClientesStore();
@@ -91,9 +91,8 @@ const sucursalesStore = useSucursalesStore();
 const areasStore = useAreasStore();
 const usuariosStore = useUsuariosStore();
 const notificacion = useNotificacion();
-const perfilesStore = usePerfilesStore();
+const {perfilesOpciones, obtenerPerfiles} = usePerfiles();
 const { cargando } = useRequest();
-const { perfilesOpciones } = storeToRefs(perfilesStore);
 const { clientesOpciones } = storeToRefs(clientesStore);
 const { sucursalesOpciones } = storeToRefs(sucursalesStore);
 const { areasOpciones } = storeToRefs(areasStore);
@@ -144,7 +143,7 @@ const crearUsuario = async() => {
 
 // lifecycle
 onMounted(() => {
-    perfilesStore.obtenerPerfiles()
+    obtenerPerfiles()
         .then(console.log)
         .catch(console.log);
 });

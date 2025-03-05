@@ -1,18 +1,41 @@
 import servicio from '@/services'
 
-const recurso = 'usuarios/';
+export class UsuariosService {
+    static recurso = "usuarios";
 
-export default {
-    obtenerElementos: ({ params }) => {
-        return servicio.get(recurso, { params });
-    },
-    obtenerElemento: ({ id }) => {
-        return servicio.get(`${recurso}${id}`);
-    },
-    crearElemento: ({ data }) => {
-        return servicio.post(recurso, data);
-    },
-    editarElemento: ({ id, data }) => {
-        return servicio.patch(`${recurso}${id}`, data);
+    static obtenerElementos = async ({ params = null} = {}) => {
+        try{
+            const res = await servicio.get(UsuariosService.recurso, { params });
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    };
+
+    static crearElemento = async ({data}) => {
+        try{
+            const res = await service.post(UsuariosService.recurso, data);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    };
+
+    static obtenerElemento = async ({ id}) => {
+        try{
+            const res = await service.get(`${UsuariosService.recurso}/${id}`);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    };
+
+    static editarElemento = async ({ id, data }) => {
+        try{
+            const res = await service.patch(`${UsuariosService.recurso}/${id}`, data);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
     }
 }
