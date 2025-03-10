@@ -10,6 +10,7 @@ import {evaluarArea} from '../schemas/areas';
 import {reiniciarData} from '@/utils/reinicio';
 import useRequest from '@/composables/request/useRequest';
 import {VISTAS} from '@/modules/global/utils/vistas';
+import useUsuarioStore from '@/stores/useUsuarioStore';
 
 export default () => {
 
@@ -20,6 +21,7 @@ export default () => {
     const {editar, edicionHabilitada} = storeToRefs(edicionStore);
     const {filtros, filtrosMapeados} = storeToRefs(filtrosStore);
     const {area, areas, numeroElementos, areasOpciones} = storeToRefs(areasStore);
+    const {usuarioPerfilId} = useUsuarioStore();
 
     const {obtenerElemento, obtenerElementos, crearElemento, editarElemento} = useRequest({
         servicio: AreasService,
@@ -32,7 +34,7 @@ export default () => {
         id,
         titulo: nombre,
         icono: ICONOS.AREAS,
-        accion: () => router.push({name: VISTAS.AREAS_DATA, params: {id}})
+        accion: () => router.push({name:usuarioPerfilId>2 ? 'modulos-listado-nest' : VISTAS.AREAS_DATA , params: {id}})
     })));
 
     const obtenerAreas = async ({params = null}) => {

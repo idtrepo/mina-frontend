@@ -1,9 +1,9 @@
 <template>
     <VListadoView
         :elementos="clientesListado"
-        :resultados="numElementos"
-        :obtener-listado="obtenerClientes"
-        :reiniciar-data="reiniciarDataCreacion">
+        :numElementos="numeroElementos"
+        :obtenerListado="obtenerClientes"
+        :reiniciarData="reiniciarDataCreacion">
         <template #buscador>
             <ClientesBuscador/>
         </template>
@@ -19,7 +19,7 @@ import { defineAsyncComponent } from 'vue'
 import useClientes from '../composables/useClientes';
 
 // dependencias
-const { clientesListado, numElementos,obtenerClientes, reiniciarDataClientes, reiniciarDataCreacion} = useClientes();
+const { clientesListado, numeroElementos,obtenerClientes, reiniciarDataClientes, reiniciarDataCreacion} = useClientes();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));

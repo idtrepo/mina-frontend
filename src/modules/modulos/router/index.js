@@ -17,6 +17,11 @@ export default {
             component: () => import('@/modules/modulos/views/ModulosView.vue')
         },
         {
+            path: 'area/:id',
+            name: 'modulos-listado-nest',
+            component: () => import('@/modules/modulos/views/ModulosView.vue')
+        },
+        {
             path: ':id',
             name: 'modulos-data',
             component: () => import('@/modules/modulos/views/ModulosDataView.vue')

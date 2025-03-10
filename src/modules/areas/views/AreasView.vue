@@ -1,9 +1,9 @@
 <template>
     <VListadoView
         :elementos="areasListado"
-        :resultados="numElementos"
-        :obtener-listado = "obtenerAreas"
-        :reiniciar-data = "reiniciarDataCreacion"
+        :numElementos="numeroElementos"
+        :obtenerListado = "obtenerAreas"
+        :reiniciarData = "reiniciarDataCreacion"
         >
         <template #buscador>
             <AreasBuscador/>
@@ -22,7 +22,7 @@ import useSucursales from '@/modules/sucursales/composables/useSucursales';
 
 // dependencias
 const { obtenerSucursales } = useSucursales();
-const { areasListado, numElementos, obtenerAreas, reiniciarDataCreacion,reiniciarDataAreas  } = useAreas();
+const { areasListado, numeroElementos, obtenerAreas, reiniciarDataCreacion,reiniciarDataAreas  } = useAreas();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
