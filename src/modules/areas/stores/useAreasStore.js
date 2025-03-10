@@ -17,10 +17,10 @@ export default defineStore('areas-store', () => {
     };
 
     const asignarDataArea = (data) => {
-        const {id, nombre, idSucursal, estatus} = data;
+        const {id, nombre, sucursal, estatus} = data;
         area.value["id"] = id;
         area.value.nombre = nombre;
-        area.value.idSucursal = idSucursal;
+        area.value.idSucursal = sucursal.id;
         area.value.estatus = estatus;
     };
 

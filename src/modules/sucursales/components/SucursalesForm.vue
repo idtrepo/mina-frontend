@@ -9,7 +9,7 @@
                     <p class="uppercase mb-1">nombre</p>
                     <NInput v-model:value="sucursal.nombre" clearable />
                 </article>
-                <article class="mb-4">
+                <article v-if="{usuarioPerfil}!='superusuario'" class="mb-4">
                     <p class="uppercase mb-1">cliente</p>
                     <NSelect v-model:value="sucursal.idCliente" clearable :options="clientesOpciones"/>
                 </article>
@@ -33,6 +33,7 @@ import useRequest from '@/modules/global/composables/request/useRequest';
 import useClientesStore from '@/modules/clientes/stores/useClientesStore';
 import useNotificacion from '@/modules/global/composables/useNotificacion';
 import { MENSAJE_EXITO, MENSAJE_ERROR } from '@/modules/global/utils/mensajes';
+import useUsuarioStore from '@/modules/auth/stores/useUsuarioStore';
 
 // dependencias
 const sucursalesStore = useSucursalesStore();
@@ -40,6 +41,8 @@ const clientesStore = useClientesStore();
 const { clientesOpciones } = storeToRefs(clientesStore);
 const notificacion = useNotificacion();
 const { cargando } = useRequest();
+const usuarioStore = useUsuarioStore();
+const { usuarioPerfil, usuarioCliente} = storeToRefs(usuarioStore);
 
 // componentes
 const VModalFormulario = defineAsyncComponent(() => import('@/modules/global/components/VModalFormulario.vue'));
@@ -54,6 +57,7 @@ provide('data', { dataElemento: sucursal });
 
 const reiniciarData = () => {
     for(let clave in sucursal.value){
+        if(usuarioPerfil.value != 'superusuario' && clave == 'idCliente') continue
         sucursal.value[clave] = null;
     }
 }
@@ -62,10 +66,13 @@ const crearSucursal = async() => {
     try{
         const res = await sucursalesStore.crearSucursal({ data: sucursal });
         await sucursalesStore.obtenerSucursales();
-        reiniciarData();
         notificacion.nExito({ mensaje: MENSAJE_EXITO.CREACION });
     }catch(err){
+        console.log(err)
         notificacion.nError({ mensaje: MENSAJE_ERROR.CREACION });
+    }
+    finally{
+        reiniciarData();
     }
 }
 
@@ -74,5 +81,6 @@ onMounted(() => {
     clientesStore.obtenerClientes()
         .then(console.log)
         .catch(console.log);
+    if(usuarioPerfil.value != 'superusuario') sucursal.value.idCliente = usuarioCliente.value
 });
 </script>

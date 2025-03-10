@@ -1,20 +1,25 @@
 import servicio from '@/services'
-const recurso = 'modulos/';
 
-export default {
-    obtenerElementos: ({ params }) => {
-        return servicio.get(recurso, { params });
-    },
-    obtenerElemento: ({ id }) => {
-        return servicio.get(`${recurso}${id}`);
-    },
-    obtenerDataElemento: ({ id }) => {
-        return servicio.get(`${recurso}${id}/data`);
-    },
-    crearElemento: ({ data }) => {
-        return servicio.post(recurso, data);
-    },
-    editarElemento: ({ id, data }) => {
-        return servicio.patch(`${recurso}${id}`, data);
+export class ModulosService {
+    static recurso = 'modulos';
+
+    static async obtenerElementos({params = null}) {
+        return await servicio.get(ModulosService.recurso, {params});
+    }
+
+    static async obtenerElemento({id}) {
+        return await servicio.get(`${ModulosService.recurso}/${id}`);
+    }
+
+    static async crearElemento({data}) {
+        return await servicio.post(ModulosService.recurso, data);
+    }
+
+    static async editarElemento({id, data}) {
+        return await servicio.patch(`${ModulosService.recurso}/${id}`, data);
+    }
+
+    static async obtenerElementoData({id}) {
+        return await servicio.get(`${ModulosService.recurso}/${id}/data`);
     }
 }

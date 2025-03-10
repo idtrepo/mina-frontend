@@ -1,70 +1,30 @@
 <template>
     <VDataView
-        :elemento="cliente"
-        :editar-elemento="clientesStore.editarCliente"
-        :obtener-elemento="clientesStore.obtenerCliente"
-        @reiniciar-elemento="reiniciarDataCliente">
-        <template #contenido="{ editar }">
-            <div class="grid grid-cols-1 lg:gap-5">
-                <article class="mb-4">
-                    <p class="uppercase mb-1">nombre</p>
-                    <NInput
-                        v-model:value="cliente.nombre"
-                        :disabled="!editar"/>
-                </article>
-            </div>
+        :peticiones="peticiones"
+        :reiniciar-data="reiniciarDataClientes"
+        :habilitar-edicion="habilitarEdicion"
+        :editar-elemento="editarCliente">
+        <template #formulario>
+            <ClientesFormbase />
         </template>    
     </VDataView>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { defineAsyncComponent } from 'vue'
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { NInput } from 'naive-ui'
-import useClientesStore from '../stores/useClientesStore'
+import { defineAsyncComponent } from 'vue';
+import { useRoute } from 'vue-router';
+import useClientes from '../composables/useClientes';
 
 // dependencias
 const route = useRoute();
-const clientesStore = useClientesStore();
+const {reiniciarDataClientes, habilitarEdicion, editarCliente, obtenerCliente} = useClientes();
+
+const peticiones = [
+    obtenerCliente({id: route.params.id}),
+]
 
 // componentes
-const VDataView = defineAsyncComponent(() => import('@/modules/global/views/VDataView.vue')); 
+const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
+const ClientesFormbase = defineAsyncComponent(() => import('../components/forms/ClientesFormbase.vue'));
 
-//cliente
-const cliente = ref({
-    id: null,
-    nombre: null,
-});
-
-const reiniciarDataCliente = (data) => {
-    console.log('REINICIAR DATA CLIENTE', data);
-    cliente.value = { ...data };
-}
-
-const asignarDataCliente = ({ data }) => {
-    console.log('ASIGNANDO DATOS DEL ELEMENTO');
-
-    const { id, nombre } = data;
-    cliente.value.id = id;
-    cliente.value.nombre = nombre;
-}
-
-// lifcycle
-onMounted(() => {
-    const { id } = route.params;
-
-    console.log('ID DEL CLIENTE: ', id);
-
-    Promise.allSettled([
-        clientesStore.obtenerCliente({ id }),
-    ])
-        .then((res) => {
-            const [dataCliente] = res;
-
-            asignarDataCliente(dataCliente.value);
-        })
-        .catch(console.log);
-});
 </script>

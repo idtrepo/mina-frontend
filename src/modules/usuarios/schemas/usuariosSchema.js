@@ -10,10 +10,10 @@ const UsuarioSchema = z.object({
     estatus: z.boolean().default(true)
 });
 
-export const evaluarUsuario = async (data) => {
-    return await UsuarioSchema.safeParseAsync(data);
+export const evaluarUsuario =  (data) => {
+    return  UsuarioSchema.safeParse(data);
 }
 
-export const evaluarUsuarioParcial = async (data) => {
-    return await UsuarioSchema.partial().safeParseAsync(data);
+export const evaluarUsuarioParcial =  (data) => {
+    return  UsuarioSchema.partial().safeParse(data);
 }

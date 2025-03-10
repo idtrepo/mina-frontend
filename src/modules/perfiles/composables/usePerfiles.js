@@ -57,7 +57,7 @@ export default () => {
     try {
       const res = await obtenerElemento({ id });
       if(res) {
-        perfilesStore.asignarDataPerfil(res);
+        perfilesStore.asignarDataPerfil(res.data);
       }
       return res;
     } catch (err) {
@@ -89,9 +89,9 @@ export default () => {
     }
   };
 
-  const editarPerfil = async ({ id, data }) => {
+  const editarPerfil = async () => {
     try {
-      const res = await editarElemento({ id, data });
+      const res = await editarElemento({dataElemento: perfil.value});
       return res;
     } catch (err) {
       throw err;

@@ -15,6 +15,7 @@ export default defineStore('usuario-store', () =>{
     const usuarioSucursalNombre = computed(() => usuario.value?.sucursal?.nombre);
     const usuarioCliente = computed(() => usuario.value?.cliente?.id);
     const usuarioClienteNombre = computed(() => usuario.value?.cliente?.nombre);
+    const usuarioPerfilId = computed(() =>  usuario.value?.perfil?.id);
 
     const asignarDatosUsuario = (data) => (usuario.value = data);
 
@@ -29,6 +30,7 @@ export default defineStore('usuario-store', () =>{
       usuarioCliente,
       usuarioClienteNombre,
       usuarioPermisos,
+      usuarioPerfilId,
       asignarDatosUsuario,
     };
 })

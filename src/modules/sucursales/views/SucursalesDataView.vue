@@ -1,25 +1,11 @@
 <template>
     <VDataView
-        :elemento="sucursal"
-        :editar-elemento="sucursalesStore.editarSucursal"
-        :obtener-elemento="sucursalesStore.obtenerSucursal"
-        @reiniciar-elemento="reinciarDataSucursal">
-        <template #contenido="{ editar }">
-            <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-5">
-                <article class="mb-4">
-                    <p class="uppercase mb-1">nombre</p>
-                    <NInput
-                        v-model:value="sucursal.nombre"
-                        :disabled="!editar"/>
-                </article>
-                <article class="mb-4">
-                    <p class="uppercase mb-1">cliente</p>
-                    <NSelect
-                        v-model:value="sucursal.idCliente"
-                        :options="clientesOpciones"
-                        :disabled="!editar"/>
-                </article>
-            </div>
+        :peticiones="peticiones"
+        :reiniciar-data="reiniciarDataSucursales"
+        :habilitar-edicion="habilitarEdicion"
+        :editar-elemento="editarSucursal">
+        <template #formulario>
+            <SucursalFormBase />
         </template>    
     </VDataView>
 </template>
@@ -27,61 +13,23 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NInput, NSelect } from 'naive-ui'
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
-import useClientesStore from '@/modules/clientes/stores/useClientesStore';
-import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
+import {useRoute} from 'vue-router'
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
+import useClientes from '@/modules/clientes/composables/useClientes';
 
 // dependencias
-const route = useRoute();
-const clientesStore = useClientesStore();
-const usuarioStore = useUsuarioStore();
-const sucursalesStore = useSucursalesStore();
-const { clientesOpciones } = storeToRefs(clientesStore);
-const {usuarioPerfil} = storeToRefs(usuarioStore)
+const route = useRoute()
+const {obtenerSucursal, editarSucursal, habilitarEdicion, reiniciarDataSucursales} = useSucursales();
+const {obtenerClientes} = useClientes();
+
+const peticiones = ref([
+    obtenerSucursal({id: route.params.id}),
+    obtenerClientes({params:{ listado: true }}),
+])
 
 // componentes
-const VDataView = defineAsyncComponent(() => import('@/modules/global/views/VDataView.vue')); 
+const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
+const SucursalFormBase = defineAsyncComponent(() => import('../components/forms/SucursalFormBase.vue'));
 
-//sucursal
-const sucursal = ref({
-    id: null,
-    nombre: null,
-    idCliente: null
-});
-
-const reinciarDataSucursal = (data) => {
-    sucursal.value = { ...data };
-}
-
-const asignarDataSucursal = ({ data }) => {
-    const { id, nombre, cliente } = data;
-    sucursal.value.id = id;
-    sucursal.value.nombre = nombre;
-    sucursal.value.idCliente = cliente.id;
-}
-
-// lifcycle
-onMounted(() => {
-    const { id } = route.params;
-    const obtenerClientes = async () => {
-        if(usuarioPerfil.value === "superusuario"){
-            await clientesStore.obtenerClientes()
-            console.log("clientesobtenidos")
-        }
-    }
-    obtenerClientes();
-    Promise.allSettled([
-        sucursalesStore.obtenerSucursal({ id }),
-    ])
-        .then((res) => {
-            const [dataSucursal] = res;
-
-            asignarDataSucursal(dataSucursal.value);
-        })
-        .catch(console.log);
-});
 </script>

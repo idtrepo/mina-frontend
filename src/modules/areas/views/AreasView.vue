@@ -18,10 +18,10 @@
 import { onMounted, provide, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import useAreas from '../composables/useAreas';
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
 
 // dependencias
-const sucursalesStore = useSucursalesStore();
+const { obtenerSucursales } = useSucursales();
 const { areasListado, numElementos, obtenerAreas, reiniciarDataCreacion,reiniciarDataAreas  } = useAreas();
 
 // componentes
@@ -32,8 +32,8 @@ const AreasBuscador = defineAsyncComponent(() => import('@/modules/areas/compone
 
 onMounted(() => {
     Promise.allSettled([
-        obtenerAreas(),
-        sucursalesStore.obtenerSucursales(),
+        obtenerAreas({params:{ listado: true }}),
+        obtenerSucursales(),
     ])
         .then(console.log)
         .catch(console.log);

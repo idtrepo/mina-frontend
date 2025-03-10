@@ -14,7 +14,7 @@ export class UsuariosService {
 
     static crearElemento = async ({data}) => {
         try{
-            const res = await service.post(UsuariosService.recurso, data);
+            const res = await servicio.post(UsuariosService.recurso, data);
             return res.data;
         } catch (err) {
             throw err;
@@ -23,7 +23,7 @@ export class UsuariosService {
 
     static obtenerElemento = async ({ id}) => {
         try{
-            const res = await service.get(`${UsuariosService.recurso}/${id}`);
+            const res = await servicio.get(`${UsuariosService.recurso}/${id}`);
             return res.data;
         } catch (err) {
             throw err;
@@ -32,7 +32,7 @@ export class UsuariosService {
 
     static editarElemento = async ({ id, data }) => {
         try{
-            const res = await service.patch(`${UsuariosService.recurso}/${id}`, data);
+            const res = await servicio.patch(`${UsuariosService.recurso}/${id}`, data);
             return res.data;
         } catch (err) {
             throw err;

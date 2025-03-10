@@ -17,15 +17,15 @@
 import { onMounted, provide, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import useUsuarios from '../composables/useUsuarios';
-import useClientesStore from '@/modules/clientes/stores/useClientesStore';
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
+import useClientes from '@/modules/clientes/composables/useClientes';
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useAreas from '@/modules/areas/composables/useAreas';
 
 // dependencias
-const clientesStore = useClientesStore();
-const sucursalesStore = useSucursalesStore();
+const {obtenerClientes} = useClientes();
+const {obtenerSucursales} = useSucursales();
 const {obtenerAreas} = useAreas();
-const {numElementos, usuariosListado, obtenerUsuarios, reiniciarDataUsuario, reiniciarDataCreacion} = useUsuarios();
+const {numElementos, usuariosListado, obtenerUsuarios, reiniciarDataUsuarios, reiniciarDataCreacion} = useUsuarios();
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
 const UsuariosForm = defineAsyncComponent(() => import('@/modules/usuarios/components/forms/UsuariosForm.vue'));
@@ -33,8 +33,8 @@ const UsuariosBuscador = defineAsyncComponent(() => import('@/modules/usuarios/c
 
 onMounted(() => {
     Promise.allSettled([
-        clientesStore.obtenerClientes(),
-        sucursalesStore.obtenerSucursales(),
+        obtenerClientes({params:{ listado: true }}),
+        obtenerSucursales({params:{ listado: true }}),
         obtenerAreas({params:{ listado: true }}),
         obtenerUsuarios({params:{ listado: true }})
     ])
@@ -43,6 +43,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    reiniciarDataUsuario();
+    reiniciarDataUsuarios();
 })
 </script>

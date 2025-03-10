@@ -1,7 +1,9 @@
 <template>
     <VListadoView
         :elementos="modulosListado"
-        :resultados="numResultados">
+        :resultados="numResultados"
+        :obtener-listado="obtenerModulos"
+        :reiniciar-data="reiniciarDataCreacion">
         <template #buscador>
             <ModulosBuscador/>
         </template>
@@ -15,43 +17,34 @@
 import { onMounted, provide, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import useModulosStore from '../stores/useModulosStore';
-import useClientesStore from '@/modules/clientes/stores/useClientesStore';
-import useSucursalesStore from '@/modules/sucursales/stores/useSucursalesStore';
-import useAreasStore from '@/modules/areas/stores/useAreasStore';
+import useModulos from '../composables/useModulos';
+import useClientes from '@/modules/clientes/composables/useClientes';
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
+import useAreas from '@/modules/areas/composables/useAreas';
 
 // dependencias
-const clientesStore = useClientesStore();
-const sucursalesStore = useSucursalesStore();
-const areasStore = useAreasStore();
-const modulosStore = useModulosStore();
-const { modulosListado, numResultados, filtros, filtroActivo } = storeToRefs(modulosStore);
+const clientes = useClientes();
+const sucursales = useSucursales();
+const areas = useAreas();
+const { modulosListado, numResultados, obtenerModulos, reiniciarDataModulos, reiniciarDataCreacion } = useModulos();
 
 // componentes
-const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
 const ModulosForm = defineAsyncComponent(() => import('@/modules/modulos/components/ModulosForm.vue'));
 const ModulosBuscador = defineAsyncComponent(() => import('@/modules/modulos/components/ModulosBuscador.vue'));
 
-// hooks
-provide('filtros', {
-    filtros,
-    filtroActivo,
-    obtenerElementos: modulosStore.obtenerModulos,
-    reiniciarBusqueda: modulosStore.reinciarFiltros,
-});
-
 onMounted(() => {
     Promise.allSettled([
-        modulosStore.obtenerModulos(),
-        clientesStore.obtenerClientes(),
-        sucursalesStore.obtenerSucursales(),
-        areasStore.obtenerAreas()
+        obtenerModulos({params:{ listado: true }}),
+        clientes.obtenerClientes({params:{ listado: true }}),
+        sucursales.obtenerSucursales({params:{ listado: true }}),
+        areas.obtenerAreas({params:{ listado: true }})
     ])
         .then(console.log)
         .catch(console.log);
 });
 
 onUnmounted(() => {
-    modulosStore.reinciarFiltros();
+    reiniciarDataModulos();
 })
 </script>

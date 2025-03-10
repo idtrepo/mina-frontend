@@ -1,128 +1,43 @@
-import { ref, computed, toValue } from 'vue'
-import { defineStore } from 'pinia'
-import modulosService from '@/modules/modulos/services/modulosService';
-import useRequest from '@/modules/global/composables/request/useRequest';
-import { ICONOS } from '@/modules/global/utils/iconos';
-import { formatearFecha } from '@/modules/global/utils/fecha';
-import { VISTAS } from '@/modules/global/utils/vistas';
+import {ref,  computed} from 'vue';
+import { defineStore } from "pinia";
 
-export default defineStore('modulos', () => {
-    const request = useRequest(modulosService);
-
-    const filtros = ref({
-        pagina: 1,
-        estatus: true,
-        fecha: null,
+export default defineStore('modulos-store', () => {
+    const modulo = ref({
         mac: null,
-        cliente: null,
-        area:null
+        idArea: null,
+        idSucursal: null, 
+        idCliente: null
     });
+
     const modulos = ref([]);
-    const numResultados = ref(0);
-    const modulosListado = computed(() => modulos.value.map(({ id, mac, cliente }) => ({
-        id,
-        icono: ICONOS.MODULOS,
-        primario: mac,
-        secundario: cliente?.nombre ?? '',
-        vista: VISTAS.MODULOS_DATA
-    })));
-    const modulosOpciones = computed(() => modulos.value.map(({ id, mac }) => ({
-        label: mac,
-        value: id
-    })));
-    const filtroActivo = computed(() => (
-        !filtros.value.estatus
-        || !!filtros.value.fecha
-        || !!filtros.value.mac
-        || !!filtros.value.cliente
-        || !!filtros.value.area
-    ));
+    const numeroElementos = ref(1);
 
-    const asignarData = ({ data, resultados }) => {
+    const asignarDataModulos = ({data, resultados}) => {
+        console.log(data)
         modulos.value = data;
-        numResultados.value = resultados;
-    }
+        numeroElementos.value = resultados;
+    };
 
-    const mapFiltros = () => {
-        const mFiltros = {};
+    const asignarDataModulo = (data) => {
+        const {id, mac, area, sucursal, cliente} = data;
+        modulo.value["id"] = id;
+        modulo.value.mac = mac;
+        modulo.value.idArea = area.id;
+        modulo.value.idSucursal = sucursal.id;
+        modulo.value.idCliente = cliente.id;
+}
 
-        mFiltros['area'] = filtros.value.area;
-        mFiltros['pagina'] = filtros.value.pagina;
-        mFiltros['estatus'] = filtros.value.estatus ? '1' : '0';
-        mFiltros['fecha'] = filtros.value.fecha && formatearFecha(filtros.value.fecha);
+const modulosOpciones = computed(() => modulos.value.map(({id, mac}) => ({
+    label: mac,
+    value: id,
+})));
 
-        return mFiltros;
-    }
-
-    const obtenerModulos = async() => {
-        try{
-            const filtros = mapFiltros();
-            const res = await request.obtenerElementos({ params: filtros });
-            asignarData(res);
-
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const obtenerModulo = async ({ id }) => {
-        try{
-            const res = await request.obtenerElemento({ id });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const obtenerDataModulo = async ({ id }) => {
-        try{
-            const res = await request.customEndpoint('obtenerDataElemento', { id });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const crearModulo = async({ data }) => {
-        try{
-            const res = await request.crearElemento({ data: toValue(data) });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const editarModulo = async({ id, data }) => {
-        try{
-            const res = await request.editarElemento({ id, data });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const reinciarFiltros = () => {
-        for(let clave in filtros.value){
-            filtros.value[clave] = null;
-        }
-
-        filtros.value.estatus = true;
-        filtros.value.pagina = 1;
-    }
-
-    return {
-        filtros,
-        filtroActivo,
-        modulos,
-        numResultados,
-        modulosListado,
-        modulosOpciones,
-        crearModulo,
-        obtenerModulo,
-        obtenerDataModulo,
-        obtenerModulos,
-        editarModulo,
-        reinciarFiltros
-    }
-});
+return {
+    modulo,
+    modulos,
+    numeroElementos,
+    asignarDataModulos,
+    asignarDataModulo,
+    modulosOpciones
+}
+})

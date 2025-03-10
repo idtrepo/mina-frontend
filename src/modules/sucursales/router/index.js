@@ -18,19 +18,19 @@ export default {
         },
         {
             path: ':id',
+            name: 'sucursales-info',
+            meta:{
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+            },
+            component: () => import("@/modules/sucursales/views/SucursalesInfoView.vue")
+        },
+        {
+            path: ':id',
             name: 'sucursales-data',
             meta:{
                 perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR,PERFILES.SUPERVISOR]
             },
             component: () => import('@/modules/sucursales/views/SucursalesDataView.vue')
         },
-        {
-            path: ':id',
-            name: 'sucursales-info',
-            meta:{
-                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
-            },
-            component: () => import("@/modules/sucursales/views/SucursalesInfoView.vue")
-        }
     ]
 }

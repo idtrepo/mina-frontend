@@ -1,45 +1,44 @@
-import {computed, toValue} from 'vue';
+import { computed, toValue} from 'vue';
 import {storeToRefs} from 'pinia';
+import useClientesStore from '../stores/useClientesStore';
 import {useRouter} from 'vue-router';
-import {AreasService} from '@/modules/areas/services/areasService';
+import {ClientesService} from '@/modules/clientes/services/clientesService';
 import {ICONOS} from '@/modules/global/utils/iconos';
-import useAreasStore from '../stores/useAreasStore';
+import {evaluarCliente} from '../schemas/clientesSchema';
+import useRequest from '@/composables/request/useRequest';
 import useFiltrosStore from '@/stores/useFiltrosStore';
 import useEdicionStore from '@/stores/useEdicionStore';
-import {evaluarArea} from '../schemas/areas';
-import {reiniciarData} from '@/utils/reinicio';
-import useRequest from '@/composables/request/useRequest';
 import {VISTAS} from '@/modules/global/utils/vistas';
+import {reiniciarData} from '@/utils/reinicio';
 
 export default () => {
-
     const router = useRouter();
     const filtrosStore = useFiltrosStore();
     const edicionStore = useEdicionStore();
-    const areasStore = useAreasStore();
+    const clienteStore = useClientesStore();
     const {editar, edicionHabilitada} = storeToRefs(edicionStore);
     const {filtros, filtrosMapeados} = storeToRefs(filtrosStore);
-    const {area, areas, numeroElementos, areasOpciones} = storeToRefs(areasStore);
+    const {cliente, clientes, numeroElementos, clientesOpciones} = storeToRefs(clienteStore);
 
     const {obtenerElemento, obtenerElementos, crearElemento, editarElemento} = useRequest({
-        servicio: AreasService,
+        servicio: ClientesService,
         filtros: filtrosMapeados,
-        evaluacion: evaluarArea
+        evaluacion: evaluarCliente
     });
 
-    //listado de areas
-    const areasListado = computed(() => areas.value.map(({id, nombre}) => ({
+    //listado de clientes
+    const clientesListado = computed(() => clientes.value.map(({id, nombre}) => ({
         id,
         titulo: nombre,
-        icono: ICONOS.AREAS,
-        accion: () => router.push({name: VISTAS.AREAS_DATA, params: {id}})
+        icono: ICONOS.CLIENTES,
+        accion: () => router.push({name: VISTAS.CLIENTES_DATA, params: {id}})
     })));
 
-    const obtenerAreas = async ({params = null}) => {
+    const obtenerClientes = async ({params = null}) => {
         try {
             const res = await obtenerElementos({params});
             if (res) {
-                areasStore.asignarDataAreas(res);
+                clienteStore.asignarDataClientes(res);
             }
 
             return res;
@@ -49,11 +48,11 @@ export default () => {
         }
     };
 
-    const obtenerArea = async ({id}) => {
-        try {
+    const obtenerCliente = async ({id}) => {
+        try{
             const res = await obtenerElemento({id});
-            if (res) {
-                areasStore.asignarDataArea(res.data);
+            if(res){
+                clienteStore.asignarDataCliente(res.data);
             }
 
             return res;
@@ -63,28 +62,30 @@ export default () => {
         }
     };
 
-    const crearArea = async ({data}) => {
+    const crearCliente = async ({data}) => {
         try {
             const res = await crearElemento({data});
             if (res) {
-                areasStore.asignarDataArea(res);
+                clienteStore.asignarDataCliente(res);
             }
 
             return res;
         } catch (err) {
+            console.log(err)
             throw err;
         }
     };
 
-    const editarArea = async () => {
+    const editarCliente = async () => {
         try {
-            const res = await editarElemento({dataElemento: area.value});
+            const res = await editarElemento({dataElemento: cliente.value});
             if (res) {
-                areasStore.asignarDataArea(res.data);
+                clienteStore.asignarDataCliente(res);
             }
 
             return res;
         } catch (err) {
+            console.log(err)
             throw err;
         }
     };
@@ -93,38 +94,37 @@ export default () => {
         edicionStore.habilitarEdicion();
 
         if(editar.value){
-            edicionStore.guardarData(area);
+            edicionStore.guardarData(cliente);
         } else {
-            area.value = edicionStore.borrarData();
+            cliente.value = edicionStore.borrarData();
         }
     };
 
-    //reiniciar datos
     function reiniciarDataCreacion() {
-        area.value = reiniciarData(toValue(area));
+        cliente.value = reiniciarData(toValue(cliente));
     }
 
-    function reiniciarDataAreas() {
+    function reiniciarDataClientes() {
         reiniciarDataCreacion();
         filtrosStore.reiniciarFiltros();
         edicionStore.reiniciarEdicion();
-        areas.value = [];
+        clientes.value = [];
     }
 
     return {
-        editar,
-        edicionHabilitada,
+        cliente,
+        clientes,
         filtros,
-        area,
         numeroElementos,
-        areasOpciones,
-        areasListado,
-        obtenerAreas,
-        obtenerArea,
-        crearArea,
-        editarArea,
+        clientesOpciones,
+        clientesListado,
+        edicionHabilitada,
+        obtenerClientes,
+        obtenerCliente,
+        crearCliente,
+        editarCliente,
         habilitarEdicion,
-        reiniciarDataAreas,
+        reiniciarDataClientes,
         reiniciarDataCreacion
     }
 }

@@ -1,120 +1,39 @@
-import { ref, computed, toValue } from 'vue'
-import { defineStore } from 'pinia'
-import sucursalesService from '@/modules/sucursales/services/sucursalesService';
-import useRequest from '@/modules/global/composables/request/useRequest';
-import { ICONOS } from '@/modules/global/utils/iconos';
-import { formatearFecha } from '@/modules/global/utils/fecha';
-import { VISTAS } from '@/modules/global/utils/vistas';
-import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
-import {storeToRefs} from "pinia"
+import {ref, computed} from 'vue';
+import { defineStore } from "pinia";
 
-export default defineStore('sucursales', () => {
-    const request = useRequest(sucursalesService);
-    const usuarioStore = useUsuarioStore();
-    const {usuarioPerfil} = storeToRefs(usuarioStore);
-
-    const filtros = ref({
-        pagina: 1,
-        estatus: true,
-        fecha: null,
+export default defineStore('sucursales-store', () => {
+    const sucursal = ref({
         nombre: null,
-        cliente: null,
+        idCliente: null
     });
+
     const sucursales = ref([]);
-    const numResultados = ref(0);
-    const sucursalesListado = computed(() => sucursales.value.map(({ id, nombre }) => ({
-        id,
-        icono: ICONOS.SUCURSALES,
-        primario: nombre,
-        vista: (usuarioPerfil.value == "superusuario") ? VISTAS.SUCURSALES_DATA : "sucursales-info"
-    })));
-    const sucursalesOpciones = computed(() => sucursales.value.map(({ id, nombre }) => ({
-        label: nombre,
-        value: id
-    })));
-    const filtroActivo = computed(() => (
-        !filtros.value.estatus
-        || !!filtros.value.fecha
-        || !!filtros.value.nombre
-        || !!filtros.value.cliente
-    ))
+    const numeroElementos = ref(1);
 
-    const asignarData = ({ data, resultados }) => {
+    const asignarDataSucursales = ({data, resultados}) => {
         sucursales.value = data;
-        numResultados.value = resultados;
+        numeroElementos.value = resultados;
+    };
+
+    const asignarDataSucursal = (data) => {
+        const {id, nombre, cliente} = data;
+        console.log(data)
+        sucursal.value["id"] = id;
+        sucursal.value.nombre = nombre;
+        sucursal.value.idCliente = cliente.id;
     }
 
-    const mapFiltros = () => {
-        const mFiltros = {};
-
-        mFiltros['cliente'] = filtros.value.cliente;
-        mFiltros['nombre'] = filtros.value.nombre;
-        mFiltros['pagina'] = filtros.value.pagina;
-        mFiltros['estatus'] = filtros.value.estatus ? '1' : '0';
-        mFiltros['fecha'] = filtros.value.fecha && formatearFecha(filtros.value.fecha);
-
-        return mFiltros;
-    }
-
-    const obtenerSucursales = async() => {
-        try{
-            const filtros = mapFiltros();
-            const res = await request.obtenerElementos({ params: filtros });
-            asignarData(res);
-
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const obtenerSucursal = async ({ id }) => {
-        try{
-            const res = await request.obtenerElemento({ id });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const crearSucursal = async({ data }) => {
-        try{
-            const res = await request.crearElemento({ data: toValue(data) });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const editarSucursal = async({ id, data }) => {
-        try{
-            const res = await request.editarElemento({ id, data });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const reinciarFiltros = () => {
-        for(let clave in filtros.value){
-            filtros.value[clave] = null;
-        }
-
-        filtros.value.estatus = true;
-        filtros.value.pagina = 1;
-    }
+    const sucursalesOpciones = computed(() => sucursales.value.map(({id, nombre}) => ({
+        label: nombre,
+        value: id,
+    })));
 
     return {
-        filtros,
-        filtroActivo,
+        sucursal,
         sucursales,
-        numResultados,
-        sucursalesListado,
-        sucursalesOpciones,
-        crearSucursal,
-        obtenerSucursales,
-        obtenerSucursal,
-        editarSucursal,
-        reinciarFiltros
+        numeroElementos,
+        asignarDataSucursales,
+        asignarDataSucursal,
+        sucursalesOpciones
     }
-});
+})
