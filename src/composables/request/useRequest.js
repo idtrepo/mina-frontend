@@ -72,6 +72,7 @@ export default ({
     let data, error;
 
     const { id, ...dataEditar } = toValue(dataElemento);
+    console.log(dataEditar)
     if (evaluacionParcial) {
       const { data: dataEdicion, error: errorEdicion } =
         evaluacionParcial(dataEditar);
@@ -85,6 +86,7 @@ export default ({
     }
 
     if (error) {
+      console.log(error)
       notification.warning({
         meta: "Los datos ingresados son incorrectos o faltan por ingresar",
         content: "Mensaje de validacion",
@@ -118,11 +120,20 @@ export default ({
       return null;
     }
   };
-
+  
+  const obtenerElementoData = async ({ id }) => {
+    try {
+      const res = await servicio.obtenerElementoData({ id });
+      return res;
+    } catch (err) {
+      return null;
+    }
+  }
   return {
     obtenerElemento,
     obtenerElementos,
     crearElemento,
     editarElemento,
+    obtenerElementoData,
   };
 };
