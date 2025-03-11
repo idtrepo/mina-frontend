@@ -123,6 +123,7 @@ export default ({
   
   const obtenerElementoData = async ({ id }) => {
     try {
+      console.log(id)
       const res = await servicio.obtenerElementoData({ id });
       return res;
     } catch (err) {

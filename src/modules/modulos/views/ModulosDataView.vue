@@ -26,6 +26,10 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
+import {useRoute} from 'vue-router'
+import useModulos from '../composables/useModulos'
+
+const route = useRoute();
 
 // componentes
 const ModulosDataInfo = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataInfoView.vue'));
@@ -56,4 +60,7 @@ const vista = computed(() => {
 const seleccionarVista = (nombreVista) => {
     vistaSeleccionada.value = nombreVista;
 }
+
+const {obtenerDataModulo} = useModulos();
+obtenerDataModulo({id:route.params.id})
 </script>
