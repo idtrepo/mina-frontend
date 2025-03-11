@@ -1,7 +1,9 @@
 <template>
     <VListadoView
         :elementos="perfilesListado"
-        :resultados="numResultados">
+        :resultados="numElementos"
+        :obtener-listado="obtenerPerfiles"
+        :reiniciar-data="reiniciarDataCreacion">
         <template #buscador>
             <PerfilesBuscador/>
         </template>
@@ -13,34 +15,18 @@
 
 <script setup>
 import { onMounted, provide, onUnmounted } from 'vue'
-import { storeToRefs } from 'pinia';
 import { defineAsyncComponent } from 'vue'
-import usePerfilesStore from '../stores/usePerfilesStore';
+import usePerfiles from '../composables/usePerfiles';
 
-// dependencias
-const perfilesStore = usePerfilesStore();
-const { perfilesListado, numResultados, filtros, filtroActivo } = storeToRefs(perfilesStore);
+//dependencias
+const { numElementos, perfilesListado, obtenerPerfiles, reiniciarDataPerfiles, reiniciarDataCreacion } = usePerfiles()
 
 // componentes
-const VListadoView = defineAsyncComponent(() => import('@/modules/global/views/VListadoView.vue'));
+const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
 const PerfilesForm = defineAsyncComponent(() => import('@/modules/perfiles/components/PerfilesForm.vue'));
 const PerfilesBuscador = defineAsyncComponent(() => import('@/modules/perfiles/components/PerfilesBuscador.vue'));
 
-// hooks
-provide('filtros', {
-    filtros,
-    filtroActivo,
-    obtenerElementos: perfilesStore.obtenerPerfiles,
-    reiniciarBusqueda: perfilesStore.reinciarFiltros,
-});
-
-onMounted(() => {
-    perfilesStore.obtenerPerfiles()
-        .then(console.log)
-        .catch(console.log);
-});
-
 onUnmounted(() => {
-    perfilesStore.reinciarFiltros();
-})
+    reiniciarDataPerfiles();
+    })
 </script>

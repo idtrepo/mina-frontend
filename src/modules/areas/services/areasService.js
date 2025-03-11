@@ -1,21 +1,44 @@
 import servicio from '@/services'
 
-const recurso = 'areas/';
+export class AreasService {
+    static recurso = "areas";
 
-export default {
-    obtenerElementos: ({ params }) => {
-        return servicio.get(recurso, { params });
-    },
-    obtenerElemento: ({ id }) => {
-        return servicio.get(`${recurso}${id}`);
-    },
-    crearElemento: ({ data }) => {
-        return servicio.post(recurso, data);
-    },
-    editarElemento: ({ id, data }) => {
-        console.log('Editando el elemento');
-        console.log('ID DEL ELEMENTO: ', id);
-        console.log('DATA DEL ELEMENTO: ', data);
-        return servicio.patch(`${recurso}${id}`, data);
+    static obtenerElementos = async ({ params = null } = {}) => {
+        try {
+            const res = await servicio.get(AreasService.recurso, { params });
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    };
+
+    static crearElemento = async ({ data }) => {
+        try {
+            const res = await servicio.post(AreasService.recurso, data);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
     }
+
+    static obtenerElemento = async ({ id }) => {
+        try {
+            const res = await servicio.get(`${AreasService.recurso}/${id}`);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static editarElemento = async ({ id, data }) => {
+        try {
+            const res = await servicio.patch(`${AreasService.recurso}/${id}`, data);
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    };
 }
+
+    
+

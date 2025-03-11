@@ -1,8 +1,8 @@
 <template>
-    <div class="w-screen h-dvh text-slate-300 bg-cyan-950 lg:grid lg:grid-cols-12 lg:grid-rows-12">
+    <div class="w-screen h-dvh text-slate-300 bg-slate-950 lg:grid lg:grid-cols-12 lg:grid-rows-12">
         <template v-if="autenticado">
             <VMenu/>
-            <header class="px-5 flex items-center justify-between bg-cyan-900/80 shadow-md lg:col-start-1 lg:col-end-13 lg:row-start-1 lg:row-end-2">
+            <header class="px-5 flex items-center justify-between bg-slate-700/80 shadow-md lg:col-start-1 lg:col-end-13 lg:row-start-1 lg:row-end-2">
                 <img :src="imgPromev" alt="promev" class="w-36 -ml-4">
                 <VUsuarioAutenticado/>
             </header>

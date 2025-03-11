@@ -1,6 +1,6 @@
 export const PERFILES = {
-    SUPERUSUARIO: 1,
-    ADMINISTRADOR: 2,
-    SUPERVISOR: 3,
-    OPERADOR: 4
+    SUPER_USUARIO: 'superusuario',
+    ADMINISTRADOR: 'administrador',
+    SUPERVISOR: 'supervisor',
+    OPERADOR: "operador"
 };
