@@ -10,6 +10,7 @@ import useFiltrosStore from '@/stores/useFiltrosStore';
 import useEdicionStore from '@/stores/useEdicionStore';
 import {VISTAS} from '@/modules/global/utils/vistas';
 import {reiniciarData} from '@/utils/reinicio';
+import useUsuarioStore from '@/stores/useUsuarioStore';
 
 export default () => {
     const router = useRouter();
@@ -19,6 +20,7 @@ export default () => {
     const {editar, edicionHabilitada} = storeToRefs(edicionStore);
     const {filtros, filtrosMapeados} = storeToRefs(filtrosStore);
     const {sucursal, sucursales, numeroElementos, sucursalesOpciones} = storeToRefs(sucursalStore);
+    const {usuarioPerfilId} = useUsuarioStore();
 
     const {obtenerElemento, obtenerElementos, crearElemento, editarElemento} = useRequest({
         servicio: SucursalesService,
@@ -31,7 +33,7 @@ export default () => {
         id,
         titulo: nombre,
         icono: ICONOS.SUCURSALES,
-        accion: () => router.push({name: VISTAS.SUCURSALES_DATA, params: {id}})
+        accion: () => router.push({name:'sucursales-info', params: {id}})
     })));
 
     const obtenerSucursales = async ({params = null}) => {
@@ -50,7 +52,7 @@ export default () => {
 
     const obtenerSucursal = async ({id}) => {
         try{
-            console.log(id)
+            console.log(usuarioPerfilId.value)
             const res = await obtenerElemento({id});
             if(res){
                 sucursalStore.asignarDataSucursal(res.data);

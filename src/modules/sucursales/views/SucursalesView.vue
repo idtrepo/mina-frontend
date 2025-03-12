@@ -1,9 +1,9 @@
 <template>
     <VListadoView
         :elementos="sucursalesListado"
-        :resultados="numResultados"
-        :obtener-listado = "obtenerSucursales"
-        :reiniciar-data = "reiniciarDataCreacion">
+        :numElementos="numeroElementos"
+        :obtenerListado = "obtenerSucursales"
+        :reiniciarData = "reiniciarDataCreacion">
         <template #buscador>
             <SucursalesBuscador/>
         </template>
@@ -26,7 +26,7 @@ import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
 const usuarioStore = useUsuarioStore();
 const clientesStore = useClientes();
 const {usuarioPerfil} = storeToRefs(usuarioStore)
-const { sucursalesListado, numResultados, obtenerSucursales, reiniciarDataCreacion, reiniciarDataSucursales } = useSucursales();
+const { sucursalesListado, numeroElementos, obtenerSucursales, reiniciarDataCreacion, reiniciarDataSucursales } = useSucursales();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));

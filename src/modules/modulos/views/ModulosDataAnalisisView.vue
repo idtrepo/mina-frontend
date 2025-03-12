@@ -1,12 +1,12 @@
 <template>
     <div class="pt-8">
-        <header class="flex items-center justify-end">
-            <div class="fixed right-4 bottom-32 lg:static">
+        <header class="flex items-center justify-end lg:fixed lg:top-32">
+            <div class="fixed right-4 bottom-32 lg:static lg:mb-4">
                 <VBoton :="configuracionBoton"/>
             </div>
         </header>
         <section class="lg:pt-8">
-            <template v-if="numResultados > 0">
+            <template v-if="numeroElementos > 0">
                 <div class="p-3 bg-slate-200 rounded-md">
                     <LineChart :="lineChartProps"/>
                 </div>
@@ -35,49 +35,48 @@ import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ICONOS } from '@/modules/global/utils/iconos'
 import useSensoresStore from '../stores/useSensoresStore'
+import { COLORES } from '../utils/colores';
+import useFiltrosStore from '@/stores/useFiltrosStore'
+import useModulos from '../composables/useModulos'
 import useDataStore from '../stores/useDataStore'
-import { COLORES } from '../utils/colores'
 
 // dependencias
 const route = useRoute();
 const sensoresStore = useSensoresStore();
-const { filtros:filtrosSensores, sensoresClave } = storeToRefs(sensoresStore);
-const dataStore = useDataStore();
-const { filtros:filtrosData, data:dataDatosSensores, numResultados } = storeToRefs(dataStore);
+const {filtros} = useFiltrosStore();
+const {obtenerDataModulo, reiniciarDataModulos} = useModulos();
+const datos2 = useDataStore()
+const {datos, numeroElementos} = storeToRefs(datos2);
+let intervalId
 
 // componentes
 const VBoton = defineAsyncComponent(() => import('@/modules/global/components/VBoton.vue'));
 const ModulosBuscadorAnalisis = defineAsyncComponent(() => import('@/modules/modulos/components/forms/ModulosBuscadorAnalisis.vue'))
 
 // datos sensores
-const datosSensores = computed(() => sensoresClave.value.map(clave => {
-    const datosSensor = dataDatosSensores.value
-        .filter(({ sensor: { clave:claveSensor } }) => claveSensor === clave)
-        .map(data => ({ ...data, creado: new Date(data.creado).toLocaleTimeString() }));
-
-    return { data: datosSensor, resultados: datosSensor.length, sensor: clave };
-}));
+console.log(datos.value)
+const datosSensores = computed(() => datos.value.sensores);
 
 const mayorLongitud = computed(() => Math.max(
-    ...datosSensores.value.map(({ resultados }) => resultados)
+    ...datosSensores.value.map(({ data }) => data.length)
 ));
 
 const etiquetasSensores = computed(() => {
     const [ dataSensor ] = datosSensores.value
-        .filter(({ resultados }) => resultados === mayorLongitud.value);
+        .filter(({ data }) => data.length === mayorLongitud.value);
     const data = dataSensor?.data ?? []
-    return data?.map(({ creado }) => creado)?.toReversed();
+    return data?.map(({ creado }) => creado)?.reverse();
 });
 
-const dataSensores = computed(() => datosSensores.value.map(({ data, sensor }) => {
+const dataSensores = computed(() => datosSensores.value.map(({ data, clave }) => {
     if(data.length === 0) return {
-        label: sensor,
+        label: clave,
         data
     }
 
     return { 
-        label: sensor, 
-        data: data.map(({ valor }) => valor).toReversed(), 
+        label: clave, 
+        data: data.map(({ valor }) => valor).reverse(), 
         backgroundColor: COLORES,
     };
 }));
@@ -119,8 +118,17 @@ provide('modales', { verBuscador });
 //lifecycle 
 onMounted(() => {
     const { id } = route.params;
-    filtrosSensores.value.modulo = id;
-    filtrosData.value.modulo = id;
+
+    obtenerDataModulo({id})
+            .then(console.log)
+            .catch(console.log)
+    intervalId = setInterval(() => { 
+        obtenerDataModulo({id})
+            .then(console.log)
+            .catch(console.log)
+    }, 5000)
+    
+    filtros.modulo = id
 
     sensoresStore.obtenerSensores()
         .then(console.log)
@@ -128,8 +136,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    dataStore.reiniciarFiltros();
-    dataDatosSensores.value = [];
-    numResultados.value = 0;
+    numeroElementos.value = 0;
+    clearInterval(intervalId);
+    reiniciarDataModulos();
 });
 </script>

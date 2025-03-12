@@ -42,9 +42,9 @@ const id = route.params.id;
 filtros.value = { ...filtros.value, sucursal: id };
 const areasElemento= {
     id:id,
-    vista:"areas-listado",
+    vista:"areas-listado-nest",
     primario:"areas",
-    icono:ICONOS.AREAS
+    icono:ICONOS.AREAS,
 };
 const usuariosElemento = {
     vista:"usuarios-listado",

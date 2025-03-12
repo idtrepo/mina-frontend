@@ -29,9 +29,10 @@ export default () => {
     });
 
     //listado de modulos
-    const modulosListado = computed(() => modulos.value.map(({id, mac}) => ({
+    const modulosListado = computed(() => modulos.value.map(({id, mac, sucursal, area}) => ({
         id,
         titulo: mac,
+        subtitulo: sucursal.nombre+': '+area.nombre,
         icono: ICONOS.MODULOS,
         accion: () => router.push({name: VISTAS.MODULOS_DATA, params: { id }})
     })));
@@ -66,7 +67,7 @@ export default () => {
 
     const obtenerDataModulo = async ({id}) => {
         try {
-            const res = await obtenerElementoData(id);
+            const res = await obtenerElementoData({id});
             if (res) {
                 asignarData(res.data);
             }

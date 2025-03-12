@@ -1,9 +1,9 @@
 <template>
     <VListadoView
         :elementos="usuariosListado"
-        :resultados="numElementos"
-        :obtener-listado = "obtenerUsuarios"
-        :reiniciar-data = "reiniciarDataCreacion">
+        :numElementos="numeroElementos"
+        :obtenerListado = "obtenerUsuarios"
+        :reiniciarData = "reiniciarDataCreacion">
         <template #buscador>
             <UsuariosBuscador/>
         </template>
@@ -25,7 +25,7 @@ import useAreas from '@/modules/areas/composables/useAreas';
 const {obtenerClientes} = useClientes();
 const {obtenerSucursales} = useSucursales();
 const {obtenerAreas} = useAreas();
-const {numElementos, usuariosListado, obtenerUsuarios, reiniciarDataUsuarios, reiniciarDataCreacion} = useUsuarios();
+const {numeroElementos, usuariosListado, obtenerUsuarios, reiniciarDataUsuarios, reiniciarDataCreacion} = useUsuarios();
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
 const UsuariosForm = defineAsyncComponent(() => import('@/modules/usuarios/components/forms/UsuariosForm.vue'));
