@@ -44,9 +44,10 @@ import useDataStore from '../stores/useDataStore'
 const route = useRoute();
 const sensoresStore = useSensoresStore();
 const {filtros} = useFiltrosStore();
-const {obtenerDataModulo} = useModulos();
+const {obtenerDataModulo, reiniciarDataModulos} = useModulos();
 const datos2 = useDataStore()
 const {datos, numeroElementos} = storeToRefs(datos2);
+let intervalId
 
 // componentes
 const VBoton = defineAsyncComponent(() => import('@/modules/global/components/VBoton.vue'));
@@ -121,7 +122,7 @@ onMounted(() => {
     obtenerDataModulo({id})
             .then(console.log)
             .catch(console.log)
-    setInterval(() => { 
+    intervalId = setInterval(() => { 
         obtenerDataModulo({id})
             .then(console.log)
             .catch(console.log)
@@ -136,5 +137,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     numeroElementos.value = 0;
+    clearInterval(intervalId);
+    reiniciarDataModulos();
 });
 </script>
