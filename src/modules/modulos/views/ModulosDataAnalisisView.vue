@@ -1,7 +1,7 @@
 <template>
     <div class="pt-8">
-        <header class="flex items-center justify-end">
-            <div class="fixed right-4 bottom-32 lg:static">
+        <header class="flex items-center justify-end lg:fixed lg:top-32">
+            <div class="fixed right-4 bottom-32 lg:static lg:mb-4">
                 <VBoton :="configuracionBoton"/>
             </div>
         </header>
@@ -135,7 +135,6 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    dataDatosSensores.value = [];
     numeroElementos.value = 0;
 });
 </script>
