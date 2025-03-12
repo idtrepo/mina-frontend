@@ -21,7 +21,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 //Componentes
-const VMainView = defineAsyncComponent(() => import('@/modules/global/views/VMainView.vue'));
+const VMainView = defineAsyncComponent(() => import('@/views/VMainView.vue'))
 
 //lifecycle
 onMounted(() => {
