@@ -7,7 +7,7 @@
                 <RouterView/>
             </section>
             <aside class="col-span-full lg:col-start-1 lg:col-end-2 row-span-1 lg:row-span-full">
-                <VMenu/>
+                <VMenuList/>
             </aside>
         </template>
         <template v-else>
@@ -28,5 +28,5 @@ const authStore = useAuthStore();
 const { autenticado } = storeToRefs(authStore);
 
 //componentes
-const VMenu = defineAsyncComponent(() => import('@/modules/global/components/menu/VMenu.vue'));
+const VMenuList = defineAsyncComponent(() => import('@/components/menu/VMenuList.vue'));
 </script>
