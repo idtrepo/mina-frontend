@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@formkit/tempo": "^0.1.2",
     "axios": "^1.7.7",
     "chart.js": "^3.9.1",
     "jwt-decode": "^4.0.0",
