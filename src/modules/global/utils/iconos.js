@@ -14,4 +14,6 @@ export const ICONOS = {
     EDITAR: ['fa-solid', 'fa-pen-to-square'],
     GUARDAR: ['fa-solid', 'fa-floppy-disk'],
     ELIMINAR: ['fa-solid', 'fa-trash'],
+    MENU: ['fa-solid', 'fa-bars'],
+    CERRAR: ['fa-solid', 'fa-times-circle'],
 }

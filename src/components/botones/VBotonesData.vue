@@ -2,7 +2,7 @@
     <div>
         <article class="hidden md:block">
             <NButton
-                @click="habilitarEdicionRegistro"
+                @click="habilitarEdicion"
                 type="warning">
                 <template #icon>
                     <i :class="iconoBotonEdicion"></i>
@@ -27,7 +27,7 @@
                     <NFloatButton v-if="editar" @click="confirmarEdicion">
                         <i :class="ICONOS.GUARDAR"></i>
                     </NFloatButton>
-                    <NFloatButton @click="habilitarEdicionRegistro">
+                    <NFloatButton @click="habilitarEdicion">
                         <i :class="iconoBotonEdicion"></i> 
                     </NFloatButton>
                 </template>
@@ -41,6 +41,11 @@ import { ref, computed, watch, toRefs, toValue } from 'vue'
 import { NFloatButton, NButton } from 'naive-ui'
 import { useDialog } from 'naive-ui'
 import { ICONOS } from '@/modules/global/utils/iconos';
+import useEdicionStore from '@/stores/useEdicionStore';
+import {storeToRefs} from 'pinia'
+
+const edicionStore = useEdicionStore();
+const { editar } = storeToRefs(edicionStore);
 
 // props
 const props = defineProps({
@@ -52,14 +57,12 @@ const props = defineProps({
         type: Function,
         default: () => {}
     },
-    cbCancelarEdicion: {
+    habilitarEdicion: {
         type: Function,
         default: () => {}
     }, 
 });
 
-// eventos
-const emit = defineEmits(['editar-elemento']);
 
 const { idElemento } = toRefs(props);
 
@@ -67,20 +70,14 @@ const { idElemento } = toRefs(props);
 const dialog = useDialog();
 
 // habilitar edicion de registro
-const editar = ref(false);
-
 const iconoBotonEdicion = computed(() => !editar.value ? ICONOS.EDITAR : ICONOS.EQUIS);
 const tituloBotonEdicion = computed(() => !editar.value ? 'editar' : 'cancelar');
 
-const habilitarEdicionRegistro = () => {
-    editar.value = !editar.value;
-    emit('editar-elemento', editar.value);
-}
 
 const confirmarEdicion = () => {
     dialog.warning({
-        title: 'Eliminar',
-        content: '¿Estas seguro de eliminar este registro?',
+        title: 'Editar',
+        content: '¿Estas seguro de editar este registro?',
         positiveText: 'aceptar',
         negativeText: 'cancelar',
         onPositiveClick: async() => {
@@ -89,8 +86,6 @@ const confirmarEdicion = () => {
             try{
                 await props.editarElemento({ id: parseInt(toValue(idElemento)) });
                 editar.value = false;
-                props.cbCancelarEdicion();
-                emit('editar-elemento', editar.value);
             }catch(err){
                 console.log(err);
             }
@@ -98,7 +93,4 @@ const confirmarEdicion = () => {
     });
 }
 
-watch(editar, newValue => {
-    if(!newValue) props.cbCancelarEdicion();
-})
 </script>
