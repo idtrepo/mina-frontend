@@ -5,12 +5,12 @@
             <VListadoBotones v-if="verBotones" :mostrar-modal-agregar="mostrarModalAgregar" :mostrar-modal-buscar="mostrarModalBuscar" />
         </header>
         <template v-if="hayElementos">
-            <section class="lg:pt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4 rounded-md">
+            <section class="pt-8 lg:pt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4 rounded-md">
                 <VListadoElemento v-for="elemento in elementos" :key="elemento.id" :="elemento" />
             </section>
         </template>
         <template v-else>
-            <section class="w-full h-full flex justify-center items-center">
+            <section class="pt-8 w-full h-full flex justify-center items-center">
                 <p class="uppercase font-bold text-slate-500 text-xl lg:text-3xl">sin elementos</p>
             </section>
         </template>
