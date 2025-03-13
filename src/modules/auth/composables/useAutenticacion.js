@@ -12,7 +12,7 @@ export default () => {
   const router = useRouter();
   const authStore = useAuthStore();
   const usuarioStore = useUsuarioStore();
-  const { usuarioPerfil, usuarioSucursalId } = storeToRefs(usuarioStore);
+  const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
 
   //   cambio de vista segun el perfil
   const irAVista = () => {
@@ -25,7 +25,7 @@ export default () => {
     if (usuarioPerfil.value === PERFILES.SUPERVISOR)
       return router.push({
         name: "sucursales-info",
-        params: { id: usuarioSucursalId.value }
+        params: { id: usuarioSucursal.value }
       });
     if(usuarioPerfil.value === PERFILES.OPERADOR)
       return router.push({

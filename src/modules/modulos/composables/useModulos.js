@@ -111,7 +111,7 @@ export default () => {
         edicionStore.habilitarEdicion();
 
         if(editar.value){
-            edicionStore.guardarData(modulo);
+            edicionStore.guardarData(modulo.data);
         } else {
             modulo.value = edicionStore.borrarData(); 
         }
