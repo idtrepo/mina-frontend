@@ -5,17 +5,17 @@
         :obtener-listado = "obtenerAreas"
         :reiniciar-data = "reiniciarDataCreacion"
         >
-        <template #buscador>
+        <template #formulario-buscar>
             <AreasBuscador/>
         </template>
-        <template #formulario>
-            <AreasForm/>
+        <template #formulario-agregar>
+            <AreasFormulario/>
         </template>
     </VListadoView>
 </template>
 
 <script setup>
-import { onMounted, provide, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import useAreas from '../composables/useAreas';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
@@ -26,14 +26,14 @@ const { areasListado, numElementos, obtenerAreas, reiniciarDataCreacion,reinicia
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-const AreasForm = defineAsyncComponent(() => import('@/modules/areas/components/AreasForm.vue'));
-const AreasBuscador = defineAsyncComponent(() => import('@/modules/areas/components/AreasBuscador.vue'));
+const AreasBuscador = defineAsyncComponent(() => import('../components/forms/AreasBuscador.vue'));
+const AreasFormulario = defineAsyncComponent(() => import('../components/forms/AreasFormulario.vue'));
 
 
 onMounted(() => {
     Promise.allSettled([
-        obtenerAreas({params:{ listado: true }}),
-        obtenerSucursales(),
+        obtenerAreas(),
+        obtenerSucursales({params: { listado: true } }),
     ])
         .then(console.log)
         .catch(console.log);
