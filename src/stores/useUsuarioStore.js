@@ -10,6 +10,7 @@ export default defineStore("usuario-store", () => {
   );
   const usuarioCorreo = computed(() => usuario.value?.correo);
   const usuarioPerfil = computed(() => usuario.value?.perfil?.nombre);
+  const usuarioPerfilId = computed(() => usuario.value?.perfil?.id);
   const usuarioPermisos = computed(() => usuario.value?.perfil?.acciones);
   const usuarioCliente = computed(() => usuario.value?.cliente?.id);
   const usuarioSucursal = computed(() => usuario.value?.sucursal?.id);
@@ -29,6 +30,7 @@ export default defineStore("usuario-store", () => {
     usuarioPermisos,
     usuarioCliente,
     usuarioSucursal,
+    usuarioPerfilId,
     asignarDataUsuario,
     borrarDataUsuario,
   };

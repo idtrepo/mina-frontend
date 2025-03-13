@@ -5,14 +5,14 @@ import authService from "../services/authService";
 import useAuthStore from "../stores/useAuthStore";
 import { VISTAS } from "@/modules/global/utils/vistas";
 import { PERFILES } from "@/modules/global/utils/perfiles";
-import useUsuarioStore from "../stores/useUsuarioStore";
+import useUsuarioStore from "@/stores/useUsuarioStore";
 
 export default () => {
   // dependencias
   const router = useRouter();
   const authStore = useAuthStore();
   const usuarioStore = useUsuarioStore();
-  const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
+  const { usuarioPerfil, usuarioSucursalId } = storeToRefs(usuarioStore);
 
   //   cambio de vista segun el perfil
   const irAVista = () => {
@@ -25,7 +25,7 @@ export default () => {
     if (usuarioPerfil.value === PERFILES.SUPERVISOR)
       return router.push({
         name: "sucursales-info",
-        params: { id: usuarioSucursal.value }
+        params: { id: usuarioSucursalId.value }
       });
     if(usuarioPerfil.value === PERFILES.OPERADOR)
       return router.push({

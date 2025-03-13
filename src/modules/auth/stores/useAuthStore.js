@@ -7,7 +7,7 @@ import {
   borrarTodoLS,
 } from "@/utils/funciones/localStorage";
 import authService from "../services/authService";
-import useUsuarioStore from "./useUsuarioStore";
+import useUsuarioStore from "@/stores/useUsuarioStore";
 
 export default defineStore("auth-store", () => {
   // dependencias
@@ -48,7 +48,7 @@ export default defineStore("auth-store", () => {
 
     asignarTokenAccess(access);
     asignarTokenCaducidad(dataCaducidad);
-    usuarioStore.asignarDatosUsuario(dataUsuario);
+    usuarioStore.asignarDataUsuario(dataUsuario);
 
     if (refresh) {
       asignarTokenRefresh(refresh);

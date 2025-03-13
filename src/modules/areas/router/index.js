@@ -21,6 +21,14 @@ export default {
         },
         {
             path: ':id',
+            name: 'areas-listado-nest',
+            meta:{
+                perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+            },
+            component: () => import('@/modules/areas/views/AreasView.vue')
+        },
+        {
+            path: ':id',
             name: 'areas-data',
             component: () => import('@/modules/areas/views/AreasDataView.vue')
         },

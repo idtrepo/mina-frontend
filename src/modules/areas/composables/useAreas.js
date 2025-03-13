@@ -44,7 +44,6 @@ export default () => {
 
     if (res) {
       areasStore.asignarDataAreas(res);
-    }
 
     return res;
   };

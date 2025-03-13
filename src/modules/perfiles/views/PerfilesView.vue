@@ -1,9 +1,9 @@
 <template>
     <VListadoView
         :elementos="perfilesListado"
-        :resultados="numElementos"
-        :obtener-listado="obtenerPerfiles"
-        :reiniciar-data="reiniciarDataCreacion">
+        :numElementos="numeroElementos"
+        :obtenerListado="obtenerPerfiles"
+        :reiniciarData="reiniciarDataCreacion">
         <template #buscador>
             <PerfilesBuscador/>
         </template>
@@ -19,7 +19,7 @@ import { defineAsyncComponent } from 'vue'
 import usePerfiles from '../composables/usePerfiles';
 
 //dependencias
-const { numElementos, perfilesListado, obtenerPerfiles, reiniciarDataPerfiles, reiniciarDataCreacion } = usePerfiles()
+const { numeroElementos, perfilesListado, obtenerPerfiles, reiniciarDataPerfiles, reiniciarDataCreacion } = usePerfiles()
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
