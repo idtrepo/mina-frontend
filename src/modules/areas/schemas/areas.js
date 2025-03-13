@@ -1,11 +1,14 @@
-import z from 'zod';
+import z from "zod";
 
 const AreaSchema = z.object({
-    nombre: z.string().min(1),
-    idSucursal: z.number(),
-    estatus: z.boolean().nullish(),
-    });
+  nombre: z.string(),
+  idSucursal: z.number(),
+});
 
 export const evaluarArea = (data) => {
-    return AreaSchema.safeParse(data);
+  return AreaSchema.safeParse(data);
+};
+
+export const evaluarAreaParcial = (data) => {
+  return AreaSchema.partial().safeParse(data);
 };
