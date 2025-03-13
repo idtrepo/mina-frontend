@@ -1,32 +1,33 @@
 <template>
-    <VDataView
+    <VDataView 
         :peticiones="peticiones"
         :reiniciar-data="reiniciarDataAreas"
         :habilitar-edicion="habilitarEdicion"
         :editar-elemento="editarArea">
         <template #formulario>
-            <AreaFormBase />
-        </template>    
+            <AreasFormularioBase/>
+        </template>
     </VDataView>
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
+import { defineAsyncComponent, ref } from 'vue';
 import useAreas from '../composables/useAreas';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 
 // dependencias
 const route = useRoute();
-const {obtenerArea, reiniciarDataAreas, editarArea, habilitarEdicion} = useAreas();
+const { obtenerArea, reiniciarDataAreas, habilitarEdicion, editarArea } = useAreas();
 const { obtenerSucursales } = useSucursales();
-const peticiones = [
-    obtenerArea({id: route.params.id}),
-    obtenerSucursales({params:{ listado: true }}),
-]
 
 // componentes
 const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
-const AreaFormBase = defineAsyncComponent(() => import('../components/forms/AreasFormbase.vue'));
+const AreasFormularioBase = defineAsyncComponent(() => import('../components/forms/AreasFormularioBase.vue'));
 
+// configuracion vista
+const peticiones = ref([
+    obtenerArea({ id: route.params.id }),
+    obtenerSucursales({ params: { listado: true } })
+])
 </script>
