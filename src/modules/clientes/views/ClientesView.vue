@@ -4,11 +4,11 @@
         :numElementos="numeroElementos"
         :obtenerListado="obtenerClientes"
         :reiniciarData="reiniciarDataCreacion">
-        <template #buscador>
+        <template #formulario-buscar>
             <ClientesBuscador/>
         </template>
-        <template #formulario>
-            <ClientesForm/>
+        <template #formulario-agregar>
+            <ClientesFormulario/>
         </template>
     </VListadoView>
 </template>
@@ -23,8 +23,8 @@ const { clientesListado, numeroElementos,obtenerClientes, reiniciarDataClientes,
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-const ClientesForm = defineAsyncComponent(() => import('@/modules/clientes/components/ClientesForm.vue'));
-const ClientesBuscador = defineAsyncComponent(() => import('@/modules/clientes/components/ClientesBuscador.vue'));
+const ClientesBuscador = defineAsyncComponent(() => import('../components/forms/ClientesBuscador.vue'));
+const ClientesFormulario = defineAsyncComponent(() => import('../components/forms/ClientesFormulario.vue'));
 
 onMounted(() => {
     obtenerClientes({params:{ listado: true }})
