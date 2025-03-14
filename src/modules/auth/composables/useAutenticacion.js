@@ -109,20 +109,21 @@ export default () => {
 
   //logica para llevar a vista
   function llevarAVista() {
-    if (usuarioStore.usuarioPerfil === PERFILES.SUPERUSUARIO) {
-      router.push({ name: VISTAS.USUARIOS });
-    }
+    if (usuarioPerfil.value === PERFILES.SUPERUSUARIO)
+      return router.push({ name: VISTAS.USUARIOS });
 
-    if (usuarioStore.usuarioPerfil === PERFILES.ADMINISTRADOR) {
-      router.push({ name: VISTAS.SUCURSALES });
-    }
+    if (usuarioPerfil.value === PERFILES.ADMINISTRADOR)
+      return router.push({ name: VISTAS.SUCURSALES });
 
-    if (usuarioStore.usuarioPerfil === PERFILES.SUPERVISOR) {
-      router.push({
-        name: VISTAS.SUCURSALES_MENU,
-        params: { id: usuarioSucursal.value },
+    if (usuarioPerfil.value === PERFILES.SUPERVISOR)
+      return router.push({
+        name: "sucursales-info",
+        params: { id: usuarioSucursal.value }
       });
-    }
+    if(usuarioPerfil.value === PERFILES.OPERADOR)
+      return router.push({
+        name: "modulos-listado"
+      })
   }
 
   return {
