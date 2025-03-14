@@ -9,6 +9,7 @@ export default defineStore("filtros-store", () => {
     nombre: null,
     apellido: null,
     correo: null,
+    mac: null,
 
     modulo: null,
     perfil: null,
@@ -16,7 +17,6 @@ export default defineStore("filtros-store", () => {
     sucursal: null,
     cliente: null,
     area: null,
-
   });
 
   const filtrosActivos = computed(
@@ -26,6 +26,7 @@ export default defineStore("filtros-store", () => {
       !!filtros.value.nombre ||
       !!filtros.value.apellido ||
       !!filtros.value.correo ||
+      !!filtros.value.mac ||
       !!filtros.value.operacion ||
       !!filtros.value.modulo ||
       !!filtros.value.perfil ||
