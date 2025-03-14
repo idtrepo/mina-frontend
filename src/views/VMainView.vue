@@ -23,13 +23,12 @@
 <script setup>
 import { defineAsyncComponent } from 'vue'
 import { storeToRefs } from 'pinia';
-import useAuthStore from '@/modules/auth/stores/useAuthStore';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion';
 import imgPromev from '@/assets/img/Promev.png'
 
 
 //dependencias
-const authStore = useAuthStore();
-const { autenticado } = storeToRefs(authStore);
+const { autenticado } = useAutenticacion();
 
 //componentes
 const VMenuList = defineAsyncComponent(() => import('@/components/menu/VMenuList.vue'));
