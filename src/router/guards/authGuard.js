@@ -1,18 +1,17 @@
 import { storeToRefs } from 'pinia'
 import { VISTAS } from "@/modules/global/utils/vistas"
-import useAuthStore from '@/modules/auth/stores/useAuthStore';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion'
 import useTituloStore from "@/stores/useTituloStore";
 import {PERFILES} from "@/modules/global/utils/perfiles";
 import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
 
 export const autenticacionGuard = async (to, from, next) => {
-  const authStore = useAuthStore();
   const usuarioStore = useUsuarioStore();
-  const { autenticado } = storeToRefs(authStore);
+  const { autenticado, verificarSesion } = useAutenticacion();
   const tituloStore = useTituloStore();
   const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
   const { name: nombreVista, meta: dataVista = null } = to;
-  await authStore.verificarSesion();
+  await verificarSesion();
 
   if (!autenticado.value && nombreVista !== VISTAS.LOGIN) {
     next({ name: VISTAS.LOGIN });

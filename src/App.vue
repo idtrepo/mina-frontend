@@ -12,20 +12,19 @@
 import { onMounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
 import { NNotificationProvider, NConfigProvider, NDialogProvider, esAR, dateEsAR } from 'naive-ui'
-import useAuthStore from './modules/auth/stores/useAuthStore';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion'
 import { useRouter } from 'vue-router'
 import { VISTAS } from './modules/global/utils/vistas';
 
 //dependencias
 const router = useRouter();
-const authStore = useAuthStore();
-
+const {verificarSesion} = useAutenticacion();
 //Componentes
 const VMainView = defineAsyncComponent(() => import('@/views/VMainView.vue'))
 
 //lifecycle
 onMounted(() => {
-  authStore.verificarSesion()
+  verificarSesion()
     .then(console.log)
     .catch(err => {
       router.push({ name: VISTAS.LOGIN });
