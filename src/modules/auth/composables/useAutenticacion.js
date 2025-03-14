@@ -1,78 +1,147 @@
 import { ref, toValue } from "vue";
-import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
-import authService from "../services/authService";
-import useAuthStore from "../stores/useAuthStore";
-import { VISTAS } from "@/modules/global/utils/vistas";
-import { PERFILES } from "@/modules/global/utils/perfiles";
 import useUsuarioStore from "@/stores/useUsuarioStore";
+import useSesionStore from "@/stores/useSesionStore";
+import { AuthService } from "../services/authService";
+import { validarCredenciales } from "../schemas/credenciales";
+import { decodificarTokenJWT } from "@/utils/jwt";
+import { LS } from "@/utils/localStorage";
+import { VISTAS } from "@/modules/global/utils/vistas";
+import { PERFILES } from "@/utils/perfiles";
+import router from "@/router";
 
 export default () => {
   // dependencias
-  const router = useRouter();
-  const authStore = useAuthStore();
+  const sesionStore = useSesionStore();
   const usuarioStore = useUsuarioStore();
-  const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
+  const {
+    access: accessStore,
+    refresh: refreshStore,
+    autenticado,
+    tiempoExpiracion,
+  } = storeToRefs(sesionStore);
+  const {
+    usuarioNombre,
+    usuarioApellido,
+    usuarioCorreo,
+    usuarioNombreCompleto,
+    usuarioPerfil,
+    usuarioCliente,
+    usuarioSucursal,
+    usuarioPermisos,
+  } = storeToRefs(usuarioStore);
 
-  //   cambio de vista segun el perfil
-  const irAVista = () => {
-    if (usuarioPerfil.value === PERFILES.SUPER_USUARIO)
-      return router.push({ name: VISTAS.USUARIOS });
-
-    if (usuarioPerfil.value === PERFILES.ADMINISTRADOR)
-      return router.push({ name: VISTAS.SUCURSALES });
-
-    if (usuarioPerfil.value === PERFILES.SUPERVISOR)
-      return router.push({
-        name: "sucursales-info",
-        params: { id: usuarioSucursal.value }
-      });
-    if(usuarioPerfil.value === PERFILES.OPERADOR)
-      return router.push({
-        name: "modulos-listado"
-      })
-  };
-
-  //   inicio de sesion
-  const credenciales = ref({
-    correo: "",
-    password: "",
-  });
+  // inicio de sesion
+  const credenciales = ref({ correo: "", password: "" });
 
   const reiniciarCredenciales = () => {
-    for (let clave in credenciales.value) {
-      credenciales.value[clave] = null;
-    }
+    credenciales.value.correo = "";
+    credenciales.value.password = "";
+  };
+
+  const guardarSesion = ({ access, refresh = null } = {}) => {
+    const res = decodificarTokenJWT(access);
+    const { usuario, exp: tiempoExpiracion } = res;
+
+    usuarioStore.asignarDataUsuario(usuario);
+    sesionStore.asignarDataTokens({ access, refresh, tiempoExpiracion });
   };
 
   const iniciarSesion = async () => {
+    let dataToken;
+    const { error, data } = validarCredenciales(toValue(credenciales));
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
     try {
-      const res = await authService.iniciarSesion({
-        data: toValue(credenciales),
+      const res = await AuthService.iniciarSesion({
+        data,
       });
-      const { data: tokenData } = res.data;
-
-      authStore.asignarTokenData(tokenData);
-
-      reiniciarCredenciales();
-      console.log("llendo avista")
-      irAVista();
+      dataToken = res.data;
     } catch (err) {
       console.log(err);
     }
+
+    LS.guardar("access", dataToken.access);
+    LS.guardar("refresh", dataToken.refresh);
+
+    guardarSesion(dataToken);
+    reiniciarCredenciales();
+    llevarAVista();
   };
 
-  const actualizarSesion = async (data) => {
+  // verificar sesion
+  const verificarSesion = async () => {
+    const access = LS.obtener("access");
+    const refresh = LS.obtener("refresh");
+
+    if (!access || !refresh) return cerrarSesion();
+
+    // verificar si las credenciales esta vigentes
+    let nuevoTokenAccess;
+
     try {
-      const res = await authService.actualizarSesion({ data });
+      const { data: resData } = await AuthService.actualizarSesion({
+        data: { refresh },
+      });
+      nuevoTokenAccess = resData.access;
     } catch (err) {
-      console.log(err);
+      cerrarSesion();
+      return;
     }
+
+    LS.guardar("access", nuevoTokenAccess);
+
+    guardarSesion({
+      access: nuevoTokenAccess,
+      refresh: refresh,
+    });
   };
+
+  function cerrarSesion() {
+    LS.limpiarLS();
+    sesionStore.borrarDataTokens();
+    usuarioStore.borrarDataUsuario();
+  }
+
+  //logica para llevar a vista
+  function llevarAVista() {
+    if (usuarioStore.usuarioPerfil === PERFILES.SUPERUSUARIO) {
+      router.push({ name: VISTAS.USUARIOS });
+    }
+
+    if (usuarioStore.usuarioPerfil === PERFILES.ADMINISTRADOR) {
+      router.push({ name: VISTAS.SUCURSALES });
+    }
+
+    if (usuarioStore.usuarioPerfil === PERFILES.SUPERVISOR) {
+      router.push({
+        name: VISTAS.SUCURSALES_MENU,
+        params: { id: usuarioSucursal.value },
+      });
+    }
+  }
 
   return {
     credenciales,
+    cerrarSesion,
     iniciarSesion,
-    actualizarSesion,
+    guardarSesion,
+    verificarSesion,
+    access: accessStore,
+    refresh: refreshStore,
+    autenticado: autenticado,
+    tiempoExpiracion: tiempoExpiracion,
+    usuarioNombre: usuarioNombre,
+    usuarioApellido: usuarioApellido,
+    usuarioNombreCompleto: usuarioNombreCompleto,
+    usuarioCorreo: usuarioCorreo,
+    usuarioPerfil: usuarioPerfil,
+    usuarioCliente: usuarioCliente,
+    usuarioPermisos: usuarioPermisos,
+    usuarioSucursal: usuarioSucursal,
   };
 };

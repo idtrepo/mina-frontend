@@ -6,7 +6,7 @@ import {
   guardarLS,
   borrarTodoLS,
 } from "@/utils/funciones/localStorage";
-import authService from "../services/authService";
+import {AuthService} from "../services/authService";
 import useUsuarioStore from "@/stores/useUsuarioStore";
 
 export default defineStore("auth-store", () => {
@@ -65,10 +65,10 @@ export default defineStore("auth-store", () => {
 
   const verificarTokensVigencia = async () => {
     try {
-      const res = await authService.actualizarSesion({
+      const res = await AuthService.actualizarSesion({
         data: { refresh: tokenRefresh.value },
       });
-      const { data: tokenData } = res.data;
+      const { data: tokenData } = res;
       const { access } = tokenData;
 
       return access;
