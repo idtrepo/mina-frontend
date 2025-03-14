@@ -10,11 +10,11 @@
             </section>
         </template>
         <template v-else>
-            <section class="pt-8 w-full h-full flex justify-center items-center">
+            <section class="pt-28 w-full flex justify-center items-center">
                 <p class="uppercase font-bold text-slate-500 text-xl lg:text-3xl">sin elementos</p>
             </section>
         </template>
-        <footer v-if="verPaginacion" class="pt-5 flex justify-center items-center">
+        <footer v-if="verPaginacion && hayElementos" class="pt-5 flex justify-center items-center">
             <NPagination :page-slot="3" v-model:page="pagina" :page-count="numPaginas" @update:page="cambioPagina" />
         </footer>
 

@@ -1,25 +1,45 @@
-import servicio from '@/services'
+import servicio from "@/services";
 
 export class ModulosService {
-    static recurso = 'modulos';
+  static recurso = "modulos";
 
-    static async obtenerElementos({params = null}) {
-        return await servicio.get(ModulosService.recurso, {params});
+  static obtenerElementos = async ({ params = null } = {}) => {
+    try {
+      const res = await servicio.get(ModulosService.recurso, { params });
+      return res.data;
+    } catch (err) {
+      throw err;
     }
+  };
 
-    static async obtenerElemento({id}) {
-        return await servicio.get(`${ModulosService.recurso}/${id}`);
+  static crearElemento = async ({ data }) => {
+    try {
+      const res = await servicio.post(ModulosService.recurso, data);
+      return res.data;
+    } catch (err) {
+      throw err;
     }
+  };
 
-    static async crearElemento({data}) {
-        return await servicio.post(ModulosService.recurso, data);
+  static obtenerElemento = async ({ id }) => {
+    try {
+      const res = await servicio.get(`${ModulosService.recurso}/${id}`);
+      return res.data;
+    } catch (err) {
+      throw err;
     }
+  };
 
-    static async editarElemento({id, data}) {
-        return await servicio.patch(`${ModulosService.recurso}/${id}`, data);
+  static editarElemento = async ({ id, data }) => {
+    try {
+      const res = await servicio.patch(`${ModulosService.recurso}/${id}`, data);
+      return res.data;
+    } catch (err) {
+      throw err;
     }
+  };
 
-    static async obtenerElementoData({id}) {
-        return await servicio.get(`${ModulosService.recurso}/${id}/data`);
-    }
+  static async obtenerElementoData({ id }) {
+    return await servicio.get(`${ModulosService.recurso}/${id}/data`);
+  }
 }

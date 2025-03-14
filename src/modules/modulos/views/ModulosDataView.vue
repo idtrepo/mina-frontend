@@ -1,66 +1,38 @@
 <template>
-    <div>
-        <header class="pt-8 pb-2 flex justify-between gap-3 items-center">
-            <button 
-                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.INFO ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']" 
-                @click="() => seleccionarVista(NOMBRE_VISTA.INFO)">
-                modulo
+    <section class="w-full h-full">
+        <header class="flex gap-x-3 items-center justify-between">
+            <button @click="() => seleccionarComponente('ModulosDataInfoView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+                <span class="text-slate-100 uppercase font-bold">modulo</span>
             </button>
-            <button 
-                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.SENSORES ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']" 
-                @click="() => seleccionarVista(NOMBRE_VISTA.SENSORES)">
-                sensores
+            <button @click="() => seleccionarComponente('ModulosDataAnalisisView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+                <span class="text-slate-100 uppercase font-bold">analisis</span>
             </button>
-            <button 
-                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.ANALISIS ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']"
-                @click="() => seleccionarVista(NOMBRE_VISTA.ANALISIS)">
-                analisis
+            <button @click="() => seleccionarComponente('ModulosDataSensoresView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+                <span class="text-slate-100 uppercase font-bold">sensores</span>
             </button>
         </header>
-        <section>
-            <component :is="vista"/>
+        <section class="pt-8">
+            <component :is="componenteSeleccionado"/>
         </section>
-    </div>
+    </section>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import { useRoute } from 'vue-router'
-import useModulos from '../composables/useModulos'
-
-const route = useRoute();
 
 // componentes
-const ModulosDataInfo = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataInfoView.vue'));
-const ModulosDataSensores = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataSensoresView.vue'));
-const ModulosDataAnalisis = defineAsyncComponent(() => import('@/modules/modulos/views/ModulosDataAnalisisView.vue'));
+const ModulosDataAnalisisView = defineAsyncComponent(() => import('./ModulosDataAnalisisView.vue'));
+const ModulosDataInfoView = defineAsyncComponent(() => import('./ModulosDataInfoView.vue'));
+const ModulosDataSensoresView = defineAsyncComponent(() => import('./ModulosDataSensoresView.vue'));
 
-// elegir vista
-const NOMBRE_VISTA = {
-    INFO: 'ModulosDataInfo',
-    SENSORES: 'ModulosDataSensores',
-    ANALISIS: 'ModulosDataAnalisis',
+const componentes = {
+    ModulosDataInfoView,
+    ModulosDataAnalisisView,
+    ModulosDataSensoresView,
 }
+const componente = ref('ModulosDataInfoView');
+const componenteSeleccionado = computed(() => componentes[componente.value]);
 
-const vistaSeleccionada = ref(NOMBRE_VISTA.INFO);
-const vista = computed(() => {
-    if(vistaSeleccionada.value === NOMBRE_VISTA.INFO)
-        return ModulosDataInfo;
-
-    if(vistaSeleccionada.value === NOMBRE_VISTA.SENSORES)
-        return ModulosDataSensores;
-
-    if(vistaSeleccionada.value === NOMBRE_VISTA.ANALISIS)
-        return ModulosDataAnalisis;
-
-    return ModulosDataInfo;
-})
-
-const seleccionarVista = (nombreVista) => {
-    vistaSeleccionada.value = nombreVista;
-}
-
-const { obtenerDataModulo } = useModulos();
-obtenerDataModulo({ id: route.params.id })
+const seleccionarComponente = nombreComponente => componente.value = nombreComponente;
 </script>
