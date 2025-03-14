@@ -1,18 +1,18 @@
 <template>
     <div>
-        <header class="pt-8 flex justify-between gap-3 items-center">
+        <header class="pt-8 pb-2 flex justify-between gap-3 items-center">
             <button 
-                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200" 
+                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.INFO ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']" 
                 @click="() => seleccionarVista(NOMBRE_VISTA.INFO)">
                 modulo
             </button>
             <button 
-                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200" 
+                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.SENSORES ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']" 
                 @click="() => seleccionarVista(NOMBRE_VISTA.SENSORES)">
                 sensores
             </button>
             <button 
-                class="py-1 px-8 flex-grow border-2 border-amber-600 uppercase font-bold text-slate-200"
+                :class="['py-1 px-8 flex-grow border-2 uppercase font-bold', vistaSeleccionada === NOMBRE_VISTA.ANALISIS ? 'bg-[#f54a00] text-white' : 'border-[#f54a00] text-slate-200']"
                 @click="() => seleccionarVista(NOMBRE_VISTA.ANALISIS)">
                 analisis
             </button>
@@ -26,7 +26,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 import useModulos from '../composables/useModulos'
 
 const route = useRoute();
@@ -61,6 +61,6 @@ const seleccionarVista = (nombreVista) => {
     vistaSeleccionada.value = nombreVista;
 }
 
-const {obtenerDataModulo} = useModulos();
-obtenerDataModulo({id:route.params.id})
+const { obtenerDataModulo } = useModulos();
+obtenerDataModulo({ id: route.params.id })
 </script>

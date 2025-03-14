@@ -11,7 +11,7 @@
                 </section>
             </article>
         </template>
-        <NButton type="error" class="w-full">cerrar sesion</NButton>
+        <NButton type="error" class="w-full" @click="cerrarSesion">cerrar sesion</NButton>
     </NPopover>
 </template>
 
@@ -20,8 +20,20 @@ import { storeToRefs } from 'pinia';
 import useUsuarioStore from '@/modules/auth/stores/useUsuarioStore';
 import { ICONOS } from '../utils/iconos';
 import { NPopover, NButton } from 'naive-ui';
+import { useRouter } from 'vue-router';
+import useAuthStore from '@/modules/auth/stores/useAuthStore';
+import {VISTAS} from '@/modules/global/utils/vistas';
 
 // dependencias
 const usuarioStore = useUsuarioStore();
 const { usuarioNombreCompleto, usuarioPerfil } = storeToRefs(usuarioStore);
+const router = useRouter();
+const authStore = useAuthStore();
+
+// cerrar sesion
+const cerrarSesion = () => {
+    console.log("cerrando sesion")
+    authStore.cerrarSesion();
+    router.push({ name: VISTAS.LOGIN });
+}
 </script>
