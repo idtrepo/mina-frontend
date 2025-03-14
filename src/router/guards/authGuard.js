@@ -3,13 +3,10 @@ import { VISTAS } from "@/modules/global/utils/vistas"
 import useAutenticacion from '@/modules/auth/composables/useAutenticacion'
 import useTituloStore from "@/stores/useTituloStore";
 import {PERFILES} from "@/modules/global/utils/perfiles";
-import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
 
 export const autenticacionGuard = async (to, from, next) => {
-  const usuarioStore = useUsuarioStore();
-  const { autenticado, verificarSesion } = useAutenticacion();
+  const { autenticado, verificarSesion, usuarioPerfil,usuarioSucursal } = useAutenticacion();
   const tituloStore = useTituloStore();
-  const { usuarioPerfil, usuarioSucursal } = storeToRefs(usuarioStore);
   const { name: nombreVista, meta: dataVista = null } = to;
   await verificarSesion();
 
