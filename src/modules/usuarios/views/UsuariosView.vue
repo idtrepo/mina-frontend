@@ -4,10 +4,10 @@
         :numElementos="numeroElementos"
         :obtenerListado = "obtenerUsuarios"
         :reiniciarData = "reiniciarDataCreacion">
-        <template #buscador>
+        <template #formulario-buscar>
             <UsuariosBuscador/>
         </template>
-        <template #formulario>
+        <template #formulario-agregar>
             <UsuariosForm/>
         </template>
     </VListadoView>
