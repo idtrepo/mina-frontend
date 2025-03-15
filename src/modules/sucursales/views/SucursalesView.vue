@@ -4,10 +4,10 @@
         :numElementos="numeroElementos"
         :obtenerListado = "obtenerSucursales"
         :reiniciarData = "reiniciarDataCreacion">
-        <template #buscador>
+        <template #formulario-buscar>
             <SucursalesBuscador/>
         </template>
-        <template #formulario>
+        <template #formulario-agregar>
             <SucursalesForm/>
         </template>
     </VListadoView>
@@ -30,8 +30,8 @@ const { sucursalesListado, numeroElementos, obtenerSucursales, reiniciarDataCrea
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-const SucursalesForm = defineAsyncComponent(() => import('@/modules/sucursales/components/SucursalesForm.vue'));
-const SucursalesBuscador = defineAsyncComponent(() => import('@/modules/sucursales/components/SucursalesBuscador.vue'));
+const SucursalesForm = defineAsyncComponent(() => import('@/modules/sucursales/components/forms/SucursalesFormulario.vue'));
+const SucursalesBuscador = defineAsyncComponent(() => import('@/modules/sucursales/components/forms/SucursalesBuscador.vue'));
 
 onMounted(() => {
     Promise.allSettled([

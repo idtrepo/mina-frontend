@@ -30,6 +30,6 @@ const peticiones = ref([
 
 // componentes
 const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
-const SucursalFormBase = defineAsyncComponent(() => import('../components/forms/SucursalFormBase.vue'));
+const SucursalFormBase = defineAsyncComponent(() => import('../components/forms/SucursalesFormBase.vue'));
 
 </script>
