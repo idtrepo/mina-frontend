@@ -39,7 +39,7 @@ export default () => {
     }))
   );
 
-  const obtenerPerfiles = async ({ params = null }) => {
+  const obtenerPerfiles = async ({ params = null } = {}) => {
     try {
       const res = await obtenerElementos({ params });
       if (res) {

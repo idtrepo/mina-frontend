@@ -36,7 +36,7 @@ export default () => {
         accion: () => router.push({name:'sucursales-info', params: {id}})
     })));
 
-    const obtenerSucursales = async ({params = null}) => {
+    const obtenerSucursales = async ({params = null} = {}) => {
         try {
             const res = await obtenerElementos({params});
             if (res) {
@@ -65,9 +65,9 @@ export default () => {
         }
     };
 
-    const crearSucursal = async ({data}) => {
+    const crearSucursal = async () => {
         try {
-            const res = await crearElemento({data});
+            const res = await crearElemento({dataElemento: sucursal.value});
             if(res){
                 sucursalStore.asignarDataSucursal(res);
             }
