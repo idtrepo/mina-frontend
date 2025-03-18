@@ -1,35 +1,33 @@
 <template>
-    <VDataView
+    <VDataView 
         :peticiones="peticiones"
         :reiniciar-data="reiniciarDataSucursales"
         :habilitar-edicion="habilitarEdicion"
         :editar-elemento="editarSucursal">
         <template #formulario>
-            <SucursalFormBase />
-        </template>    
+            <SucursalesFormularioBase/>
+        </template>
     </VDataView>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { defineAsyncComponent } from 'vue'
-import { storeToRefs } from 'pinia'
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router';
+import { defineAsyncComponent, ref } from 'vue';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useClientes from '@/modules/clientes/composables/useClientes';
 
 // dependencias
-const route = useRoute()
-const {obtenerSucursal, editarSucursal, habilitarEdicion, reiniciarDataSucursales} = useSucursales();
-const {obtenerClientes} = useClientes();
-
-const peticiones = ref([
-    obtenerSucursal({id: route.params.id}),
-    obtenerClientes({params:{ listado: true }}),
-])
+const route = useRoute();
+const { obtenerSucursal, reiniciarDataSucursales, habilitarEdicion, editarSucursal } = useSucursales();
+const { obtenerClientes } = useClientes();
 
 // componentes
 const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
-const SucursalFormBase = defineAsyncComponent(() => import('../components/forms/SucursalFormBase.vue'));
+const SucursalesFormularioBase = defineAsyncComponent(() => import('../components/forms/SucursalesFormularioBase.vue'));
 
+// configuracion vista
+const peticiones = ref([
+    obtenerSucursal({ id: route.params.id }),
+    obtenerClientes({ params: { listado: true } })
+])
 </script>
