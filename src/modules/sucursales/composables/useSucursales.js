@@ -1,136 +1,125 @@
-import {computed, toValue} from 'vue';
-import {storeToRefs} from 'pinia';
-import useSucursalesStore from '../stores/useSucursalesStore';
-import { useRouter } from 'vue-router';
-import {SucursalesService} from '@/modules/sucursales/services/sucursalesService';
-import {ICONOS} from '@/modules/global/utils/iconos';
-import {evaluarSucursal} from '../schemas/sucursalesSchema';
-import useRequest from '@/composables/request/useRequest';
-import useFiltrosStore from '@/stores/useFiltrosStore';
-import useEdicionStore from '@/stores/useEdicionStore';
-import {VISTAS} from '@/modules/global/utils/vistas';
-import {reiniciarData} from '@/utils/reinicio';
-import useUsuarioStore from '@/stores/useUsuarioStore';
+import { computed, toValue } from "vue";
+import { storeToRefs } from "pinia";
+import useSucursalesStore from "../stores/useSucursalesStore";
+import { useRouter } from "vue-router";
+import { SucursalesService } from "@/modules/sucursales/services/sucursalesService";
+import { ICONOS } from "@/modules/global/utils/iconos";
+import { evaluarSucursal } from "../schemas/sucursalesSchema";
+import useRequest from "@/composables/request/useRequest";
+import useFiltrosStore from "@/stores/useFiltrosStore";
+import useEdicionStore from "@/stores/useEdicionStore";
+import { VISTAS } from "@/modules/global/utils/vistas";
+import { reiniciarData } from "@/utils/reinicio";
+import useUsuarioStore from "@/stores/useUsuarioStore";
 
 export default () => {
-    const router = useRouter();
-    const filtrosStore = useFiltrosStore();
-    const edicionStore = useEdicionStore();
-    const sucursalStore = useSucursalesStore();
-    const {editar, edicionHabilitada} = storeToRefs(edicionStore);
-    const {filtros, filtrosMapeados} = storeToRefs(filtrosStore);
-    const {sucursal, sucursales, numeroElementos, sucursalesOpciones} = storeToRefs(sucursalStore);
-    const {usuarioPerfilId} = useUsuarioStore();
+  const router = useRouter();
+  const filtrosStore = useFiltrosStore();
+  const edicionStore = useEdicionStore();
+  const sucursalStore = useSucursalesStore();
+  const { editar, edicionHabilitada } = storeToRefs(edicionStore);
+  const { filtros, filtrosMapeados } = storeToRefs(filtrosStore);
+  const { sucursal, sucursales, numeroElementos, sucursalesOpciones } =
+    storeToRefs(sucursalStore);
+  const { usuarioPerfilId } = useUsuarioStore();
 
-    const {obtenerElemento, obtenerElementos, crearElemento, editarElemento} = useRequest({
-        servicio: SucursalesService,
-        filtros: filtrosMapeados,
-        evaluacion: evaluarSucursal
+  const { obtenerElemento, obtenerElementos, crearElemento, editarElemento } =
+    useRequest({
+      servicio: SucursalesService,
+      filtros: filtrosMapeados,
+      evaluacion: evaluarSucursal,
     });
 
-    //listado de sucursales
-    const sucursalesListado = computed(() => sucursales.value.map(({id, nombre}) => ({
-        id,
-        titulo: nombre,
-        icono: ICONOS.SUCURSALES,
-        accion: () => router.push({name:'sucursales-info', params: {id}})
-    })));
+  //listado de sucursales
+  const sucursalesListado = computed(() =>
+    sucursales.value.map(({ id, nombre }) => ({
+      id,
+      titulo: nombre,
+      icono: ICONOS.SUCURSALES,
+      accion: () => router.push({ name: "sucursales-info", params: { id } }),
+    }))
+  );
 
-    const obtenerSucursales = async ({params = null}) => {
-        try {
-            const res = await obtenerElementos({params});
-            if (res) {
-                sucursalStore.asignarDataSucursales(res);
-            }
+  const obtenerSucursales = async ({ params = null } = {}) => {
+    const res = await obtenerElementos({ params });
 
-            return res;
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-    };
-
-    const obtenerSucursal = async ({id}) => {
-        try{
-            console.log(usuarioPerfilId.value)
-            const res = await obtenerElemento({id});
-            if(res){
-                sucursalStore.asignarDataSucursal(res.data);
-            }
-
-            return res;
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-    };
-
-    const crearSucursal = async ({data}) => {
-        try {
-            const res = await crearElemento({data});
-            if(res){
-                sucursalStore.asignarDataSucursal(res);
-            }
-
-            return res;
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-    };
-
-    const editarSucursal = async () => {
-        try {
-            const res = await editarElemento({dataElemento: sucursal.value});
-            if(res){
-                console.log(res)
-                sucursalStore.asignarDataSucursal(res);
-            }
-
-            return res;
-        } catch (err) {
-            console.log(err)
-            throw err;
-        }
-    };
-
-    const habilitarEdicion = () => {
-        edicionStore.habilitarEdicion();
-
-        if(editar.value){
-            edicionStore.guardarData(sucursal);
-        } else {
-            sucursal.value = edicionStore.borrarData();
-        }
-    };
-    
-    function reiniciarDataCreacion() {
-        sucursal.value = reiniciarData(toValue(sucursal));
+    if (res) {
+      sucursalStore.asignarDataSucursales(res);
     }
 
-    //reiniciar datos
-    function reiniciarDataSucursales() {
-        reiniciarDataCreacion();
-        filtrosStore.reiniciarFiltros();
-        edicionStore.reiniciarEdicion();
-        sucursales.value = [];
+    return res;
+  };
+
+  const obtenerSucursal = async ({ id }) => {
+    const res = await obtenerElemento({ id });
+
+    if (res) {
+      sucursalStore.asignarDataSucursal(res);
     }
 
-    return {
-        sucursal,
-        sucursales,
-        numeroElementos,
-        sucursalesOpciones,
-        sucursalesListado,
-        filtros,
-        editar,
-        edicionHabilitada,
-        obtenerSucursales,
-        obtenerSucursal,
-        crearSucursal,
-        editarSucursal,
-        habilitarEdicion,
-        reiniciarDataCreacion,
-        reiniciarDataSucursales
+    return res;
+  };
+
+  const crearSucursal = async () => {
+    const res = await crearElemento({ dataElemento: sucursal });
+
+    if (res) {
+      reiniciarDataCreacion();
+      await obtenerSucursales();
     }
-}
+
+    return res;
+  };
+
+  const editarSucursal = async () => {
+    const res = await editarElemento({ dataElemento: sucursal });
+
+    if (res) {
+      editar.value = false;
+      const { data: sucursal } = res;
+      await obtenerSucursal(sucursal);
+    }
+
+    return res;
+  };
+
+  const habilitarEdicion = () => {
+    edicionStore.habilitarEdicion();
+
+    if (editar.value) {
+      edicionStore.guardarData(sucursal);
+    } else {
+      sucursal.value = edicionStore.borrarData();
+    }
+  };
+
+  function reiniciarDataCreacion() {
+    sucursal.value = reiniciarData(toValue(sucursal));
+  }
+
+  //reiniciar datos
+  function reiniciarDataSucursales() {
+    reiniciarDataCreacion();
+    filtrosStore.reiniciarFiltros();
+    edicionStore.reiniciarEdicion();
+    sucursales.value = [];
+  }
+
+  return {
+    sucursal,
+    sucursales,
+    numeroElementos,
+    sucursalesOpciones,
+    sucursalesListado,
+    filtros,
+    editar,
+    edicionHabilitada,
+    obtenerSucursales,
+    obtenerSucursal,
+    crearSucursal,
+    editarSucursal,
+    habilitarEdicion,
+    reiniciarDataCreacion,
+    reiniciarDataSucursales,
+  };
+};
