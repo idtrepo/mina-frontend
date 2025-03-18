@@ -37,7 +37,7 @@ export default () => {
         accion: () => router.push({name: VISTAS.USUARIOS_DATA,  params: {id}})
     })));
 
-    const obtenerUsuarios = async ({params = null}) => {
+    const obtenerUsuarios = async ({params = null} = {}) => {
         try {
             const res = await obtenerElementos({params});
             if (res) {
@@ -66,9 +66,9 @@ export default () => {
         }
     };
 
-    const crearUsuario = async ({data}) => {
+    const crearUsuario = async () => {
         try{
-            const res = await crearElemento({data});
+            const res = await crearElemento({dataElemento: usuario.value});
             if(res){
                 usuarioStore.agregarUsuario(res);
             }
