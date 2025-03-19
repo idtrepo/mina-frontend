@@ -1,13 +1,13 @@
 <template>
     <section>
-        <header class="flex justify-end">
+        <header class="md:mb-5 flex justify-end">
            <VBotonesData
                 :idElemento="id"
                 :editarElemento="editarElemento"
                 :habilitarEdicion="habilitarEdicion"
             />
         </header>
-        <section class="pt-5">
+        <section class="p-5 bg-slate-900 rounded-lg">
             <slot name="formulario"></slot>
         </section>
     </section>
