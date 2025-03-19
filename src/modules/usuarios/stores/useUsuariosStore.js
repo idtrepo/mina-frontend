@@ -26,10 +26,10 @@ export default defineStore('usuarios-store', () => {
         usuario.value.nombre = nombre;
         usuario.value.apellido = apellido;
         usuario.value.correo = correo;
-        usuario.value.idCliente = cliente.id;
-        usuario.value.idArea = area.id;
-        usuario.value.idPerfil = perfil.id;
-        usuario.value.idSucursal = sucursal.id;
+        usuario.value.idCliente = cliente?.id ?? null;
+        usuario.value.idArea = area?.id ?? null;
+        usuario.value.idPerfil = perfil?.id ?? null;
+        usuario.value.idSucursal = sucursal?.id ?? null;
     };
 
     return {

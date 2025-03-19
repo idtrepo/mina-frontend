@@ -43,9 +43,9 @@ export default () => {
 
     if (res) {
       perfilesStore.asignarDataPerfiles(res);
-
-      return res;
     }
+    
+    return res;
   };
 
   const obtenerPerfil = async ({ id }) => {
