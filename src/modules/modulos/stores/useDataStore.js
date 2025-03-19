@@ -5,9 +5,9 @@ export default defineStore('data', () => {
     const datos = ref([]);
     const numeroElementos = ref(1);
 
-    const asignarData = ({ data, resultados }) => {
-        datos.value = data;
-        numeroElementos.value = resultados;
+    const asignarData = ({ elemento, numElementos }) => {
+        datos.value = elemento;
+        numeroElementos.value = numElementos;
     }
     
     return {

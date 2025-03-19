@@ -9,15 +9,16 @@ import { COLORES } from '../utils/colores';
 
 export default () => {
     const filtrosStore = useFiltrosStore();
-    const {filtroMapeados} = storeToRefs(filtrosStore);
+    const {filtros, filtroMapeados} = storeToRefs(filtrosStore);
     const {obtenerElementoData} = useRequest({servicio: ModulosService, filtro: filtroMapeados, evaluacion:evaluarModulo});
     const dataStore = useDataStore()
     const {datos, numeroElementos} = storeToRefs(dataStore);
+    
     const obtenerDataModulo = async ({id}) => {
         try {
             const res = await obtenerElementoData({id});
             if (res) {
-                dataStore.asignarData(res.data);
+                dataStore.asignarData(res.data.data);
             }
 
             return res;
@@ -33,13 +34,14 @@ export default () => {
     ));
 
     const etiquetasSensores = computed(() => {
+        if(!datosSensores.value) return [];
         const [ dataSensor ] = datosSensores.value
             .filter(({ data }) => data.length === mayorLongitud.value);
         const data = dataSensor?.data ?? []
         return data?.map(({ creado }) => creado)?.reverse();
     });
 
-    const dataSensores = computed(() => datosSensores.value.map(({ data, clave }) => {
+    const dataSensores = computed(() => datosSensores.value ? datosSensores.value.map(({ data, clave }) => {
         if(data.length === 0) return {
             label: clave,
             data
@@ -50,7 +52,7 @@ export default () => {
             data: data.map(({ valor }) => valor).reverse(), 
             backgroundColor: COLORES,
         };
-    }));
+    }) : []);
 
     const dataModulo = computed(() => ({
         labels: etiquetasSensores.value,
@@ -60,6 +62,7 @@ export default () => {
     return{
         dataModulo,
         obtenerDataModulo,
-        numeroElementos
+        numeroElementos,
+        filtros
     }
 }

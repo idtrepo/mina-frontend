@@ -1,8 +1,8 @@
 <template>
-    <div class="pt-2">
+    <div >
         <header class="flex items-center justify-end">
             <div class="fixed right-4 bottom-32 lg:static">
-                <VBoton :="configuracionBoton"/>
+                <VBoton :funcionAccion="mostrarModalBuscar"/>
             </div>
         </header>
         <section class="pt-2">
@@ -22,29 +22,34 @@
         </section>
     </div>
 
-    <ModulosBuscadorAnalisis/>
+    <NModal v-model:show="verModalBuscar" preset="card" title="Buscar Datos">
+        <ModulosBuscadorAnalisis @close="verBuscador = false"/>
+    </NModal>
 </template>
 
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, provide,defineAsyncComponent, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { onMounted, onUnmounted } from 'vue'
 import { LineChart, useLineChart } from 'vue-chart-3'
 import { Chart, registerables } from 'chart.js'
-import { defineAsyncComponent } from 'vue'
 import { ICONOS } from '@/modules/global/utils/iconos'
 import useSensoresStore from '../stores/useSensoresStore'
 import useFiltrosStore from '@/stores/useFiltrosStore'
 import useModulos from '../composables/useModulos'
 import useData from '../composables/useData'
+import {NModal} from 'naive-ui'
+import useModales from '@/composables/modales/useModales';
 
 // dependencias
 const route = useRoute();
 const sensoresStore = useSensoresStore();
 const {filtros} = useFiltrosStore();
 const { reiniciarDataModulos} = useModulos();
-const { dataModulo, obtenerDataModulo,numeroElementos } = useData();
-let intervalId
+const { obtenerDataModulo, dataModulo, numeroElementos } = useData();
+let intervalId;
+const { id } = route.params;
+obtenerDataModulo({id})
+const { verModal: verModalBuscar, mostrarModal: mostrarModalBuscar } = useModales();
 
 // componentes
 const VBoton = defineAsyncComponent(() => import('@/modules/global/components/VBoton.vue'));
@@ -81,7 +86,6 @@ provide('modales', { verBuscador });
 
 //lifecycle 
 onMounted(() => {
-    const { id } = route.params;
 
     intervalId = setInterval(() => { 
         obtenerDataModulo({id})
