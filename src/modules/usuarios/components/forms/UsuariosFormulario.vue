@@ -15,7 +15,7 @@ const { crearUsuario } = useUsuarios();
 
 // componentes
 const VFormularioBase = defineAsyncComponent(() => import('@/components/forms/VFormularioBase.vue'));
-const UsuariosFormularioBase = defineAsyncComponent(() => import('./UsuarioFormularioAgregarBase.vue'));
+const UsuariosFormularioBase = defineAsyncComponent(() => import('./UsuariosFormularioBase.vue'));
 
 // configuracion formulario
 const confFormulario = ref({
