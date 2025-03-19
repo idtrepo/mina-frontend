@@ -73,6 +73,7 @@ export default defineStore('sensores', () => {
             throw err;
         }
     }
+    const sensoresOpciones = computed(() => sensores.value.map(({ clave, id }) => ({ label: clave, value: id })));
 
     return {
         sensores,
@@ -81,6 +82,7 @@ export default defineStore('sensores', () => {
         filtros,
         filtroActivo,
         numResultados,
+        sensoresOpciones,
         obtenerSensores,
         crearSensor,
         editarSensor,
