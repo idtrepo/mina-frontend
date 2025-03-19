@@ -14,7 +14,7 @@ export default () => {
     const dialog = useDialog();
     const route = useRoute();
     const sensoresStore = useSensoresStore();
-    const { filtros, sensoresData, sensores } = storeToRefs(sensoresStore);
+    const { filtros, sensoresData, sensores, sensoresOpciones } = storeToRefs(sensoresStore);
 
     //crear sensor
     const sensor = ref({
@@ -138,7 +138,7 @@ export default () => {
         sensor,
         columnas,
         sensoresData,
-
+        sensoresOpciones,
         crearSensor,
     }
 }
