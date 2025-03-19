@@ -1,4 +1,4 @@
-import { ref, computed, toValue } from "vue";
+import { computed, toValue } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { PerfilesService } from "@/modules/perfiles/services/perfilesService";
@@ -12,7 +12,6 @@ import useRequest from "@/composables/request/useRequest";
 import { VISTAS } from "@/modules/global/utils/vistas";
 
 export default () => {
-
   const router = useRouter();
   const filtrosStore = useFiltrosStore();
   const edicionStore = useEdicionStore();
@@ -40,43 +39,34 @@ export default () => {
   );
 
   const obtenerPerfiles = async ({ params = null } = {}) => {
-    try {
-      const res = await obtenerElementos({ params });
-      if (res) {
-        perfilesStore.asignarDataPerfiles(res);
-      }
+    const res = await obtenerElementos({ params });
 
-      return res;
-    } catch (err) {
-      console.log(err)
-      throw err;
+    if (res) {
+      perfilesStore.asignarDataPerfiles(res);
     }
+    
+    return res;
   };
 
   const obtenerPerfil = async ({ id }) => {
-    try {
-      const res = await obtenerElemento({ id });
-      if(res) {
-        perfilesStore.asignarDataPerfil(res.data);
-      }
-      return res;
-    } catch (err) {
-      throw err;
+    const res = await obtenerElemento({ id });
+
+    if (res) {
+      perfilesStore.asignarDataPerfil(res);
     }
+
+    return res;
   };
 
-  const crearPerfil = async ({ data }) => {
-    try {
-      const res = await request.crearElemento({ dataElemento: perfil });
+  const crearPerfil = async () => {
+    const res = await crearElemento({ dataElemento: perfil });
 
-      if(res){
-        reiniciarDataCreacion();
-        await obtenerPerfiles();
-      }
-      return res;
-    } catch (err) {
-      throw err;
+    if (res) {
+      reiniciarDataCreacion();
+      await obtenerPerfiles();
     }
+
+    return res;
   };
 
   const habilitarEdicion = () => {
@@ -90,12 +80,15 @@ export default () => {
   };
 
   const editarPerfil = async () => {
-    try {
-      const res = await editarElemento({dataElemento: perfil.value});
-      return res;
-    } catch (err) {
-      throw err;
+    const res = await editarElemento({ dataElemento: perfil });
+
+    if (res) {
+      editar.value = false;
+      const { data: perfil } = res;
+      await obtenerPerfil(perfil);
     }
+
+    return res;
   };
 
   // reiniciar datos

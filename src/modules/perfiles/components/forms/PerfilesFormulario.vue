@@ -1,25 +1,25 @@
 <template>
     <VFormularioBase :="confFormulario">
         <template #contenido>
-            <SucursalesFormularioBase/>
+            <PerfilesFormularioBase/>
         </template>
     </VFormularioBase>
 </template>
 
 <script setup>
 import { ref, defineAsyncComponent } from 'vue';
-import useSucursales from '../../composables/useSucursales';
+import usePerfiles from '../../composables/usePerfiles';
 
 // dependencias
-const { crearSucursal } = useSucursales();
+const { crearPerfil } = usePerfiles();
 
 // componentes
 const VFormularioBase = defineAsyncComponent(() => import('@/components/forms/VFormularioBase.vue'));
-const SucursalesFormularioBase = defineAsyncComponent(() => import('./SucursalesFormularioBase.vue'));
+const PerfilesFormularioBase = defineAsyncComponent(() => import('./PerfilesFormularioBase.vue'));
 
 // configuracion formulario
 const confFormulario = ref({
     tituloBoton: 'crear',
-    accionFormulario: crearSucursal,
+    accionFormulario: crearPerfil,
 })
 </script>

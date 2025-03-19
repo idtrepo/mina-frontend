@@ -3,52 +3,42 @@
         :elementos="sucursalesListado"
         :numElementos="numeroElementos"
         :obtenerListado = "obtenerSucursales"
-        :reiniciarData = "reiniciarDataCreacion">
+        :reiniciarData = "reiniciarDataCreacion"
+        >
         <template #formulario-buscar>
             <SucursalesBuscador/>
         </template>
         <template #formulario-agregar>
-            <SucursalesForm/>
+            <SucursalesFormulario/>
         </template>
     </VListadoView>
 </template>
 
 <script setup>
-import { onMounted, provide, onUnmounted } from 'vue'
-import { storeToRefs } from 'pinia';
+import { onUnmounted, onMounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import useSucursales from '../composables/useSucursales';
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useClientes from '@/modules/clientes/composables/useClientes';
-import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
-
 
 // dependencias
-const usuarioStore = useUsuarioStore();
-const clientesStore = useClientes();
-const {usuarioPerfil} = storeToRefs(usuarioStore)
-const { sucursalesListado, numeroElementos, obtenerSucursales, reiniciarDataCreacion, reiniciarDataSucursales } = useSucursales();
+const { sucursalesListado, numeroElementos, obtenerSucursales, reiniciarDataSucursales, reiniciarDataCreacion } = useSucursales();
+const { obtenerClientes } = useClientes();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-const SucursalesForm = defineAsyncComponent(() => import('@/modules/sucursales/components/forms/SucursalesFormulario.vue'));
-const SucursalesBuscador = defineAsyncComponent(() => import('@/modules/sucursales/components/forms/SucursalesBuscador.vue'));
+const SucursalesBuscador = defineAsyncComponent(() => import('../components/forms/SucursalesBuscador.vue'));
+const SucursalesFormulario = defineAsyncComponent(() => import('../components/forms/SucursalesFormulario.vue'));
 
+// ciclo de vida
 onMounted(() => {
     Promise.allSettled([
-        obtenerSucursales({params:{ listado: true }})
+        obtenerClientes(),
     ])
         .then(console.log)
         .catch(console.log);
-        const obtenerClientes = async () => {
-        if(usuarioPerfil.value === "superusuario"){
-            await clientesStore.obtenerClientes({params:{ listado: true }})
-            console.log("clientesobtenidos")
-        }
-    }
-    obtenerClientes();
 });
 
 onUnmounted(() => {
-    reiniciarDataSucursales();
+    reiniciarDataSucursales()
 })
 </script>
