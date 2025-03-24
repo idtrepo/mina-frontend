@@ -1,12 +1,12 @@
 <template>
     <VListadoView :elementos="categoriasListado" :numElementos="numeroElementos" :obtenerListado="obtenerCategorias"
         :reiniciarData="reiniciarDataCreacion">
-        <!-- <template #formulario-buscar>
-            <PerfilesBuscador />
+        <template #formulario-buscar>
+            <CategoriasBuscador />
         </template>
         <template #formulario-agregar>
-            <PerfilesFormulario />
-        </template> -->
+            <CategoriasFormulario />
+        </template> 
     </VListadoView>
 </template>
 
@@ -20,8 +20,8 @@ const { categoriasListado, numeroElementos, obtenerCategorias, reiniciarDataCrea
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-// const PerfilesBuscador = defineAsyncComponent(() => import('../components/forms/PerfilesBuscador.vue'));
-// const PerfilesFormulario = defineAsyncComponent(() => import('../components/forms/PerfilesFormulario.vue'));
+const CategoriasBuscador = defineAsyncComponent(() => import('../components/forms/categorias/CategoriasBuscador.vue'));
+const CategoriasFormulario = defineAsyncComponent(() => import('../components/forms/categorias/CategoriasFormulario.vue'));
 
 // ciclo de vida
 onUnmounted(() => {
