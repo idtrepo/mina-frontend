@@ -6,7 +6,7 @@ import { ICONOS } from "@/modules/global/utils/iconos";
 import usePerfilesStore from "../stores/usePerfilesStore";
 import useFiltrosStore from "@/stores/useFiltrosStore";
 import useEdicionStore from "@/stores/useEdicionStore";
-import { evaluarPerfil } from "../schemas/perfiles";
+import { evaluarPerfil } from "../schemas/perfilesSchema";
 import { reiniciarData } from "@/utils/reinicio";
 import useRequest from "@/composables/request/useRequest";
 import { VISTAS } from "@/modules/global/utils/vistas";
@@ -44,7 +44,7 @@ export default () => {
     if (res) {
       perfilesStore.asignarDataPerfiles(res);
     }
-    
+
     return res;
   };
 
@@ -54,6 +54,9 @@ export default () => {
     if (res) {
       perfilesStore.asignarDataPerfil(res);
     }
+
+    console.log("obteniendo info del perfil");
+    console.log(res);
 
     return res;
   };

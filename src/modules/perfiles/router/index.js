@@ -1,25 +1,57 @@
-import { ICONOS } from '@/modules/global/utils/iconos'
-import { PERFILES } from '@/modules/global/utils/perfiles'
+import { ICONOS } from "@/modules/global/utils/iconos";
+import { PERFILES } from "@/modules/global/utils/perfiles";
 
 export default {
-    path: '/perfiles',
-    name: 'perfiles',
-    component: () => import('@/modules/perfiles/layouts/PerfilesLayout.vue'),
-    meta: {
-        icono: ICONOS.PERFILES,
-        titulo: 'perfiles',
-        perfil: [PERFILES.SUPER_USUARIO]
+  path: "/perfiles",
+  name: "perfiles",
+  component: () => import("@/modules/perfiles/layouts/PerfilesLayout.vue"),
+  meta: {
+    icono: ICONOS.PERFILES,
+    titulo: "perfiles",
+    perfil: [PERFILES.SUPER_USUARIO],
+  },
+  children: [
+    {
+      path: "",
+      name: "perfiles-listado",
+      component: () => import("@/modules/perfiles/views/PerfilesView.vue"),
     },
-    children: [
-        {
-            path: '',
-            name: 'perfiles-listado',
-            component: () => import('@/modules/perfiles/views/PerfilesView.vue')
-        },
-        {
-            path: ':id',
-            name: 'perfiles-data',
-            component: () => import('@/modules/perfiles/views/PerfilesDataView.vue')
-        },
-    ]
-}
+    {
+      path: ":id",
+      name: "perfiles-data",
+      component: () => import("@/modules/perfiles/views/PerfilesDataView.vue"),
+    },
+    {
+      path: "acciones",
+      name: "acciones-listado",
+      meta: {
+        icono: ICONOS.ACCIONES,
+        titulo: "acciones",
+      },
+      component: () => import("@/modules/perfiles/views/AccionesView.vue"),
+    },
+    {
+      path: "categorias",
+      name: "categorias-listado",
+      meta: {
+        icono: ICONOS.CATEGORIAS,
+        titulo: "categorias",
+      },
+      component: () => import("@/modules/perfiles/views/CategoriasView.vue"),
+    },
+    {
+      path: "permisos",
+      name: "permisos-listado",
+      meta: {
+        icono: ICONOS.PERMISOS,
+        titulo: "permisos",
+      },
+      component: () => import("@/modules/perfiles/views/PermisosView.vue"),
+    },
+    {
+      path: "menu",
+      name: "perfiles-menu",
+      component: () => import("@/modules/perfiles/views/PerfilesMenuView.vue"),
+    },
+  ],
+};

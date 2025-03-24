@@ -1,7 +1,7 @@
 <template>
     <template v-if="props.accion">
         <article @click="props.accion"
-            class="flex items-center justify-between p-3 bg-slate-900 rounded-md duration-200 transition-all hover:cursor-pointer hover:bg-slate-700">
+            class="flex items-center justify-between p-3 bg-slate-800/80 rounded-md duration-200 transition-all hover:cursor-pointer hover:bg-slate-700 shadow-md">
             <header class="flex items-center">
                 <div class="mr-3 flex items-center justify-center w-8 h-8 bg-emerald-700 rounded-lg">
                     <i :class="icono"></i>
@@ -18,7 +18,7 @@
     </template>
     <template v-else>
         <article
-            class="flex items-center justify-between p-3 bg-slate-900 rounded-md duration-200 transition-all hover:cursor-pointer hover:bg-slate-700">
+            class="flex items-center justify-between p-3 bg-slate-800/80 rounded-md duration-200 transition-all hover:cursor-pointer hover:bg-slate-700 shadow-md">
             <header class="flex items-center">
                 <div class="mr-3 flex items-center justify-center w-8 h-8 bg-emerald-700 rounded-lg">
                     <i :class="icono"></i>

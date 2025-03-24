@@ -7,8 +7,13 @@
                 :habilitarEdicion="habilitarEdicion"
             />
         </header>
-        <section class="p-5 bg-slate-900 rounded-lg">
-            <slot name="formulario"></slot>
+        <section class="p-5 bg-gray-800/50 rounded-lg">
+            <section>
+                <slot name="formulario"></slot>
+            </section>
+            <footer>
+                <slot name="extra"></slot>
+            </footer>
         </section>
     </section>
 </template>
