@@ -2,13 +2,13 @@
     <div >
         <header class="flex items-center justify-end">
             <div class="fixed right-4 bottom-32 lg:static">
-                <VBoton :funcionAccion="mostrarModalBuscar"/>
+                <VBoton :="configuracionBoton"/>
             </div>
         </header>
         <section class="pt-2">
             <template v-if="numeroElementos > 0">
                 <div class="p-3 bg-slate-200 rounded-md">
-                    <LineChart :="lineChartProps"/>
+                    <LineChart :key="dataModulo.datasets.length" :="lineChartProps"/>
                 </div>
             </template>
             <template v-else>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, provide,defineAsyncComponent, onMounted, onUnmounted } from 'vue'
+import { ref, defineAsyncComponent, onMounted, onUnmounted, onUpdated } from 'vue'
 import { useRoute } from 'vue-router'
 import { LineChart, useLineChart } from 'vue-chart-3'
 import { Chart, registerables } from 'chart.js'
@@ -48,7 +48,9 @@ const { reiniciarDataModulos} = useModulos();
 const { obtenerDataModulo, dataModulo, numeroElementos } = useData();
 let intervalId;
 const { id } = route.params;
-obtenerDataModulo({id})
+filtros.modulo = id;
+obtenerDataModulo();
+
 const { verModal: verModalBuscar, mostrarModal: mostrarModalBuscar } = useModales();
 
 // componentes
@@ -73,32 +75,20 @@ const configuracionBoton = ref({
     titulo: 'buscar',
     icono: ICONOS.BUSCAR,
     tipo: 'advertencia',
-    funcionAccion: mostrarBuscador,
+    funcionAccion: mostrarModalBuscar,
 });
 
-const verBuscador = ref(false);
-
-function mostrarBuscador(){
-    verBuscador.value = true;
-}
-
-provide('modales', { verBuscador });
-
-//lifecycle 
+// lifecycle 
 onMounted(() => {
-
-    intervalId = setInterval(() => { 
-        obtenerDataModulo({id})
-            .then(console.log)
-            .catch(console.log)
-    }, 5000)
-    
     filtros.modulo = id
-
     sensoresStore.obtenerSensores()
         .then(console.log)
         .catch(console.log)
 });
+
+onUpdated(() => {
+    filtros.modulo = id;
+})
 
 onUnmounted(() => {
     numeroElementos.value = 0;
