@@ -40,18 +40,23 @@ export default {
       component: () => import("@/modules/perfiles/views/CategoriasView.vue"),
     },
     {
-      path: "permisos",
-      name: "permisos-listado",
+      path: "operaciones",
+      name: "operaciones-listado",
       meta: {
         icono: ICONOS.PERMISOS,
-        titulo: "permisos",
+        titulo: "operaciones",
       },
-      component: () => import("@/modules/perfiles/views/PermisosView.vue"),
+      component: () => import("@/modules/perfiles/views/OperacionesView.vue"),
     },
     {
       path: "menu",
       name: "perfiles-menu",
       component: () => import("@/modules/perfiles/views/PerfilesMenuView.vue"),
+    },
+    {
+      path: "operaciones/:id",
+      name: "operaciones-data",
+      component: () => import("@/modules/perfiles/views/OperacionesDataView.vue"),
     },
   ],
 };

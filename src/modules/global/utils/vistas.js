@@ -12,9 +12,11 @@ export const VISTAS = {
   PERFILES_ACCIONES: "acciones-listado",
   PERFILES_CATEGORIAS: "categorias-listado",
   PERFILES_PERMISOS: "permisos-listado",
+  PERFILES_OPERACIONES: "operaciones-listado",
   SENSORES: "sensores-listado",
   SUCURSALES: "sucursales-listado",
   SUCURSALES_DATA: "sucursales-data",
   USUARIOS: "usuarios-listado",
   USUARIOS_DATA: "usuarios-data",
+  OPERACIONES_DATA: "operaciones-data",
 };
