@@ -1,12 +1,12 @@
 <template>
     <VListadoView :elementos="accionesListado" :numElementos="numeroElementos" :obtenerListado="obtenerAcciones"
         :reiniciarData="reiniciarDataCreacion">
-        <!-- <template #formulario-buscar>
-            <PerfilesBuscador />
+        <template #formulario-buscar>
+            <AccionesBuscador />
         </template>
         <template #formulario-agregar>
-            <PerfilesFormulario />
-        </template> -->
+            <AccionesFormulario />
+        </template> 
     </VListadoView>
 </template>
 
@@ -20,8 +20,8 @@ const { accionesListado, numeroElementos, obtenerAcciones, reiniciarDataCreacion
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
-// const PerfilesBuscador = defineAsyncComponent(() => import('../components/forms/PerfilesBuscador.vue'));
-// const PerfilesFormulario = defineAsyncComponent(() => import('../components/forms/PerfilesFormulario.vue'));
+const AccionesBuscador = defineAsyncComponent(() => import('../components/forms/acciones/AccionesBuscador.vue'));
+const AccionesFormulario = defineAsyncComponent(() => import('../components/forms/acciones/AccionesFormulario.vue'));
 
 // ciclo de vida
 onUnmounted(() => {
