@@ -24,8 +24,8 @@ const listado = ref([
     },
     {
         icono: ICONOS.PERMISOS,
-        titulo: 'permisos',
-        accion: () => router.push({ name: VISTAS.PERFILES_PERMISOS })
+        titulo: 'operaciones',
+        accion: () => router.push({ name: VISTAS.PERFILES_OPERACIONES })
     },
     {
         icono: ICONOS.CATEGORIAS,
