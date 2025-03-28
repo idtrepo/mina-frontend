@@ -1,6 +1,6 @@
 <template>
     <VDataView :peticiones="peticiones" :reiniciar-data="reiniciarDataPerfiles" :habilitar-edicion="habilitarEdicion"
-        :editar-elemento="editarPerfil">
+        :editar-elemento="editarPerfilPermisos">
         <template #formulario>
             <PerfilesFormularioBase />
         </template>
@@ -19,7 +19,7 @@
 
 <script setup>
 import { useRoute } from 'vue-router';
-import { defineAsyncComponent, ref, onMounted, h, computed } from 'vue';
+import { defineAsyncComponent, ref, onMounted, h, computed, toRaw } from 'vue';
 import { storeToRefs } from 'pinia'
 import usePerfiles from '../composables/usePerfiles';
 import useCategorias from '../composables/useCategorias';
@@ -32,12 +32,13 @@ import useUsuarioStore from '@/stores/useUsuarioStore';
 // dependencias
 const route = useRoute();
 const usuarioStore = useUsuarioStore();
-const { obtenerPerfil, reiniciarDataPerfiles, habilitarEdicion, editarPerfil, edicionHabilitada } = usePerfiles();
+const { obtenerPerfil, reiniciarDataPerfiles, habilitarEdicion, editarPerfil, edicionHabilitada, perfil } = usePerfiles();
 const { categorias, obtenerCategorias } = useCategorias();
 const { permisos, obtenerPermisos } = usePermisos();
 const { acciones, obtenerAcciones } = useAcciones();
 const { usuarioPerfilId } = storeToRefs(usuarioStore);
-
+//copia de acciones sin reactividad
+let accionesIniciales;
 // componentes
 const VDataView = defineAsyncComponent(() => import('@/views/detalles/VDataView.vue'));
 const PerfilesFormularioBase = defineAsyncComponent(() => import('../components/forms/PerfilesFormularioBase.vue'));
@@ -54,6 +55,21 @@ const dataCategorias = computed(() => categorias.value.map(({ id, nombre }) => {
         permisos: listadoAcciones,
     }
 }));
+
+const editarPerfilPermisos = ({id}) => {
+    try {
+        const accionesModificadas = acciones.value.filter(({ asignar }, index) => {
+        const accionInicial = accionesIniciales[index]; 
+        return asignar !== accionInicial.asignar;
+        }).map(({ id, asignar }) => ({ idAccion:id, estatus:asignar }));
+
+        perfil.value["acciones"] = accionesModificadas;
+
+        editarPerfil();
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 const columnas = ref([
     {
@@ -131,12 +147,6 @@ const columnas = ref([
     },
 ]);
 
-const data = ref([
-    {
-        categoria: 'categoria 1',
-    }
-]);
-
 // configuracion vista
 const peticiones = ref([
     obtenerPerfil({ id: route.params.id }),
@@ -150,6 +160,7 @@ onMounted(() => {
         await obtenerCategorias({ params: { listado: true } });
         await obtenerPermisos({ params: { listado: true, perfil: id } });
         await obtenerAcciones({ params: { listado: true } }, permisos);
+        accionesIniciales = JSON.parse(JSON.stringify(acciones.value));
     };
 
     obtenerRegistros();
