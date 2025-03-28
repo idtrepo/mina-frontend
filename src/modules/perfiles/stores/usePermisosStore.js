@@ -17,7 +17,8 @@ export default defineStore("permisos-store", () => {
   );
 
   const asignarDataPermisos = ({ data, resultados }) => {
-    permisos.value = data.map(({ perfil, accion }) => ({
+    permisos.value = data.map(({ perfil, accion, id }) => ({
+      id,
       perfil,
       accion: { ...accion, agregar: false },
     }));
