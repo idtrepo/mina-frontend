@@ -83,12 +83,13 @@ export default () => {
   };
 
   const editarPerfil = async () => {
-    const res = await editarElemento({ dataElemento: perfil });
+
+    const res = await editarElemento({ dataElemento: perfil.value });
 
     if (res) {
       editar.value = false;
-      const { data: perfil } = res;
-      await obtenerPerfil(perfil);
+      const { id } = res.data[0];
+      await obtenerPerfil({id});
     }
 
     return res;
