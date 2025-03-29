@@ -6,7 +6,7 @@ import { ICONOS } from "@/modules/global/utils/iconos";
 import usePerfilesStore from "../stores/usePerfilesStore";
 import useFiltrosStore from "@/stores/useFiltrosStore";
 import useEdicionStore from "@/stores/useEdicionStore";
-import { evaluarPerfil } from "../schemas/perfiles";
+import { evaluarPerfil } from "../schemas/perfilesSchema";
 import { reiniciarData } from "@/utils/reinicio";
 import useRequest from "@/composables/request/useRequest";
 import { VISTAS } from "@/modules/global/utils/vistas";
@@ -44,7 +44,7 @@ export default () => {
     if (res) {
       perfilesStore.asignarDataPerfiles(res);
     }
-    
+
     return res;
   };
 
@@ -54,6 +54,9 @@ export default () => {
     if (res) {
       perfilesStore.asignarDataPerfil(res);
     }
+
+    console.log("obteniendo info del perfil");
+    console.log(res);
 
     return res;
   };
@@ -80,12 +83,13 @@ export default () => {
   };
 
   const editarPerfil = async () => {
-    const res = await editarElemento({ dataElemento: perfil });
+
+    const res = await editarElemento({ dataElemento: perfil.value });
 
     if (res) {
       editar.value = false;
-      const { data: perfil } = res;
-      await obtenerPerfil(perfil);
+      const { id } = res.data[0];
+      await obtenerPerfil({id});
     }
 
     return res;
