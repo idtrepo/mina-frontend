@@ -1,13 +1,13 @@
 <template>
     <section class="w-full h-full">
         <header class="flex gap-x-3 items-center justify-between">
-            <button @click="() => seleccionarComponente('ModulosDataInfoView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+            <button @click="() => seleccionarComponente('ModulosDataInfoView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600" :class="{ 'bg-orange-600': componente === 'ModulosDataInfoView' }" >
                 <span class="text-slate-100 uppercase font-bold">modulo</span>
             </button>
-            <button @click="() => seleccionarComponente('ModulosDataAnalisisView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+            <button @click="() => seleccionarComponente('ModulosDataAnalisisView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600" :class="{ 'bg-orange-600': componente === 'ModulosDataAnalisisView' }" >
                 <span class="text-slate-100 uppercase font-bold">analisis</span>
             </button>
-            <button @click="() => seleccionarComponente('ModulosDataSensoresView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
+            <button @click="() => seleccionarComponente('ModulosDataSensoresView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600" :class="{ 'bg-orange-600': componente === 'ModulosDataSensoresView' }" >
                 <span class="text-slate-100 uppercase font-bold">sensores</span>
             </button>
         </header>

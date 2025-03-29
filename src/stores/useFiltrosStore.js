@@ -17,7 +17,9 @@ export default defineStore("filtros-store", () => {
     sucursal: null,
     cliente: null,
     area: null,
-    categoria:null,
+    categoria: null,
+    sensor: null,
+
   });
 
   const filtrosActivos = computed(
@@ -35,7 +37,8 @@ export default defineStore("filtros-store", () => {
       !!filtros.value.sucursal ||
       !!filtros.value.cliente ||
       !!filtros.value.area  ||
-      !!filtros.value.categoria
+      !!filtros.value.categoria ||
+      !!filtros.value.sensor
   );
 
   const filtrosMapeados = computed(() => ({
