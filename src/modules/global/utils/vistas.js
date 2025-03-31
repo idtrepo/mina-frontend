@@ -19,4 +19,6 @@ export const VISTAS = {
   USUARIOS: "usuarios-listado",
   USUARIOS_DATA: "usuarios-data",
   OPERACIONES_DATA: "operaciones-data",
+  SUCURSALES_INFO: "sucursales-info",
+  
 };
