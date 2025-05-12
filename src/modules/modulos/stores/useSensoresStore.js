@@ -1,90 +1,42 @@
-import { ref, computed, toValue } from 'vue'
-import { defineStore } from 'pinia'
-import sensoresService from '@/modules/modulos/services/sensoresService';
-import useRequest from '@/modules/global/composables/request/useRequest';
-import { formatearFecha } from '@/modules/global/utils/fecha';
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
 
-export default defineStore('sensores', () => {
-    const request = useRequest(sensoresService);
+export default defineStore("sensores-store", () => {
+  const sensor = ref({
+    clave: null,
+    idModulo: null,
+  });
 
-    const filtros = ref({
-        pagina: 1, 
-        estatus: true,
-        fecha: null,
-        modulo: null,
-    })
+  const sensores = ref([]);
+  const numeroElementos = ref(1);
 
-    const sensores = ref([]);
-    const sensoresClave = computed(() => sensores.value.map(({ clave }) => clave));
-    const numResultados = ref(0);
-    const sensoresData = computed(() => sensores.value.map(({ id, clave, editar }) => ({ id, clave, editar })));
-    const filtroActivo = computed(() => (
-        !filtros.value.estatus
-        || !!filtros.value.estatus
-        || !!filtros.value.fecha
-        || !!filtros.value.modulo
-    ));
+  const asignarDataSensores = ({ data, resultados }) => {
+    sensores.value = data;
+    numeroElementos.value = resultados;
+  };
 
-    const asignarData = ({ data, resultados }) => {
-        sensores.value = data.map(sensor => ({
-            ...sensor,
-            editar: false
-        }));
-        numResultados.value = resultados;
-    }
+  const asignarDataSensor = ({ data }) => {
+    const { id, clave, modulo } = data;
 
-    const mapFiltros = () => {
-        const mFiltros = {};
+    sensor.value["id"] = id;
+    sensor.value["modulo"] = modulo;
+    sensor.value.clave = clave;
+    sensor.value.idModulo = modulo?.id;
+  };
 
-        mFiltros['pagina'] = filtros.value.pagina;
-        mFiltros['estatus'] = filtros.value.estatus ? '1' : '0';
-        mFiltros['fecha'] = filtros.value.fecha && formatearFecha(filtros.value.fecha);
-        mFiltros['modulo'] = filtros.value.modulo;
+  const sensoresOpciones = computed(() =>
+    sensores.value.map(({ id, clave }) => ({
+      label: clave,
+      value: id,
+    }))
+  );
 
-        return mFiltros;
-    }
-
-    const obtenerSensores = async() => {
-        try{
-            const filtros = mapFiltros();
-            const res = await request.obtenerElementos({ params: filtros });
-            asignarData(res);
-
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const crearSensor = async({ data }) => {
-        try{
-            const res = await request.crearElemento({ data: toValue(data) });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    const editarSensor = async({ id, data }) => {
-        try{
-            const res = await request.editarElemento({ id, data });
-            return res;
-        }catch(err){
-            throw err;
-        }
-    }
-    const sensoresOpciones = computed(() => sensores.value.map(({ clave, id }) => ({ label: clave, value: id })));
-
-    return {
-        sensores,
-        sensoresClave,
-        sensoresData,
-        filtros,
-        filtroActivo,
-        numResultados,
-        sensoresOpciones,
-        obtenerSensores,
-        crearSensor,
-        editarSensor,
-    }
+  return {
+    sensor,
+    sensores,
+    numeroElementos,
+    asignarDataSensores,
+    asignarDataSensor,
+    sensoresOpciones,
+  };
 });

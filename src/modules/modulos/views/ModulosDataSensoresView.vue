@@ -1,44 +1,64 @@
 <template>
-    <div class="pt-8 lg:grid lg:grid-cols-12 gap-5 bg-slate-900 rounded-xl min-h-64">
-        <header class="flex flex-col px-6 py-5 bg-slate-950 rounded-xl lg:h-48 lg:col-span-4 lg:ml-2">
-            <header class="mb-5 flex justify-between items-center">
-                <h2 class="uppercase font-bold text-lg text-slate-200">agregar sensor</h2>
+    <section class="w-full h-full">
+        <div class="grid grid-cols-12 gap-5">
+            <header class="p-5 col-span-full lg:col-span-4 bg-slate-900 rounded-md">
+                <article>
+                    <header class="mb-5">
+                        <h3 class="uppercase font-bold">agregar sensor</h3>
+                    </header>
+                    <section class="mb-5">
+                        <article class="mb-4">
+                            <p class="mb-1 uppercase text-xs">clave sensor</p>
+                            <NInput v-model:value="sensor.clave" clearable />
+                        </article>
+                    </section>
+                    <footer>
+                        <NButton @click="crearSensor" class="w-full" type="info">
+                            <span class="uppercase font-bold">crear</span>
+                        </NButton>
+                    </footer>
+                </article>
             </header>
-            <article>
-                <p class="mb-1 uppercase">clave sensor</p>
-                <NInput
-                    @keydown.enter="crearSensor"
-                    v-model:value="sensor.clave"/>
-            </article>
-            <div class="mt-2">
-                <NButton 
-                    class="w-full"
-                    @click="crearSensor"
-                    type="info" 
-                    strong>
-                    Agregar
-                </NButton>
-            </div>
-        </header>
-        <section class="pt-6 lg:pt-0 lg:col-span-8 lg:mr-2">
-            <NDataTable
-                :columns="columnas"
-                :data="sensoresData"
-                :pagination="{ pageSize: 5 }"
-                />
-        </section>
-    </div>
+            <section class="p-5 col-span-full lg:col-span-8 bg-slate-900 rounded-md">
+                <header class="mb-5">
+                    <h3 class="uppercase font-bold">listado de sensores</h3>
+                </header>
+                <NDataTable :columns="columnasTabla" :data="dataTabla" />
+            </section>
+        </div>
+    </section>
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { NDataTable, NInput, NButton } from 'naive-ui'
-import useModulosDataSensores from '../composables/useModulosDataSensores';
+import useSensores from '../composables/useSensores';
 
 //dependencias
-const { 
-    columnas, 
-    sensoresData,
-    sensor,
-    crearSensor
-} = useModulosDataSensores();
+const route = useRoute();
+const { sensor, sensores, obtenerSensores, crearSensor } = useSensores();
+
+// listado de sensores
+const dataTabla = computed(() => sensores.value.map(({ id, clave }) => ({
+    id,
+    sensor: clave
+})));
+const columnasTabla = ref([
+    {
+        title: 'sensor',
+        key: 'sensor',
+    }
+]);
+
+// ciclo de vida
+onMounted(() => {
+    const { id:idModulo } = route.params;
+    sensor.value.idModulo = parseInt(idModulo);
+
+    obtenerSensores({ params: { modulo: idModulo } })
+        .then(console.log)
+        .catch(console.log);
+});
 </script>

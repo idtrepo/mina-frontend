@@ -12,6 +12,7 @@
             <NSelect 
                 v-model:value="modulo.idArea"
                 clearable
+                :options="areasOpciones"
                 :disabled="edicionHabilitada"/>
         </article>
         <article class="mb-4">
@@ -19,6 +20,7 @@
             <NSelect 
                 v-model:value="modulo.idCliente"
                 clearable
+                :options="clientesOpciones"
                 :disabled="edicionHabilitada"/>
         </article>
         <article class="mb-4">
@@ -26,6 +28,7 @@
             <NSelect 
                 v-model:value="modulo.idSucursal"
                 clearable
+                :options="sucursalesOpciones"
                 :disabled="edicionHabilitada"/>
         </article>
     </section>
@@ -34,7 +37,13 @@
 <script setup>
 import { NInput, NSelect } from 'naive-ui'
 import useModulos from '../../composables/useModulos';
+import useAreas from '@/modules/areas/composables/useAreas';
+import useClientes from '@/modules/clientes/composables/useClientes';
+import useSucursales from '@/modules/sucursales/composables/useSucursales';
 
 //dependencias
 const { modulo, edicionHabilitada } = useModulos();
+const { areasOpciones } = useAreas();
+const { clientesOpciones } = useClientes();
+const { sucursalesOpciones } = useSucursales();
 </script>
