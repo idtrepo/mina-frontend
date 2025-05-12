@@ -52,7 +52,6 @@ export default () => {
     const { error, data } = validarCredenciales(toValue(credenciales));
 
     if (error) {
-      console.log(error);
       return;
     }
 
@@ -118,12 +117,12 @@ export default () => {
     if (usuarioPerfil.value === PERFILES.SUPERVISOR)
       return router.push({
         name: "sucursales-info",
-        params: { id: usuarioSucursal.value }
+        params: { id: usuarioSucursal.value },
       });
-    if(usuarioPerfil.value === PERFILES.OPERADOR)
+    if (usuarioPerfil.value === PERFILES.OPERADOR)
       return router.push({
-        name: "modulos-listado"
-      })
+        name: "modulos-listado",
+      });
   }
 
   return {

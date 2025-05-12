@@ -9,6 +9,20 @@ export default ({
 } = {}) => {
   const notification = useNotification();
 
+  const customRequest = async ({
+    metodo,
+    params = null,
+    id = null,
+    data = null,
+  } = {}) => {
+    try {
+      const res = await servicio[metodo]({ params, id, data });
+      return res;
+    } catch (err) {
+      return null;
+    }
+  };
+
   const obtenerElementos = async ({ params = null } = {}) => {
     params = {
       ...toValue(filtros),
@@ -34,6 +48,8 @@ export default ({
 
   const crearElemento = async ({ dataElemento }) => {
     const { error, data } = evaluacion(toValue(dataElemento));
+
+    console.log(error);
 
     if (error) {
       notification.warning({
@@ -121,7 +137,6 @@ export default ({
 
   const obtenerElementoData = async ({ id }) => {
     try {
-      console.log(id)
       const res = await servicio.obtenerElementoData({ id });
       return res;
     } catch (err) {
@@ -134,5 +149,6 @@ export default ({
     crearElemento,
     editarElemento,
     obtenerElementoData,
+    customRequest,
   };
 };

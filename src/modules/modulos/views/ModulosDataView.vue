@@ -1,17 +1,12 @@
 <template>
     <section class="w-full h-full">
         <header class="flex gap-x-3 items-center justify-between">
-            <button @click="() => seleccionarComponente('ModulosDataInfoView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
-                <span class="text-slate-100 uppercase font-bold">modulo</span>
-            </button>
-            <button @click="() => seleccionarComponente('ModulosDataAnalisisView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
-                <span class="text-slate-100 uppercase font-bold">analisis</span>
-            </button>
-            <button @click="() => seleccionarComponente('ModulosDataSensoresView')" class="p-3 flex-grow transition-all duration-200 bg-orange-800/85 hover:cursor-pointer hover:bg-orange-600">
-                <span class="text-slate-100 uppercase font-bold">sensores</span>
-            </button>
+            <ModulosBoton 
+                v-for="boton in listadoBotones"
+                :key="boton.titulo"
+                :="boton"/>
         </header>
-        <section class="pt-8">
+        <section class="pt-5">
             <component :is="componenteSeleccionado"/>
         </section>
     </section>
@@ -22,10 +17,12 @@ import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
 
 // componentes
+const ModulosBoton = defineAsyncComponent(() => import('../components/botones/ModulosBoton.vue'));
 const ModulosDataAnalisisView = defineAsyncComponent(() => import('./ModulosDataAnalisisView.vue'));
 const ModulosDataInfoView = defineAsyncComponent(() => import('./ModulosDataInfoView.vue'));
 const ModulosDataSensoresView = defineAsyncComponent(() => import('./ModulosDataSensoresView.vue'));
 
+// logica para seleccionar componentesiiiiiiii
 const componentes = {
     ModulosDataInfoView,
     ModulosDataAnalisisView,
@@ -33,6 +30,20 @@ const componentes = {
 }
 const componente = ref('ModulosDataInfoView');
 const componenteSeleccionado = computed(() => componentes[componente.value]);
+const listadoBotones = ref([
+    {
+        titulo: 'modulo',
+        accion: () => seleccionarComponente('ModulosDataInfoView')
+    },
+    {
+        titulo: 'analisis',
+        accion: () => seleccionarComponente('ModulosDataAnalisisView')
+    },
+    {
+        titulo: 'sensores',
+        accion: () => seleccionarComponente('ModulosDataSensoresView')
+    },
+]);
 
 const seleccionarComponente = nombreComponente => componente.value = nombreComponente;
 </script>
