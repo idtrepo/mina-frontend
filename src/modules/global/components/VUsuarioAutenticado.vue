@@ -32,7 +32,6 @@ const authStore = useAuthStore();
 
 // cerrar sesion
 const cerrarSesion = () => {
-    console.log("cerrando sesion")
     authStore.cerrarSesion();
     router.push({ name: VISTAS.LOGIN });
 }

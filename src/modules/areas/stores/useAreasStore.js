@@ -4,10 +4,8 @@ import { defineStore } from "pinia";
 export default defineStore("areas-store", () => {
   const area = ref({
     nombre: null,
-    estatus: null,
     idSucursal: null,
   });
-
   const areas = ref([]);
   const numeroElementos = ref(1);
 

@@ -1,18 +1,18 @@
-import { ref, computed } from 'vue'
-import { defineStore } from 'pinia'
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
 
-export default defineStore('data', () => {
-    const datos = ref([]);
-    const numeroElementos = ref(1);
+export default defineStore("data", () => {
+  const datos = ref([]);
+  const numeroElementos = ref(1);
 
-    const asignarData = ({ data, resultados }) => {
-        datos.value = data;
-        numeroElementos.value = resultados;
-    }
-    
-    return {
-        datos,
-        numeroElementos,
-        asignarData
-    }
+  const asignarData = ({ data, resultados }) => {
+    datos.value = data.toReversed();
+    numeroElementos.value = resultados;
+  };
+
+  return {
+    datos,
+    numeroElementos,
+    asignarData,
+  };
 });
