@@ -2,7 +2,12 @@
     <section class="w-full h-full">
         <header class="flex items-center justify-between gap-x-2">
             <VHeaderTitulo />
-            <VListadoBotones v-if="verBotones" :mostrar-modal-agregar="mostrarModalAgregar" :mostrar-modal-buscar="mostrarModalBuscar" />
+            <VListadoBotones v-if="verBotones" :mostrar-modal-agregar="mostrarModalAgregar" :mostrar-modal-buscar="mostrarModalBuscar" :mostrar-modal-extra="mostrarModalExtra" 
+            >
+            <template #boton-extra="{ mostrarModalExtra }">
+                <slot name="boton-extra" :mostrar-modal-extra="mostrarModalExtra"></slot>
+            </template>
+        </VListadoBotones>
         </header>
         <template v-if="hayElementos">
             <section class="pt-8 lg:pt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4 rounded-md">
@@ -17,17 +22,22 @@
         <footer v-if="verPaginacion && hayElementos" class="pt-5 flex justify-center items-center">
             <NPagination :page-slot="3" v-model:page="pagina" :page-count="numPaginas" @update:page="cambioPagina" />
         </footer>
+        <aside>
+            <slot name="aside"></slot>
+        </aside>
 
         <template v-if="verBotones">
-            <NModal v-model:show="verModalAgregar">
-                <NCard class="w-3/4 md:w-1/3">
-                    <slot name="formulario-agregar"></slot>
-                </NCard>
-            </NModal>
-            <NModal v-model:show="verModalBuscar">
-                <NCard class="w-3/4 md:w-1/3">
-                    <slot name="formulario-buscar"></slot>
-                </NCard>
+            <botonesBuscarAgregar>
+                <template #formulario-agregar >
+                    <slot name="formulario-agregar" ></slot>
+                </template>
+                <template #formulario-buscar >
+                    <slot name="formulario-buscar" />
+                </template>
+            </botonesBuscarAgregar>
+            
+            <NModal v-model:show="verModalExtra">
+                <slot name="formulario-extra"></slot>
             </NModal>
         </template>
     </section>
@@ -38,10 +48,15 @@ import { ref, computed, toRefs, watch } from 'vue';
 import { NPagination, NModal, NCard } from 'naive-ui'
 import { onMounted, defineAsyncComponent } from 'vue'
 import useModales from '@/composables/modales/useModales';
+import {provide} from 'vue'
 
 // dependencias
 const { verModal: verModalBuscar, mostrarModal: mostrarModalBuscar } = useModales();
 const { verModal: verModalAgregar, mostrarModal: mostrarModalAgregar } = useModales();
+const { verModal:verModalExtra, mostrarModal:mostrarModalExtra } = useModales();
+// proveemos los modales
+provide('verModalAgregar', verModalAgregar)
+provide('verModalBuscar', verModalBuscar)
 
 // props
 const props = defineProps({
@@ -59,6 +74,7 @@ const { numElementos, elementos, numElementosPagina, verBotones, verPaginacion }
 const VListadoElemento = defineAsyncComponent(() => import('@/components/listado/VListadoElemento.vue'));
 const VListadoBotones = defineAsyncComponent(() => import('@/components/listado/VListadoBotoness.vue'));
 const VHeaderTitulo = defineAsyncComponent(()  => import('@/components/header/VHeaderTitulo.vue') )
+const botonesBuscarAgregar = defineAsyncComponent(() => import('@/components/botonesBuscarAgregar.vue'));
 
 // listado de listos
 const hayElementos = computed(() => elementos.value.length > 0);
