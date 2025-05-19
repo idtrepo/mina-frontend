@@ -41,14 +41,24 @@ const route = useRoute();
 const { sensor, sensores, obtenerSensores, crearSensor } = useSensores();
 
 // listado de sensores
-const dataTabla = computed(() => sensores.value.map(({ id, clave }) => ({
+const dataTabla = computed(() => sensores.value.map(({ id, clave, data, infoEstatus }) => ({
     id,
-    sensor: clave
+    sensor: clave,
+    desgaste: data && data[0] ? `${data[0].valor}%` : null,
+    bateria: infoEstatus && infoEstatus[0] ? `${infoEstatus[0].bateria}%` : null,
 })));
 const columnasTabla = ref([
     {
         title: 'sensor',
         key: 'sensor',
+    },
+    {
+        title: 'desgaste',
+        key: 'desgaste',
+    },
+    {
+        title: 'bateria',
+        key: 'bateria',
     }
 ]);
 
