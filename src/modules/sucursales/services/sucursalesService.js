@@ -38,4 +38,12 @@ export class SucursalesService {
             throw err;
         }
     };
+    static obtenerReporte = async ({id, params}) => {
+        try{
+            const res = await servicio.get(`${SucursalesService.recurso}/${id}/reportes`, {params});
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-import { computed, toValue } from "vue";
+import { computed, toValue, ref } from "vue";
 import { storeToRefs } from "pinia";
 import useSucursalesStore from "../stores/useSucursalesStore";
 import { useRouter } from "vue-router";
@@ -22,8 +22,9 @@ export default () => {
   const { sucursal, sucursales, numeroElementos, sucursalesOpciones } =
     storeToRefs(sucursalStore);
   const { usuarioPerfilId } = useUsuarioStore();
+  const dataReporte = ref(null);
 
-  const { obtenerElemento, obtenerElementos, crearElemento, editarElemento } =
+  const { obtenerElemento, obtenerElementos, crearElemento, editarElemento, customRequest:obtenerElementoReporte } =
     useRequest({
       servicio: SucursalesService,
       filtros: filtrosMapeados,
@@ -83,6 +84,17 @@ export default () => {
     return res;
   };
 
+  const obtenerReporte = async ({ id, params }) => {
+    const res = await obtenerElementoReporte({metodo:['obtenerReporte'], id, params });
+
+    if (res) {
+      dataReporte.value = res.data.elementos;
+      return res;
+    }
+
+    return null;
+  }
+
   const habilitarEdicion = () => {
     edicionStore.habilitarEdicion();
 
@@ -121,5 +133,7 @@ export default () => {
     habilitarEdicion,
     reiniciarDataCreacion,
     reiniciarDataSucursales,
+    obtenerReporte,
+    dataReporte,
   };
 };
