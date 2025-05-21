@@ -8,8 +8,8 @@ import { evaluarSensor, evaluarSensorParcial } from "../schemas/sensoresSchema";
 import useRequest from "@/composables/request/useRequest";
 import useFiltrosStore from "@/stores/useFiltrosStore";
 import useEdicionStore from "@/stores/useEdicionStore";
-import { VISTAS } from "@/modules/global/utils/vistas";
 import { reiniciarData } from "@/utils/reinicio";
+import useModales from "@/composables/modales/useModales";
 
 export default () => {
   const router = useRouter();
@@ -20,6 +20,7 @@ export default () => {
   const { filtros, filtrosMapeados } = storeToRefs(filtrosStore);
   const { sensor, sensores, numeroElementos, sensoresOpciones } =
     storeToRefs(sensoresStore);
+  const { verModal, mostrarModal } = useModales();
 
   const { obtenerElemento, obtenerElementos, crearElemento, editarElemento } =
     useRequest({
@@ -31,12 +32,16 @@ export default () => {
 
   //listado de sensors
   const sensoresListado = computed(() =>
-    sensores.value.map(({ id, clave, idModulo }) => ({
+    sensores.value.map(({ id, clave, infoEstatus,umbral, identificador, modulo }) => ({
       id,
       titulo: clave,
-      subtitulo: sucursal.nombre + ": " + area.nombre,
+      subtitulo: `bateria:${infoEstatus[0]?.bateria? infoEstatus[0].bateria : "no data" }%`,
+      extra: `UBI:${identificador? identificador : "No definido"}`,
       icono: ICONOS.SENSORES,
-      accion: () => router.push({ name: VISTAS.sensorS_DATA, params: { id } }),
+      accion: () => {
+        sensoresStore.asignarDataSensor({ data: { id, clave, umbral, identificador, modulo } });
+        mostrarModal();
+      }
     }))
   );
 
@@ -78,6 +83,7 @@ export default () => {
       editar.value = false;
       const { data: sensor } = res;
       await obtenerSensor(sensor);
+      await obtenerSensores();
     }
 
     return res;
@@ -90,7 +96,7 @@ export default () => {
       edicionStore.guardarData(sensor);
     } else {
       sensor.value = edicionStore.borrarData();
-    }
+        }
   };
 
   function reiniciarDataCreacion() {
@@ -119,5 +125,6 @@ export default () => {
     habilitarEdicion,
     reiniciarDatasensores,
     reiniciarDataCreacion,
+    verModal,
   };
 };

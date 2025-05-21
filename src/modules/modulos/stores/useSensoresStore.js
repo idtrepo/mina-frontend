@@ -5,6 +5,8 @@ export default defineStore("sensores-store", () => {
   const sensor = ref({
     clave: null,
     idModulo: null,
+    umbral: null,
+    identificador: null,
   });
 
   const sensores = ref([]);
@@ -16,12 +18,14 @@ export default defineStore("sensores-store", () => {
   };
 
   const asignarDataSensor = ({ data }) => {
-    const { id, clave, modulo } = data;
+    const { id, clave, modulo, umbral, identificador } = data;
 
     sensor.value["id"] = id;
     sensor.value["modulo"] = modulo;
     sensor.value.clave = clave;
     sensor.value.idModulo = modulo?.id;
+    sensor.value.umbral = umbral;
+    sensor.value.identificador = identificador;
   };
 
   const sensoresOpciones = computed(() =>
