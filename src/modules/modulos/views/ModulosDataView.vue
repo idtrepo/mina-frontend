@@ -15,6 +15,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { defineAsyncComponent } from 'vue'
+import useFiltrosStore from '@/stores/useFiltrosStore';
+
+const filtrosStore = useFiltrosStore();
 
 // componentes
 const ModulosBoton = defineAsyncComponent(() => import('../components/botones/ModulosBoton.vue'));
@@ -33,15 +36,21 @@ const componenteSeleccionado = computed(() => componentes[componente.value]);
 const listadoBotones = ref([
     {
         titulo: 'modulo',
-        accion: () => seleccionarComponente('ModulosDataInfoView')
+        accion: () => {seleccionarComponente('ModulosDataInfoView')
+            filtrosStore.reiniciarFiltros();
+        }
     },
     {
         titulo: 'analisis',
-        accion: () => seleccionarComponente('ModulosDataAnalisisView')
+        accion: () => {seleccionarComponente('ModulosDataAnalisisView')
+            filtrosStore.reiniciarFiltros();
+        }
     },
     {
         titulo: 'sensores',
-        accion: () => seleccionarComponente('ModulosDataSensoresView')
+        accion: () => {seleccionarComponente('ModulosDataSensoresView')
+            //filtrosStore.reiniciarFiltros();
+        }
     },
 ]);
 

@@ -1,74 +1,60 @@
 <template>
-    <section class="w-full h-full">
-        <div class="grid grid-cols-12 gap-5">
-            <header class="p-5 col-span-full lg:col-span-4 bg-slate-900 rounded-md">
-                <article>
-                    <header class="mb-5">
-                        <h3 class="uppercase font-bold">agregar sensor</h3>
-                    </header>
-                    <section class="mb-5">
-                        <article class="mb-4">
-                            <p class="mb-1 uppercase text-xs">clave sensor</p>
-                            <NInput v-model:value="sensor.clave" clearable />
-                        </article>
-                    </section>
-                    <footer>
-                        <NButton @click="crearSensor" class="w-full" type="info">
-                            <span class="uppercase font-bold">crear</span>
-                        </NButton>
-                    </footer>
-                </article>
-            </header>
-            <section class="p-5 col-span-full lg:col-span-8 bg-slate-900 rounded-md">
-                <header class="mb-5">
-                    <h3 class="uppercase font-bold">listado de sensores</h3>
-                </header>
-                <NDataTable :columns="columnasTabla" :data="dataTabla" />
-            </section>
-        </div>
-    </section>
+<VListadoView
+        :elementos="sensoresListado"
+        :numElementos="numeroElementos"
+        :obtenerListado="obtenerSensores"
+        :reiniciarData="reiniciarDataCreacion">
+        <template #formulario-buscar>
+            <SensoresBuscador/>
+        </template>
+        <template #formulario-agregar>
+            <SensoresFormulario/>
+        </template>
+    </VListadoView>
+    <div >
+        <!--formulario para editar el sensor seleccionado-->
+        <NModal v-model:show="verModal">
+            <NCard title="Editar Sensor" :style="{ width: '600px' }">
+                <SensoresFormularioBase :sensor="sensor" :editarSensor="editarSensor"/>
+                <div  class="flex justify-between">
+                    <NButton type="warning" @click="reiniciarData">Cancelar</NButton>
+                    <NButton type="primary" @click="editarSensor">Guardar</NButton>
+                </div>
+            </NCard>
+        </NModal>
+    </div>
 </template>
-
 <script setup>
-import { ref, computed } from 'vue'
-import { onMounted } from 'vue'
+import { ref, computed, defineAsyncComponent, onDeactivated, onMounted} from 'vue'
 import { useRoute } from 'vue-router'
-import { NDataTable, NInput, NButton } from 'naive-ui'
-import useSensores from '../composables/useSensores';
+import useSensores from '../composables/useSensores'
+import useTituloStore from '@/stores/useTituloStore';
+import { ICONOS } from '@/modules/global/utils/iconos';
+import { NCard, NModal, NButton } from 'naive-ui';
 
 //dependencias
 const route = useRoute();
-const { sensor, sensores, obtenerSensores, crearSensor } = useSensores();
+const tituloStore = useTituloStore();
+const {obtenerSensores, reiniciarDatasensores, numeroElementos, sensoresListado, reiniciarDataCreacion, filtros, sensor, editarSensor, verModal } = useSensores();
+const reiniciarData = () => {
+    verModal.value = false;
+};
 
-// listado de sensores
-const dataTabla = computed(() => sensores.value.map(({ id, clave, data, infoEstatus }) => ({
-    id,
-    sensor: clave,
-    desgaste: data && data[0] ? `${data[0].valor}%` : null,
-    bateria: infoEstatus && infoEstatus[0] ? `${infoEstatus[0].bateria}%` : null,
-})));
-const columnasTabla = ref([
-    {
-        title: 'sensor',
-        key: 'sensor',
-    },
-    {
-        title: 'desgaste',
-        key: 'desgaste',
-    },
-    {
-        title: 'bateria',
-        key: 'bateria',
-    }
-]);
+//componentes
+const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'))
+const SensoresBuscador = defineAsyncComponent(() => import('../components/forms/SensoresBuscador.vue'))
+const SensoresFormulario = defineAsyncComponent(() => import('../components/forms/SensoresFormulario.vue'))
+const SensoresFormularioBase = defineAsyncComponent(() => import('../components/forms/SensoresFormularioBase.vue'))
 
-// ciclo de vida
 onMounted(() => {
-    const { id:idModulo } = route.params;
-    sensor.value.idModulo = parseInt(idModulo);
+    filtros.value.modulo = route.params.id;
+    tituloStore.asignarDataTitulo({
+        nuevoTitulo: 'Sensores',
+        nuevoIcono: ICONOS.SENSORES,
+    });
+});
 
-    obtenerSensores({ params: { modulo: idModulo } })
-        .then(console.log)
-        .catch(console.log);
+onDeactivated(() => {
+    reiniciarDatasensores();
 });
 </script>
