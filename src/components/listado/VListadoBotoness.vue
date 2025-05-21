@@ -7,6 +7,7 @@
             <NButton @click="props.mostrarModalBuscar" type="warning">
                 <span class="uppercase font-bold">buscar</span>
             </NButton>
+            <slot name="boton-extra" :mostrarModalExtra="props.mostrarModalExtra"></slot>
         </article>
         <div class="lg:hidden">
             <NFloatButton :bottom="115" :right="30" type="primary" menu-trigger="click">
@@ -31,6 +32,7 @@ import { ICONOS } from '@/modules/global/utils/iconos';
 // propiedades
 const props = defineProps({
     mostrarModalBuscar: { type: Function, required: true },
-    mostrarModalAgregar: { type: Function, required: true }
+    mostrarModalAgregar: { type: Function, required: true },
+    mostrarModalExtra: { type: Function, required: false },
 })
 </script>
