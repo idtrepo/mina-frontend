@@ -7,9 +7,10 @@
             <div>
                 <NSelect v-model:value="sucursal.id" :options="sucursalesOpciones" placeholder="Seleccione una sucursal"
                     class="w-full mb-4" @update:value="sucursalChange" />
-                <NSelect  v-model:value="area.id"  placeholder="Seleccione un área"  :options="areasOpciones"
+                <NSelect  v-model:value="area.id"  placeholder="Seleccione un área"  :options="areasOpciones" :disabled="!sucursal.id"
                     class="w-full mb-4"  @update:value="areaChange" />
-                <NSelect  v-model:value="modulo.id" :options="modulosOpciones" 
+                <NSelect  v-model:value="modulo.id" :options="modulosOpciones"
+                    :disabled="!area.id"
                     placeholder="Seleccione un módulo" class="w-full mb-4"
                     @update:value="obtenerModulos({ params: { area:area.id } })" />
                 <NDatePicker v-model:formatted-value="fechaInicio" value-format="yyyy-MM-dd" type="date"

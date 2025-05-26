@@ -4,7 +4,6 @@
             <SensoresFormularioBase/>
         </template>
     </VFormularioBase>
-    <h1>hola</h1>
 </template>
 
 <script setup>
