@@ -35,8 +35,8 @@ export default () => {
     sensores.value.map(({ id, clave, infoEstatus,umbral, identificador, modulo }) => ({
       id,
       titulo: clave,
-      subtitulo: `bateria:${infoEstatus[0]?.bateria? infoEstatus[0].bateria : "no data" }%`,
-      extra: `UBI:${identificador? identificador : "No definido"}`,
+      subtitulo: `Ubicacion: ${identificador? identificador : "No definido"}`,
+      extra: `bateria: ${infoEstatus[0]?.bateria? infoEstatus[0].bateria+'%' : "no data" }`,
       icono: ICONOS.SENSORES,
       accion: () => {
         sensoresStore.asignarDataSensor({ data: { id, clave, umbral, identificador, modulo } });
