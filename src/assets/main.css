@@ -1,6 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
 
 .n-input.n-input--disabled .n-input__input-el, .n-input.n-input--disabled .n-input__textarea-el {
     cursor: not-allowed;
