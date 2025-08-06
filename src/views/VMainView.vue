@@ -1,8 +1,8 @@
 <template>
-    <main class="grid grid-cols-12 grid-rows-12 w-full h-dvh text-slate-300 bg-slate-950">
+    <main class="grid grid-cols-12 grid-rows-12 w-full h-dvh text-slate-300 bg-slate-900">
         <template v-if="autenticado">
             <header
-                class="px-5 flex justify-between items-center col-span-full lg:col-start-2 lg:col-end-13 row-span-1 bg-slate-900/50">
+                class="px-5 flex justify-between items-center col-span-full lg:col-start-2 lg:col-end-13 row-span-1 bg-slate-700/50">
                 <img :src="imgPromev" alt="promev" class="w-36 -ml-4">
                 <VUsuarioAutenticado />
             </header>
