@@ -7,6 +7,9 @@
             <template #boton-extra="{ mostrarModalExtra }">
                 <slot name="boton-extra" :mostrar-modal-extra="mostrarModalExtra"></slot>
             </template>
+            <template #boton-extra-float="{ mostrarModalExtra }">
+                <slot name="boton-extra-float" :mostrar-modal-extra="mostrarModalExtra"></slot>
+            </template>
         </VListadoBotones>
         </header>
         <template v-if="hayElementos">
