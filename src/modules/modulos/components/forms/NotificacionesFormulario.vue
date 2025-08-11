@@ -1,5 +1,5 @@
 <template>
-    <NCard>
+    <NCard class="md:max-h-2/3">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Columna izquierda: entradas y pendientes -->
             <div class="space-y-6">
