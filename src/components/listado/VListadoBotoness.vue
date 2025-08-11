@@ -19,6 +19,7 @@
                     <NFloatButton @click="props.mostrarModalBuscar">
                         <i :class="ICONOS.BUSCAR"></i>
                     </NFloatButton>
+                    <slot name="boton-extra-float" :mostrarModalExtra="props.mostrarModalExtra"></slot>
                 </template>
             </NFloatButton>
         </div>

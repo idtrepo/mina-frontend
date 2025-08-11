@@ -107,6 +107,13 @@ export default () => {
     usuarios.value = [];
   }
 
+  const usuariosOpciones = computed(() =>
+    usuarios.value.map(({ id, nombre, apellido }) => ({
+      label: `${nombre} ${apellido}`,
+      value: id,
+    }))
+  );
+
   return {
     usuario,
     usuarios,
@@ -122,5 +129,6 @@ export default () => {
     habilitarEdicion,
     reiniciarDataUsuarios,
     reiniciarDataCreacion,
+    usuariosOpciones
   };
 };
