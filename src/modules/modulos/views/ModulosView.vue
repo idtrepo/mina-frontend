@@ -9,6 +9,11 @@
                 <span class="uppercase font-bold">Notificaciones</span>
             </NButton>
         </template>
+        <template #boton-extra-float="{ mostrarModalExtra }">
+            <NFloatButton @click="mostrarModalExtra" type="info">
+                <i class="fa-solid fa-bell"></i>
+            </NFloatButton>
+        </template>
         <template #formulario-extra>
            <FormularioNotificaciones />
         </template>
@@ -24,7 +29,7 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue'
 import { defineAsyncComponent } from 'vue'
-import { NButton } from 'naive-ui';
+import { NButton, NFloatButton } from 'naive-ui';
 import useModulos from '../composables/useModulos';
 import useAreas from '@/modules/areas/composables/useAreas';
 import useClientes from '@/modules/clientes/composables/useClientes';
