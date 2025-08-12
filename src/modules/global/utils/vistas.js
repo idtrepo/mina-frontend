@@ -1,9 +1,11 @@
 export const VISTAS = {
   AREAS: "areas-listado",
   AREAS_DATA: "areas-data",
+  AREAS_INFO: "areas-info",
   LOGIN: "autenticacion-login",
   CLIENTES: "clientes-listado",
   CLIENTES_DATA: "clientes-data",
+  CLIENTES_INFO: "clientes-info",
   MODULOS: "modulos-listado",
   MODULOS_DATA: "modulos-data",
   PERFILES: "perfiles-listado",
@@ -20,5 +22,4 @@ export const VISTAS = {
   USUARIOS_DATA: "usuarios-data",
   OPERACIONES_DATA: "operaciones-data",
   SUCURSALES_INFO: "sucursales-info",
-  
 };
