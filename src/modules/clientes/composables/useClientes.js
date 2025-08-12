@@ -34,7 +34,7 @@ export default () => {
       id,
       titulo: nombre,
       icono: ICONOS.CLIENTES,
-      accion: () => router.push({ name: VISTAS.CLIENTES_DATA, params: { id } }),
+      accion: () => router.push({ name: VISTAS.CLIENTES_INFO, params: { id } }),
     }))
   );
 

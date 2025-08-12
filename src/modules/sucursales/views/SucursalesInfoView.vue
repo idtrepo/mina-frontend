@@ -1,12 +1,10 @@
 <template>
     <div class="pt-5 md:pt-8">
         <HeaderTitulo/>
-    <div class="flex justify-start gap-5 mt-5">
-        <VCard :elemento ="areasElemento" class="w-1/5"></VCard>
-        <VCard v-if="usuarioPerfil!='operador'" :elemento= "usuariosElemento" class="w-1/5"> </VCard>
-    </div>
-    <div v-if="usuarioPerfil!='operador' && usuarioPerfil!='supervisor'" class="mt-5">
-        <VSucursalesData></VSucursalesData>
+    <div class="flex justify-start flex-col md:flex-row gap-5 mt-5">
+        <VCard :elemento ="areasElemento" class="md:w-1/4" />
+        <VCard :elemento= "usuariosElemento" class="md:w-1/4" />
+        <VCard :elemento="infoElemento" class="md:w-1/4" />
     </div>
     </div>
 </template>
@@ -15,9 +13,6 @@
 import { useRoute } from 'vue-router';
 import { defineAsyncComponent } from 'vue';
 import useTituloStore from '@/stores/useTituloStore';
-import useUsuarioStore from "@/modules/auth/stores/useUsuarioStore"
-import useFiltrosStore from '@/stores/useFiltrosStore';
-import {storeToRefs} from "pinia";
 import { ICONOS } from '@/modules/global/utils/iconos';
 
 const tituloStore = useTituloStore();
@@ -25,30 +20,29 @@ tituloStore.asignarDataTitulo({
     nuevoTitulo: 'Información de Sucursal',
     nuevoIcono: ICONOS.SUCURSALES,
 });
-const usuarioStore = useUsuarioStore();
-const {usuarioPerfil} = storeToRefs(usuarioStore)
-
-const filtrosStore = useFiltrosStore();
-const {filtros} = storeToRefs(filtrosStore);
 
 const VCard = defineAsyncComponent(() => import('@/modules/global/components/cartas/VCard.vue'));
-const VSucursalesData = defineAsyncComponent(() => import('@/modules/sucursales/views/SucursalesDataView.vue'));
 const HeaderTitulo = defineAsyncComponent(() => import('@/components/header/VHeaderTitulo.vue'));
 const route = useRoute();
 const id = route.params.id;
 
-filtros.value = { ...filtros.value, sucursal: id };
 const areasElemento= {
     id:id,
     vista:"areas-listado-nest",
     primario:"areas",
     icono:ICONOS.AREAS,
+    query: { sucursal: id }
 };
 const usuariosElemento = {
     vista:"usuarios-listado",
-    primario:"usuario",
-    icono: ICONOS.USUARIOS
+    primario:"usuarios",
+    icono: ICONOS.USUARIOS,
+    query: { sucursal: id }
 }
 
-
+const infoElemento = {
+    vista: "sucursales-data",
+    primario: "Informacion de sucursal",
+    icono: ICONOS.SUCURSALES
+}
 </script>

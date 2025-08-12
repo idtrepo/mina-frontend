@@ -35,7 +35,7 @@ export default () => {
       id,
       titulo: nombre,
       icono: ICONOS.AREAS,
-      accion: () => router.push({ name: VISTAS.AREAS_DATA, params: { id } }),
+      accion: () => router.push({ name: VISTAS.AREAS_INFO, params: { id } }),
     }))
   );
 

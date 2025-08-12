@@ -20,7 +20,7 @@ export default {
             path: ':id',
             name: 'sucursales-info',
             meta:{
-                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR]
             },
             component: () => import("@/modules/sucursales/views/SucursalesInfoView.vue")
         },
@@ -28,7 +28,7 @@ export default {
             path: ':id',
             name: 'sucursales-data',
             meta:{
-                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR,PERFILES.SUPERVISOR]
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR]
             },
             component: () => import('@/modules/sucursales/views/SucursalesDataView.vue')
         },

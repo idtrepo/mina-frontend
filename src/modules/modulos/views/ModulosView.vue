@@ -35,6 +35,8 @@ import useAreas from '@/modules/areas/composables/useAreas';
 import useClientes from '@/modules/clientes/composables/useClientes';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useUsuarioStore from '@/stores/useUsuarioStore';
+import useFiltrosStore from '@/stores/useFiltrosStore';
+import { useRoute } from 'vue-router';
 
 // dependencias
 const { modulosListado, numeroElementos, obtenerModulos, reiniciarDataModulos, reiniciarDataCreacion } = useModulos();
@@ -42,6 +44,8 @@ const { obtenerAreas } = useAreas();
 const { obtenerClientes } = useClientes();
 const { obtenerSucursales } = useSucursales();
 const { usuarioPerfilId } = useUsuarioStore();
+const {filtros} = useFiltrosStore();
+const route = useRoute();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
@@ -50,10 +54,12 @@ const ModulosFormulario = defineAsyncComponent(() => import('../components/forms
 const FormularioNotificaciones = defineAsyncComponent(() => import('../components/forms/NotificacionesFormulario.vue'));
 
 onMounted(() => {
+    route.params.id? filtros.area = route.params.id : filtros.area = undefined;
     Promise.allSettled([
         obtenerAreas({ params: { listado: true } }),
         obtenerClientes({ params: { listado: true } }),
         obtenerSucursales({ params: { listado: true } }),
+        obtenerModulos({ params: { listado: true } })
     ])
         .then(console.log)
         .catch(console.log)

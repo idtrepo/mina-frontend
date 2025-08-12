@@ -18,6 +18,8 @@ import usePerfiles from '@/modules/perfiles/composables/usePerfiles';
 import useClientes from '@/modules/clientes/composables/useClientes';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useAreas from '@/modules/areas/composables/useAreas';
+import useFiltrosStore from '@/stores/useFiltrosStore';
+import { useRoute } from 'vue-router'
 
 // dependencias
 const { usuariosListado, numeroElementos, obtenerUsuarios, reiniciarDataCreacion, reiniciarDataUsuarios } = useUsuarios();
@@ -25,6 +27,8 @@ const { obtenerPerfiles } = usePerfiles();
 const { obtenerClientes } = useClientes();
 const { obtenerSucursales } = useSucursales();
 const { obtenerAreas } = useAreas();
+const { filtros } = useFiltrosStore();
+const route = useRoute();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
@@ -33,14 +37,31 @@ const UsuariosFormulario = defineAsyncComponent(() => import('../components/form
 
 
 onMounted(() => {
+    // Detectar origen por query: ?sucursal=ID o ?area=ID
+    const { sucursal: qsSucursal, area: qsArea, cliente: qsCliente } = route.query;
     Promise.allSettled([
         obtenerPerfiles({ params: { listado: true } }),
         obtenerClientes({ params: { listado: true } }),
         obtenerSucursales({ params: { listado: true } }),
         obtenerAreas({ params: { listado: true } }),
+        obtenerUsuarios()
     ])
         .then(console.log)
         .catch(console.log);
+
+    if (qsSucursal) {
+        filtros.sucursal = qsSucursal;
+        filtros.area = undefined;
+        filtros.cliente = undefined;
+    } else if (qsArea) {
+        filtros.area = qsArea;
+        filtros.sucursal = undefined;
+        filtros.cliente = undefined;
+    } else if (qsCliente) {
+        filtros.cliente = qsCliente;
+        filtros.sucursal = undefined;
+        filtros.area = undefined;
+    }
 });
 
 onUnmounted(() => {

@@ -23,6 +23,9 @@ importers:
       exceljs:
         specifier: ^4.4.0
         version: 4.4.0
+      file-saver:
+        specifier: ^2.0.5
+        version: 2.0.5
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
@@ -670,11 +673,20 @@ packages:
   '@vue/reactivity@3.5.16':
     resolution: {integrity: sha512-FG5Q5ee/kxhIm1p2bykPpPwqiUBV3kFySsHEQha5BJvjXdZTUfmya7wP7zC39dFuZAcf/PD5S4Lni55vGLMhvA==}
 
+  '@vue/reactivity@3.5.18':
+    resolution: {integrity: sha512-x0vPO5Imw+3sChLM5Y+B6G1zPjwdOri9e8V21NnTnlEvkxatHEH5B5KEAJcjuzQ7BsjGrKtfzuQ5eQwXh8HXBg==}
+
   '@vue/runtime-core@3.5.16':
     resolution: {integrity: sha512-bw5Ykq6+JFHYxrQa7Tjr+VSzw7Dj4ldR/udyBZbq73fCdJmyy5MPIFR9IX/M5Qs+TtTjuyUTCnmK3lWWwpAcFQ==}
 
+  '@vue/runtime-core@3.5.18':
+    resolution: {integrity: sha512-DUpHa1HpeOQEt6+3nheUfqVXRog2kivkXHUhoqJiKR33SO4x+a5uNOMkV487WPerQkL0vUuRvq/7JhRgLW3S+w==}
+
   '@vue/runtime-dom@3.5.16':
     resolution: {integrity: sha512-T1qqYJsG2xMGhImRUV9y/RseB9d0eCYZQ4CWca9ztCuiPj/XWNNN+lkNBuzVbia5z4/cgxdL28NoQCvC0Xcfww==}
+
+  '@vue/runtime-dom@3.5.18':
+    resolution: {integrity: sha512-YwDj71iV05j4RnzZnZtGaXwPoUWeRsqinblgVJwR8XTXYZ9D5PbahHQgsbmzUvCWNF6x7siQ89HgnX5eWkr3mw==}
 
   '@vue/server-renderer@3.5.16':
     resolution: {integrity: sha512-BrX0qLiv/WugguGsnQUJiYOE0Fe5mZTwi6b7X/ybGB0vfrPH9z0gD/Y6WOR1sGCgX4gc25L1RYS5eYQKDMoNIg==}
@@ -683,6 +695,9 @@ packages:
 
   '@vue/shared@3.5.16':
     resolution: {integrity: sha512-c/0fWy3Jw6Z8L9FmTyYfkpM5zklnqqa9+a6dz3DvONRKW2NEbh46BP0FHuLFSWi2TnQEtp91Z6zOWNrU6QiyPg==}
+
+  '@vue/shared@3.5.18':
+    resolution: {integrity: sha512-cZy8Dq+uuIXbxCZpuLd2GJdeSO/lIzIspC2WtkqIpje5QyFbvLaI5wZtdUjLHjGZrlVX6GilejatWwVYYRc8tA==}
 
   archiver-utils@2.1.0:
     resolution: {integrity: sha512-bEL/yUb/fNNiNTuUz979Z0Yg5L+LzLxGJz8x79lYmR54fmTIb6ob/hNQgkQnIUDWIFjZVQwl9Xs356I6BAMHfw==}
@@ -936,6 +951,9 @@ packages:
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
     engines: {node: '>=18'}
+
+  file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
 
   follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
@@ -2222,16 +2240,32 @@ snapshots:
     dependencies:
       '@vue/shared': 3.5.16
 
+  '@vue/reactivity@3.5.18':
+    dependencies:
+      '@vue/shared': 3.5.18
+
   '@vue/runtime-core@3.5.16':
     dependencies:
       '@vue/reactivity': 3.5.16
       '@vue/shared': 3.5.16
+
+  '@vue/runtime-core@3.5.18':
+    dependencies:
+      '@vue/reactivity': 3.5.18
+      '@vue/shared': 3.5.18
 
   '@vue/runtime-dom@3.5.16':
     dependencies:
       '@vue/reactivity': 3.5.16
       '@vue/runtime-core': 3.5.16
       '@vue/shared': 3.5.16
+      csstype: 3.1.3
+
+  '@vue/runtime-dom@3.5.18':
+    dependencies:
+      '@vue/reactivity': 3.5.18
+      '@vue/runtime-core': 3.5.18
+      '@vue/shared': 3.5.18
       csstype: 3.1.3
 
   '@vue/server-renderer@3.5.16(vue@3.5.16)':
@@ -2241,6 +2275,8 @@ snapshots:
       vue: 3.5.16
 
   '@vue/shared@3.5.16': {}
+
+  '@vue/shared@3.5.18': {}
 
   archiver-utils@2.1.0:
     dependencies:
@@ -2544,6 +2580,8 @@ snapshots:
   figures@6.1.0:
     dependencies:
       is-unicode-supported: 2.1.0
+
+  file-saver@2.0.5: {}
 
   follow-redirects@1.15.9: {}
 
@@ -3140,8 +3178,8 @@ snapshots:
 
   vue-chart-3@3.1.8(chart.js@3.9.1)(vue@3.5.16):
     dependencies:
-      '@vue/runtime-core': 3.5.16
-      '@vue/runtime-dom': 3.5.16
+      '@vue/runtime-core': 3.5.18
+      '@vue/runtime-dom': 3.5.18
       chart.js: 3.9.1
       csstype: 3.1.3
       lodash-es: 4.17.21

@@ -21,5 +21,10 @@ export default {
             name: 'clientes-data',
             component: () => import('@/modules/clientes/views/ClientesDataView.vue')
         },
+        {
+            path: ':id/menu',
+            name: 'clientes-info',
+            component: () => import('@/modules/clientes/views/ClientesInfoView.vue')
+        },
     ]
 }
