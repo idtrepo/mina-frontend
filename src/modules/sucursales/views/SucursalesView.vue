@@ -19,15 +19,18 @@
 </template>
 
 <script setup>
-import { onUnmounted, onMounted } from 'vue'
-import { defineAsyncComponent } from 'vue'
+import { onUnmounted, onMounted, defineAsyncComponent } from 'vue'
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useClientes from '@/modules/clientes/composables/useClientes';
 import { NButton } from 'naive-ui';
+import useFiltrosStore from '@/stores/useFiltrosStore';
+import { useRoute } from 'vue-router'
 
 // dependencias
 const { sucursalesListado, numeroElementos, obtenerSucursales, reiniciarDataSucursales, reiniciarDataCreacion } = useSucursales();
 const { obtenerClientes } = useClientes();
+const { filtros } = useFiltrosStore();
+const route = useRoute();
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
@@ -42,6 +45,9 @@ onMounted(() => {
     ])
         .then(console.log)
         .catch(console.log);
+    if (route.query.cliente) {
+        filtros.cliente = route.query.cliente;
+    }
 });
 
 onUnmounted(() => {
