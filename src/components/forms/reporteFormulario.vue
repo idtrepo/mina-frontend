@@ -31,10 +31,10 @@ import useModulos from '@/modules/modulos/composables/useModulos';
 import useUsuarioStore from '@/stores/useUsuarioStore';
 import { onMounted, ref } from 'vue';
 import {storeToRefs} from 'pinia';
-import {useExcelReporte} from '@/composables/UseExcelReporte';
+import { ExcelService } from '@/services/excel/excelService';
 
 const { obtenerSucursales, sucursalesOpciones, sucursal, obtenerReporte, dataReporte, sucursales } = useSucursales();
-const { generarExcelReporte } = useExcelReporte();
+const excelService = new ExcelService();
 const { obtenerAreas, areasOpciones, area } = useAreas();
 const { obtenerModulos, modulosOpciones, modulo } = useModulos();
 const usuarioStore = useUsuarioStore();
@@ -84,16 +84,44 @@ const generarReporte = async () => {
 
         const headers = Object.keys(rows[0]);
 
-        await generarExcelReporte({
-            rows,
-            headers,
-            usuario: usuarioNombreCompleto.value,
-            area: area.value.id,
-            modulo: modulo.value.id,
-            fecha: fechaInicio.value ? fechaInicio.value.split('T')[0] : new Date().toLocaleDateString(),
-            nombreSucursal: dataReporte.value[0].nombre,
-            
-        });
+        const titulo = 'Reporte de condición predictiva de sensor de desgaste';
+        const usuario = usuarioNombreCompleto.value;
+        const fecha = fechaInicio.value ? fechaInicio.value.split('T')[0] : new Date().toLocaleDateString();
+        const sucursalNombre = dataReporte.value[0].nombre;
+        const nombreArchivo = `reporte_${sucursalNombre}_${area.value.id || 'all'}_${modulo.value.id || 'all'}`;
+
+        const getLastColumnLetter = (count) => {
+            if (!count || count < 1) return 'A';
+            const max = Math.min(count, 26);
+            return String.fromCharCode(64 + max);
+        };
+        const lastCol = getLastColumnLetter(headers.length);
+        const filaTablaInfo = 1;
+        const filaTitulo = 5;
+        const filaHeaders = 7;
+        const filaDatos = 8;
+
+        excelService
+            .establecerHojaTrabajo('Reporte')
+            .establecerTablaInfo({ sucursal: sucursalNombre, usuario, fecha }, filaTablaInfo, 'A')
+            .establecerColumnasDatos('A', lastCol)
+            .establecerTituloHoja(titulo, filaTitulo, filaTitulo, 'A', {
+                noMerge: false,
+                alineacion: 'center',
+                backgroundColor: '000000',
+                fontColor: 'FFFFFFFF'
+            })
+            .establecerTitulosColumnas(headers, filaHeaders)
+            .establecerDatos(rows, filaDatos);
+
+        const vidaIdx = headers.indexOf('vidaUtil');
+        if (vidaIdx !== -1) {
+            excelService
+                .colorearFilasVidaUtil(filaDatos, vidaIdx + 1)
+                .agregarLeyendaVidaUtil('L', 2);
+        }
+
+        await excelService.crearReporte(nombreArchivo);
     } catch (error) {
         console.error('Error al generar el reporte:', error);
     }
