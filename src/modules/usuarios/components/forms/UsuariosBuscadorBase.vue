@@ -18,13 +18,13 @@
                 :options="perfilesOpciones"
                 v-model:value="filtros.perfil"/>
         </article>
-        <article class="mb-4">
+        <article class="mb-4" v-if="usuarioPerfilId <= 1">
             <p class="mb-1 uppercase">cliente</p>
             <NSelect
                 :options="clientesOpciones"
                 v-model:value="filtros.cliente"/>
         </article>
-        <article class="mb-4">
+        <article class="mb-4" v-if="usuarioPerfilId <= 2">
             <p class="mb-1 uppercase">sucursal</p>
             <NSelect
                 :options="sucursalesOpciones"
@@ -57,6 +57,7 @@ import useAreas from '@/modules/areas/composables/useAreas';
 import useClientes from '@/modules/clientes/composables/useClientes';
 import usePerfiles from '@/modules/perfiles/composables/usePerfiles';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
+import useUsuarioStore from '@/stores/useUsuarioStore';
 
 //dependencias
 const { filtros } = useUsuarios();
@@ -64,4 +65,5 @@ const { areasOpciones } = useAreas();
 const { clientesOpciones } = useClientes();
 const { perfilesOpciones } = usePerfiles();
 const { sucursalesOpciones } = useSucursales();
+const { usuarioPerfilId } = useUsuarioStore();
 </script>
