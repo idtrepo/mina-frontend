@@ -1,15 +1,11 @@
 <template>
-    <VListadoView
-        :elementos="areasListado"
-        :numElementos="numeroElementos"
-        :obtenerListado = "obtenerAreas"
-        :reiniciarData = "reiniciarDataCreacion"
-        >
+    <VListadoView :elementos="areasListado" :numElementos="numeroElementos" :obtenerListado="obtenerAreas"
+        :reiniciarData="reiniciarDataCreacion">
         <template #formulario-buscar>
-            <AreasBuscador/>
+            <AreasBuscador />
         </template>
         <template #formulario-agregar>
-            <AreasFormulario/>
+            <AreasFormulario />
         </template>
     </VListadoView>
 </template>
@@ -20,12 +16,12 @@ import { defineAsyncComponent } from 'vue'
 import useAreas from '../composables/useAreas';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useFiltrosStore from '@/stores/useFiltrosStore';
-import {useRoute} from 'vue-router'
+import { useRoute } from 'vue-router'
 
 // dependencias
 const { obtenerSucursales } = useSucursales();
-const { areasListado, numeroElementos, obtenerAreas, reiniciarDataCreacion,reiniciarDataAreas  } = useAreas();
-const {filtros} = useFiltrosStore();
+const { areasListado, numeroElementos, obtenerAreas, reiniciarDataCreacion, reiniciarDataAreas } = useAreas();
+const { filtros } = useFiltrosStore();
 const route = useRoute();
 
 // componentes
@@ -35,15 +31,15 @@ const AreasFormulario = defineAsyncComponent(() => import('../components/forms/A
 
 
 onMounted(() => {
-    if(route.params.id){
-        filtros.sucursal = route.params.id;
-    }
     Promise.allSettled([
         obtenerAreas(),
-        obtenerSucursales({params: { listado: true } }),
+        obtenerSucursales({ params: { listado: true } }),
     ])
         .then(console.log)
         .catch(console.log);
+    if (route.params.id) {
+        filtros.sucursal = route.params.id;
+    }
 });
 
 onUnmounted(() => {
