@@ -5,8 +5,6 @@ import { PERFILES } from "@/modules/global/utils/perfiles";
 export const rutas = [
   {
     perfil: [
-      PERFILES.SUPER_USUARIO,
-      PERFILES.ADMINISTRADOR,
       PERFILES.SUPERVISOR,
     ],
     titulo: "areas",
@@ -31,29 +29,17 @@ export const rutas = [
     ruta: VISTAS.MODULOS,
   },
   {
-    perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR],
+    perfil: [PERFILES.SUPER_USUARIO],
     titulo: "perfiles",
     icono: ICONOS.PERFILES,
     ruta: VISTAS.PERFILES_MENU,
   },
   {
     perfil: [
-      PERFILES.SUPER_USUARIO,
       PERFILES.ADMINISTRADOR,
-      PERFILES.SUPERVISOR,
     ],
     titulo: "sucursales",
     icono: ICONOS.SUCURSALES,
     ruta: VISTAS.SUCURSALES,
-  },
-  {
-    perfil: [
-      PERFILES.SUPER_USUARIO,
-      PERFILES.ADMINISTRADOR,
-      PERFILES.SUPERVISOR,
-    ],
-    titulo: "usuarios",
-    icono: ICONOS.USUARIOS,
-    ruta: VISTAS.USUARIOS,
   },
 ];
