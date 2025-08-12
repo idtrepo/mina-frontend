@@ -8,7 +8,7 @@ export default {
     meta: {
         titulo: 'areas',
         icono: ICONOS.AREAS,
-        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR]
+        perfil: [PERFILES.SUPER_USUARIO, PERFILES.ADMINISTRADOR, PERFILES.SUPERVISOR]
     },
     children: [
         {
