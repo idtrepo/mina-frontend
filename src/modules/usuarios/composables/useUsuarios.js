@@ -62,8 +62,9 @@ export default () => {
     return res;
   };
 
-  const crearUsuario = async ({ data }) => {
-    const res = await crearElemento({ dataElemento: usuario });
+  const crearUsuario = async ({ data } = {}) => {
+    const payload = toValue(usuario);
+    const res = await crearElemento({ dataElemento: payload });
 
     if (res) {
       reiniciarDataCreacion();
@@ -74,7 +75,8 @@ export default () => {
   };
 
   const editarUsuario = async () => {
-    const res = await editarElemento({ dataElemento: usuario });
+    const payload = toValue(usuario);
+    const res = await editarElemento({ dataElemento: payload });
 
     if (res) {
       editar.value = false;
