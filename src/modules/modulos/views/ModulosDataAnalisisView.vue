@@ -6,12 +6,12 @@
                     <span class="uppercase font-bold">buscar</span>
                 </NButton>
             </header>
-            <section class="p-5 col-span-full rounded-md" :class="{ 'bg-slate-900': hayElementos }">
+            <section class="p-5 col-span-full rounded-md overflow-y-auto" :class="{ 'bg-slate-900': hayElementos }">
                 <template v-if="(hayElementos || hayDatosFechas)">
                     <div class="p-5 w-full bg-slate-200 rounded-md grid grid-cols-12 h-full gap-5">
                         <template v-if="hayElementos">
-                            <BarChart :="barChartProps"  class="col-span-10"/>
-                            <section v-if="sensoresSuperanUmbral.length" class="my-4 p-4 bg-red-100 rounded col-span-2 h-1/2">
+                            <BarChart :="barChartProps"  class="col-span-12 md:col-span-10"/>
+                            <section v-if="sensoresSuperanUmbral.length" class="md:block hidden my-4 p-4 bg-red-100 rounded col-span-2 h-1/2">
                                 <h2 class="text-red-700 font-bold mb-2">Sensores con desgaste superior al umbral</h2>
                                 <ul class="gap-y-2 flex flex-col">
                                     <li v-for="sensor in sensoresSuperanUmbral" :key="sensor.sensor.id"
@@ -28,6 +28,15 @@
                                 <p class="uppercase font-bold text-sm md:text-3xl">no hay datos encontrados</p>
                             </article>
                         </template>
+                        <section v-if="sensoresSuperanUmbral.length" class="md:hidden my-4 p-4 bg-red-100 rounded col-span-12 h-1/2">
+                                <h2 class="text-red-700 font-bold mb-2">Sensores con desgaste superior al umbral</h2>
+                                <ul class="flex flex-col">
+                                    <li v-for="sensor in sensoresSuperanUmbral" :key="sensor.sensor.id"
+                                        class="text-red-700 bg-red-400 p-1 mt-2 rounded font-bold">
+                                        {{ sensor.sensor.clave }}: {{ sensor.valor }}%
+                                    </li>
+                                </ul>
+                            </section>
                     </div>
                 </template>
                 <template v-else>
