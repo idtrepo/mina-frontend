@@ -5,7 +5,7 @@ export class CorreoService {
 
     static obtenerElementos = async ({params = null} = {}) => {
         try{
-            const res = await servicio.get(CorreoService.recurso, {params});
+            const res = await servicio.get(CorreoService.recurso);
             return res.data;
         } catch (err) {
             throw err;
