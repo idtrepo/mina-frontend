@@ -23,4 +23,6 @@ export const ICONOS = {
   CREAR: ["fa-solid", "fa-file"],
   EDITAR: ["fa-solid", "fa-file-pen"],
   ELIMINAR: ["fa-solid", "fa-trash"],
+  AGREGAR: ["fa-solid", "fa-plus"],
+  REPORTE: ["fa-solid", "fa-file-chart-column"]
 };

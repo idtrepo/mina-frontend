@@ -15,6 +15,11 @@
                 <span class="uppercase font-bold">reporte</span>
             </NButton>
         </template>
+        <template #boton-extra-float="{ mostrarModalExtra }">
+            <NFloatButton @click="mostrarModalExtra" type="info">
+                <i class="fa-solid fa-file"></i>
+            </NFloatButton>
+        </template>
     </VListadoView>
 </template>
 
@@ -22,7 +27,7 @@
 import { onUnmounted, onMounted, defineAsyncComponent } from 'vue'
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useClientes from '@/modules/clientes/composables/useClientes';
-import { NButton } from 'naive-ui';
+import { NButton, NFloatButton } from 'naive-ui';
 import useFiltrosStore from '@/stores/useFiltrosStore';
 import { useRoute } from 'vue-router'
 

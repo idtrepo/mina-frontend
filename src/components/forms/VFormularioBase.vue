@@ -3,8 +3,8 @@
         <section>
             <slot name="contenido"></slot>
         </section>
-        <footer>
-            <NButton @click="props.accionFormulario" type="info" class="w-full">
+        <footer class="flex">
+            <NButton @click="props.accionFormulario" type="info" class="w-full flex-grow">
                 <span class="uppercase font-bold">{{ tituloBoton }}</span>
             </NButton>
         </footer>
