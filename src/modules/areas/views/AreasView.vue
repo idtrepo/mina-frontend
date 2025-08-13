@@ -17,12 +17,16 @@ import useAreas from '../composables/useAreas';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useFiltrosStore from '@/stores/useFiltrosStore';
 import { useRoute } from 'vue-router'
+import useUsuarioStore from '@/stores/useUsuarioStore';
+import { storeToRefs } from 'pinia';
 
 // dependencias
 const { obtenerSucursales } = useSucursales();
 const { areasListado, numeroElementos, obtenerAreas, reiniciarDataCreacion, reiniciarDataAreas } = useAreas();
 const { filtros } = useFiltrosStore();
 const route = useRoute();
+const usuarioStore = useUsuarioStore();
+const { usuarioSucursal } = storeToRefs(usuarioStore);
 
 // componentes
 const VListadoView = defineAsyncComponent(() => import('@/views/listado/VListadoView.vue'));
@@ -40,6 +44,8 @@ onMounted(() => {
     if (route.params.id) {
         filtros.sucursal = route.params.id;
     }
+    filtros.sucursal = usuarioSucursal.value;
+    console.log("looool",usuarioSucursal.value);
 });
 
 onUnmounted(() => {
