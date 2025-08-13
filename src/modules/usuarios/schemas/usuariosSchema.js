@@ -7,6 +7,8 @@ const UsuarioSchema = z.object({
     apellido: z.string(),
     idPerfil: z.number().gt(0),
     idCliente: z.number().gt(0).nullish(),
+    idSucursal: z.number().gt(0).nullish(),
+    idArea: z.number().gt(0).nullish(),
     estatus: z.boolean().default(true)
 });
 
