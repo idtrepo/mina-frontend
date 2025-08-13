@@ -7,30 +7,29 @@
             <div>
                 <NSelect v-model:value="sucursal.id" :options="sucursalesOpciones" placeholder="Seleccione una sucursal"
                     class="w-full mb-4" @update:value="sucursalChange" />
-                <NSelect  v-model:value="area.id"  placeholder="Seleccione un área"  :options="areasOpciones" :disabled="!sucursal.id"
-                    class="w-full mb-4"  @update:value="areaChange" />
-                <NSelect  v-model:value="modulo.id" :options="modulosOpciones"
-                    :disabled="!area.id"
+                <NSelect v-model:value="area.id" placeholder="Seleccione un área" :options="areasOpciones"
+                    :disabled="!sucursal.id" class="w-full mb-4" @update:value="areaChange" />
+                <NSelect v-model:value="modulo.id" :options="modulosOpciones" :disabled="!area.id"
                     placeholder="Seleccione un módulo" class="w-full mb-4"
-                    @update:value="obtenerModulos({ params: { area:area.id } })" />
+                    @update:value="obtenerModulos({ params: { area: area.id } })" />
                 <NDatePicker v-model:formatted-value="fechaInicio" value-format="yyyy-MM-dd" type="date"
                     format="yyyy-MM-dd" placeholder="Seleccione una fecha" class="w-full mb-4" />
             </div>
             <footer class="flex justify-between items-center">
-                <NButton type="primary" @click="generarReporte">Generar Reporte</NButton>
+                <NButton type="primary" @click="generarReporte" class="flex-grow">Generar Reporte</NButton>
             </footer>
         </NCard>
     </section>
 </template>
 
 <script setup>
-import { NCard, NSelect, NDatePicker, NButton } from 'naive-ui'
+import { NCard, NSelect, NDatePicker, NButton, useNotification } from 'naive-ui'
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useAreas from '@/modules/areas/composables/useAreas';
 import useModulos from '@/modules/modulos/composables/useModulos';
 import useUsuarioStore from '@/stores/useUsuarioStore';
 import { onMounted, ref } from 'vue';
-import {storeToRefs} from 'pinia';
+import { storeToRefs } from 'pinia';
 import { ExcelService } from '@/services/excel/excelService';
 
 const { obtenerSucursales, sucursalesOpciones, sucursal, obtenerReporte, dataReporte, sucursales } = useSucursales();
@@ -40,6 +39,7 @@ const { obtenerModulos, modulosOpciones, modulo } = useModulos();
 const usuarioStore = useUsuarioStore();
 const { usuarioNombreCompleto } = storeToRefs(usuarioStore);
 const fechaInicio = ref(null);
+const notificacion = useNotification();
 
 const sucursalChange = () => {
     obtenerAreas({ params: { sucursal: sucursal.value.id } });
@@ -65,7 +65,15 @@ const generarReporte = async () => {
                 fecha: fechaInicio.value
             }
         });
-
+        if (!dataReporte.value || !dataReporte.value.length) {
+            notificacion.warning({
+                meta: 'No hay datos',
+                content: 'No se encontraron datos para generar el reporte.',
+                duration: 3000,
+                keepAliveOnHover: true,
+            });
+            return;
+        }
         const rows = dataReporte.value[0].areas.flatMap(area =>
             area.modulos.flatMap(modulo =>
                 modulo.sensores.map(sensor => ({
@@ -76,7 +84,7 @@ const generarReporte = async () => {
                     sensorIdentificador: sensor.identificador,
                     sensorCreado: sensor.creado.split('T')[0],
                     bateria: sensor.infoEstatus?.[0]?.bateria ?? null,
-                    vidaUtil: sensor.data?.[0]?.valor ?? null, 
+                    vidaUtil: sensor.data?.[0]?.valor ?? null,
                     fechaEstimada: sensor.fechaPredictiva ?? null,
                 }))
             )
@@ -123,7 +131,16 @@ const generarReporte = async () => {
 
         await excelService.crearReporte(nombreArchivo);
     } catch (error) {
+        notificacion.error({
+            meta: 'Error al generar el reporte',
+            content: 'Ha ocurrido un error inesperado al generar el reporte.',
+            duration: 3000,
+            keepAliveOnHover: true,
+        });
         console.error('Error al generar el reporte:', error);
+    } finally {
+        // Limpiar los datos del reporte después de generar el archivo
+        dataReporte.value = [];
     }
 };
 
