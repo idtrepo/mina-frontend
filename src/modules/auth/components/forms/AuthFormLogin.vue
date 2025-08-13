@@ -19,11 +19,11 @@
                     type="password"/>
             </article>
         </section>
-        <footer>
+        <footer class="flex">
             <NButton 
                 @click="iniciarSesion"
                 type="info" 
-                class="w-full">
+                class="w-full flex-grow">
                 Iniciar sesion
             </NButton>
         </footer>
