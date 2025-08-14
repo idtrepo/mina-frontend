@@ -9,9 +9,16 @@ export class ExcelService {
   }
 
   establecerHojaTrabajo = (tituloHoja) => {
+    // Si ya existe una hoja con ese nombre, eliminarla antes de crear otra
+    const existente = this.workbook.getWorksheet(tituloHoja);
+    if (existente) {
+      this.workbook.removeWorksheet(existente.id);
+    }
     this.worksheet = this.workbook.addWorksheet(tituloHoja);
+    // Reiniciar columnas de datos para nueva hoja
+    this.columnasDatos = [];
 
-    return this;
+    return this;  
   };
 
 
@@ -78,10 +85,11 @@ export class ExcelService {
       }
       const celda = filaTitulos.getCell(columnaData);
       celda.value = titulosColumnas[index];
-      celda.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '#ffe96b25' } };
+      celda.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F2937' } };
       celda.font = {
         bold: true,
-        size: 12
+        size: 12,
+        color: { argb: 'FFFFFFFF' }
       };
     });
 
@@ -205,5 +213,9 @@ export class ExcelService {
     const buffer = await this.workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer]);
     FileSaver.saveAs(blob, `${nombreArchivo}.xlsx`);
+  // No recreamos workbook completo para permitir múltiples hojas futuras.
+  // Solo limpiamos referencia de worksheet y columnas para próxima generación si se reutiliza instancia.
+  this.worksheet = null;
+  this.columnasDatos = [];
   };
 }
