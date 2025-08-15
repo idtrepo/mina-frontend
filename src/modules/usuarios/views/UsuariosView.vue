@@ -36,7 +36,7 @@ const UsuariosBuscador = defineAsyncComponent(() => import('../components/forms/
 const UsuariosFormulario = defineAsyncComponent(() => import('../components/forms/UsuariosFormulario.vue'));
 
 
-onMounted(() => {
+onMounted(async() => {
     // Detectar origen por query: ?sucursal=ID o ?area=ID
     const { sucursal: qsSucursal, area: qsArea, cliente: qsCliente } = route.query;
     Promise.allSettled([
@@ -44,7 +44,6 @@ onMounted(() => {
         obtenerClientes({ params: { listado: true } }),
         obtenerSucursales({ params: { listado: true } }),
         obtenerAreas({ params: { listado: true } }),
-        obtenerUsuarios()
     ])
         .then(console.log)
         .catch(console.log);
@@ -62,6 +61,7 @@ onMounted(() => {
         filtros.sucursal = undefined;
         filtros.area = undefined;
     }
+    await obtenerUsuarios();
 });
 
 onUnmounted(() => {
