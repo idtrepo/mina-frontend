@@ -34,18 +34,19 @@ const AreasBuscador = defineAsyncComponent(() => import('../components/forms/Are
 const AreasFormulario = defineAsyncComponent(() => import('../components/forms/AreasFormulario.vue'));
 
 
-onMounted(() => {
+onMounted(async () => {
+    const { sucursal: qsSucursal } = route.query;
     Promise.allSettled([
-        obtenerAreas(),
         obtenerSucursales({ params: { listado: true } }),
     ])
         .then(console.log)
         .catch(console.log);
-    if (route.params.id) {
-        filtros.sucursal = route.params.id;
+    if (usuarioSucursal.value) {
+        filtros.sucursal = usuarioSucursal.value;
+    } else if (qsSucursal) {
+        filtros.sucursal = qsSucursal;
     }
-    filtros.sucursal = usuarioSucursal.value;
-    console.log("looool",usuarioSucursal.value);
+    await obtenerAreas();
 });
 
 onUnmounted(() => {

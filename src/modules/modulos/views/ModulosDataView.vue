@@ -13,8 +13,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { defineAsyncComponent } from 'vue'
+import { ref, computed, defineAsyncComponent, onUnmounted } from 'vue'
 import useFiltrosStore from '@/stores/useFiltrosStore';
 
 const filtrosStore = useFiltrosStore();
@@ -55,4 +54,8 @@ const listadoBotones = ref([
 ]);
 
 const seleccionarComponente = nombreComponente => componente.value = nombreComponente;
+
+onUnmounted(() => {
+    filtrosStore.reiniciarFiltros();
+});
 </script>

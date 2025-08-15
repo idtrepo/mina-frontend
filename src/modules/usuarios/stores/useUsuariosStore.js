@@ -21,21 +21,31 @@ export default defineStore("usuarios-store", () => {
     numeroElementos.value = resultados;
   };
 
-  const asignarDataUsuario = ({ data }) => {
-    const { id, nombre, apellido, correo, cliente, area, perfil, sucursal } =
-      data;
-    usuario.value["id"] = id;
+  const asignarDataUsuario = (payload) => {
+    const data = payload?.data ?? payload;
+    if (!data || typeof data !== 'object') return;
+    const {
+      id = null,
+      nombre = null,
+      apellido = null,
+      correo = null,
+      cliente = null,
+      area = null,
+      perfil = null,
+      sucursal = null,
+    } = data;
+    usuario.value.id = id;
     usuario.value.nombre = nombre;
     usuario.value.apellido = apellido;
     usuario.value.correo = correo;
-    usuario.value.idCliente = cliente.id;
-    usuario.value.idArea = area.id;
-    usuario.value.idPerfil = perfil.id;
-    usuario.value.idSucursal = sucursal.id;
-    usuario.value["area"] = area;
-    usuario.value["cliente"] = cliente;
-    usuario.value["perfil"] = perfil;
-    usuario.value["sucursal"] = sucursal;
+    usuario.value.idCliente = cliente?.id ?? null;
+    usuario.value.idArea = area?.id ?? null;
+    usuario.value.idPerfil = perfil?.id ?? null;
+    usuario.value.idSucursal = sucursal?.id ?? null;
+    usuario.value.area = area || null;
+    usuario.value.cliente = cliente || null;
+    usuario.value.perfil = perfil || null;
+    usuario.value.sucursal = sucursal || null;
   };
 
   return {

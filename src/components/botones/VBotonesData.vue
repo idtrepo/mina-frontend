@@ -2,6 +2,7 @@
     <div>
         <article class="hidden md:block">
             <NButton
+                v-if="permisoEditar"
                 @click="habilitarEdicion"
                 type="warning">
                 <template #icon>
@@ -43,6 +44,15 @@ import { useDialog } from 'naive-ui'
 import { ICONOS } from '@/modules/global/utils/iconos';
 import useEdicionStore from '@/stores/useEdicionStore';
 import {storeToRefs} from 'pinia'
+import useUsuarioStore from '@/stores/useUsuarioStore';
+import { useRoute } from 'vue-router';
+
+//dependencias
+const usuarioStore = useUsuarioStore();
+const {usuarioPermisos } = storeToRefs(usuarioStore);
+const route = useRoute();
+
+const permisoEditar = computed(() => usuarioPermisos.value[route.name.split('-')[0]]?.includes('editar') || false);
 
 const edicionStore = useEdicionStore();
 const { editar } = storeToRefs(edicionStore);
