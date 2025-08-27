@@ -18,19 +18,19 @@
                 :options="perfilesOpciones"
                 v-model:value="filtros.perfil"/>
         </article>
-        <article class="mb-4" v-if="usuarioPerfilId <= 1">
+        <article class="mb-4" v-if="!usuarioCliente">
             <p class="mb-1 uppercase">cliente</p>
             <NSelect
                 :options="clientesOpciones"
                 v-model:value="filtros.cliente"/>
         </article>
-        <article class="mb-4" v-if="usuarioPerfilId <= 2">
+        <article class="mb-4" v-if="!usuarioSucursal">
             <p class="mb-1 uppercase">sucursal</p>
             <NSelect
                 :options="sucursalesOpciones"
                 v-model:value="filtros.sucursal"/>
         </article>
-        <article class="mb-4">
+        <article class="mb-4" v-if="!usuarioArea">
             <p class="mb-1 uppercase">area</p>
             <NSelect
                 :options="areasOpciones"
@@ -57,7 +57,8 @@ import useAreas from '@/modules/areas/composables/useAreas';
 import useClientes from '@/modules/clientes/composables/useClientes';
 import usePerfiles from '@/modules/perfiles/composables/usePerfiles';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
-import useUsuarioStore from '@/stores/useUsuarioStore';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion';
+import { onMounted } from 'vue';
 
 //dependencias
 const { filtros } = useUsuarios();
@@ -65,5 +66,11 @@ const { areasOpciones } = useAreas();
 const { clientesOpciones } = useClientes();
 const { perfilesOpciones } = usePerfiles();
 const { sucursalesOpciones } = useSucursales();
-const { usuarioPerfilId } = useUsuarioStore();
+const { usuarioCliente, usuarioSucursal, usuarioArea } = useAutenticacion();
+
+onMounted(() => {
+    usuarioCliente.value ? filtros.cliente = usuarioCliente.value : filtros.cliente = null;
+    usuarioSucursal.value ? filtros.sucursal = usuarioSucursal.value : filtros.sucursal = null;
+    usuarioArea.value ? filtros.area = usuarioArea.value : filtros.area = null;
+});
 </script>

@@ -4,7 +4,7 @@
             <p class="mb-1 uppercase">nombre</p>
             <NInput v-model:value="filtros.nombre"/>
         </article>
-        <article class="mb-4">
+        <article class="mb-4" v-if="!usuarioCliente">
             <p class="mb-1 uppercase">cliente</p>
             <NSelect
                 :options="clientesOpciones"
@@ -28,8 +28,15 @@
 import { NDatePicker, NSwitch, NSelect, NInput } from 'naive-ui'
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
 import useClientes from '@/modules/clientes/composables/useClientes';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion';
+import { onMounted } from 'vue';
 
 //dependencias
 const { filtros } = useSucursales();
 const { clientesOpciones } = useClientes();
+const { usuarioCliente } = useAutenticacion();
+
+onMounted(() => {
+    usuarioCliente.value ? filtros.cliente = usuarioCliente.value : filtros.cliente = null;
+});
 </script>
