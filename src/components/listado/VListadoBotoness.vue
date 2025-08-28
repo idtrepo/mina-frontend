@@ -46,7 +46,7 @@ const props = defineProps({
     mostrarModalExtra: { type: Function, required: false },
 })
 
-const permisoAgregar = computed(() => usuarioPermisos.value[route.name.split('-')[0]]?.includes('crear') || false);
+const permisoAgregar = computed(() => usuarioPermisos.value?.[route.name.split('-')[0]]?.includes('crear') || false);
 const PermisoAgregarSensores = computed(() => {
     if (route.name == 'modulos-data'){
         return usuarioPermisos.value.sensores?.includes('crear') || false;
