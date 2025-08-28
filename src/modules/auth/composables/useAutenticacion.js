@@ -30,7 +30,7 @@ export default () => {
     usuarioSucursal,
     usuarioPermisos,
     usuarioPerfilId,
-    usuarioArea
+    usuarioArea,
   } = storeToRefs(usuarioStore);
 
   // inicio de sesion
@@ -118,8 +118,7 @@ export default () => {
 
     if (usuarioPerfil.value === PERFILES.SUPERVISOR)
       return router.push({
-        name: "sucursales-info",
-        params: { id: usuarioSucursal.value },
+        name: VISTAS.AREAS,
       });
     if (usuarioPerfil.value === PERFILES.OPERADOR)
       return router.push({
@@ -146,6 +145,6 @@ export default () => {
     usuarioPermisos: usuarioPermisos,
     usuarioSucursal: usuarioSucursal,
     usuarioPerfilId,
-    usuarioArea
+    usuarioArea,
   };
 };
