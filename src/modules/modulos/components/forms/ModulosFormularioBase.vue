@@ -39,9 +39,9 @@ const { usuarioArea, usuarioCliente, usuarioSucursal } = useAutenticacion();
 
 onMounted(async () => {
     const asignarValores = async () => {
-        usuarioSucursal.value ? modulo.value.idSucursal = usuarioSucursal.value : modulo.value.idSucursal = null;
-        usuarioCliente.value ? modulo.value.idCliente = usuarioCliente.value : modulo.value.idCliente = null;
-        usuarioArea.value ? modulo.value.idArea = usuarioArea.value : modulo.value.idArea = null;
+        usuarioSucursal.value ? modulo.value.idSucursal = usuarioSucursal.value : null;
+        usuarioCliente.value ? modulo.value.idCliente = usuarioCliente.value : null;
+        usuarioArea.value ? modulo.value.idArea = usuarioArea.value : null;
     }
     await asignarValores();
 });

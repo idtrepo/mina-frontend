@@ -1,11 +1,8 @@
 <template>
-    <VDataView 
-        :peticiones="peticiones"
-        :reiniciar-data="reiniciarDataModulos"
-        :habilitar-edicion="habilitarEdicion"
+    <VDataView :peticiones="peticiones" :reiniciar-data="reiniciarDataModulos" :habilitar-edicion="habilitarEdicion"
         :editar-elemento="editarModulo">
         <template #formulario>
-            <ModulosFormularioBase/>
+            <ModulosFormularioBase />
         </template>
     </VDataView>
 </template>
@@ -33,7 +30,7 @@ const ModulosFormularioBase = defineAsyncComponent(() => import('../components/f
 const peticiones = ref([
     obtenerModulo({ id: route.params.id }),
     obtenerAreas({ params: { listado: true } }),
-    obtenerClientes({ params: { listado: true } }),
     obtenerSucursales({ params: { listado: true } }),
+    obtenerClientes({ params: { listado: true } }),
 ])
 </script>
