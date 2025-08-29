@@ -29,6 +29,8 @@ export default () => {
     usuarioCliente,
     usuarioSucursal,
     usuarioPermisos,
+    usuarioPerfilId,
+    usuarioArea
   } = storeToRefs(usuarioStore);
 
   // inicio de sesion
@@ -143,5 +145,7 @@ export default () => {
     usuarioCliente: usuarioCliente,
     usuarioPermisos: usuarioPermisos,
     usuarioSucursal: usuarioSucursal,
+    usuarioPerfilId,
+    usuarioArea
   };
 };

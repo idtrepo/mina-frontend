@@ -24,7 +24,7 @@ export default {
             path: ':id',
             name: 'usuarios-data',
             meta:{
-                perfil:[PERFILES.SUPER_USUARIO, PERFILES.SUPERVISOR]
+                perfil:[PERFILES.SUPER_USUARIO, PERFILES.SUPERVISOR, PERFILES.ADMINISTRADOR]
             },
             component: () => import('@/modules/usuarios/views/UsuariosDataView.vue')
         },

@@ -7,7 +7,7 @@
                 clearable
                 :disabled="edicionHabilitada"/>
         </article>
-        <article class="mb-1 uppercase">
+        <article class="mb-1 uppercase" v-if="!usuarioSucursal">
             <p>sucursal</p>
             <NSelect 
                 v-model:value="area.idSucursal"
@@ -22,8 +22,17 @@
 import { NInput, NSelect } from 'naive-ui'
 import useAreas from '../../composables/useAreas';
 import useSucursales from '@/modules/sucursales/composables/useSucursales';
+import useAutenticacion from '@/modules/auth/composables/useAutenticacion';
+import { onMounted } from 'vue';
 
 //dependencias
 const { area, edicionHabilitada } = useAreas();
 const { sucursalesOpciones } = useSucursales();
+const { usuarioSucursal } = useAutenticacion();
+
+onMounted(() => {
+    console.log("sucursal",usuarioSucursal.value);
+    usuarioSucursal.value ? area.value.idSucursal = usuarioSucursal.value : area.value.idSucursal = null;
+});
+
 </script>

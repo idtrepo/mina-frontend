@@ -1,6 +1,6 @@
 <template>
     <div>
-        <article class="hidden md:block">
+        <article class="hidden md:flex  gap-3">
             <NButton
                 v-if="permisoEditar"
                 @click="habilitarEdicion"
